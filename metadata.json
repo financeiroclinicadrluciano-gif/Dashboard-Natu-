@@ -1,0 +1,6 @@
+{
+  "name": "Natuamed Spa - Dashboard",
+  "description": "Painel de controle executivo de captação, agendamentos, comparcimentos, funil comercial e receitas do Natuamed Spa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
