@@ -1,0 +1,61 @@
+/* Natuá — color primitives + semantic aliases */
+:root {
+  color-scheme: light;
+
+  /* Forest — authority, stability, brand surfaces */
+  --forest-950: #06130f;
+  --forest-900: #0a1e17;
+  --forest-800: #123126;
+  --forest-700: #1d4a38;
+  --forest-600: #2a664d;
+  --forest-500: #3d8264;
+  --forest-100: #dce9e2;
+  --forest-50: #eef5f1;
+
+  /* Gold — progress, criterion, value. Signal, never fill. */
+  --gold-700: #7b6326;
+  --gold-600: #947a34;
+  --gold-500: #b99b4a;
+  --gold-400: #ceb66f;
+  --gold-100: #f0e7cb;
+  --gold-50: #f8f3e6;
+
+  /* Mineral — ivory clarity + graphite text */
+  --mineral-0: #fff;
+  --mineral-50: #f9f7f2;
+  --mineral-100: #f2eee6;
+  --mineral-200: #e3ded4;
+  --mineral-400: #a9a79f;
+  --mineral-600: #686d68;
+  --mineral-800: #2d3531;
+  --mineral-900: #18201d;
+
+  /* Coral — attention, risk, care-required */
+  --coral-700: #7e3030;
+  --coral-500: #b54d4d;
+  --coral-100: #f4deda;
+
+  /* Blue — informational only */
+  --blue-700: #315f6a;
+  --blue-100: #dcebed;
+
+  /* Semantic surfaces */
+  --surface-page: var(--mineral-50);
+  --surface-base: var(--mineral-0);
+  --surface-subtle: var(--mineral-100);
+  --surface-inverse: var(--forest-950);
+  --surface-brand: var(--forest-800);
+
+  /* Semantic text */
+  --text-primary: var(--mineral-900);
+  --text-secondary: var(--mineral-600);
+  --text-inverse: var(--mineral-50);
+  --text-brand: var(--forest-700);
+  --text-accent: var(--gold-700);
+
+  /* Borders + focus */
+  --border-default: var(--mineral-200);
+  --border-strong: var(--mineral-400);
+  --border-inverse: rgb(255 255 255 / 18%);
+  --focus-ring: var(--gold-400);
+}

@@ -1,0 +1,38 @@
+/* Natuá — spacing, radius, shadow, motion, layout widths */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-32: 128px;
+
+  /* Corners: 0–8px only, except pill for badges/toggles */
+  --radius-none: 0;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-pill: 999px;
+
+  /* Shadows — restrained, cool-green cast */
+  --shadow-sm: 0 1px 2px rgb(6 19 15 / 8%);
+  --shadow-md: 0 10px 30px rgb(6 19 15 / 10%);
+  --shadow-lg: 0 24px 64px rgb(6 19 15 / 16%);
+
+  /* Motion — short, functional, no bounce */
+  --duration-fast: 140ms; /* @kind other */
+  --duration-base: 220ms; /* @kind other */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1); /* @kind other */
+
+  /* Content widths */
+  --content-wide: 1440px;
+  --content-default: 1180px;
+  --content-reading: 760px;
+}
