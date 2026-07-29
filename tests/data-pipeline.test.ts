@@ -21,6 +21,7 @@ import {
   createWorkbookInput,
   detectWorkbookRole,
 } from "../src/data-pipeline/workbooks";
+import { parsePorcelainPaths } from "../src/data-pipeline/publish";
 
 function workbookBuffer(sheets: Record<string, unknown[][]>): Buffer {
   const workbook = XLSX.utils.book_new();
@@ -54,6 +55,20 @@ test("classifica a Closer por assinatura, nao pelo nome do arquivo", () => {
   );
 
   assert.equal(detectWorkbookRole(input), "closer");
+});
+
+test("preserva o caminho do primeiro arquivo no status porcelain", () => {
+  const status = [
+    " M public/data/analysis-package.json",
+    " M public/data/dashboard-snapshot.js",
+    "?? arquivo-fora-da-allowlist.txt",
+  ].join("\n");
+
+  assert.deepEqual(parsePorcelainPaths(status), [
+    "public/data/analysis-package.json",
+    "public/data/dashboard-snapshot.js",
+    "arquivo-fora-da-allowlist.txt",
+  ]);
 });
 
 test("reconcilia linhas elegiveis da Closer com seu dashboard", () => {

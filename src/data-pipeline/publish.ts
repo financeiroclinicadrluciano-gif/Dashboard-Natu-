@@ -27,7 +27,14 @@ function output(command: string, args: string[]): string {
   if (result.status !== 0) {
     throw new Error(`${command} ${args.join(" ")} falhou.`);
   }
-  return result.stdout.trim();
+  return result.stdout.trimEnd();
+}
+
+export function parsePorcelainPaths(status: string): string[] {
+  return status
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => line.slice(3).trim());
 }
 
 export function assertPublishReady(): void {
@@ -60,10 +67,9 @@ export function publishSnapshot(importId: string): boolean {
       "Existem alteracoes previamente staged; publicacao automatica bloqueada.",
     );
   }
-  const worktreeChanges = output("git", ["status", "--porcelain"])
-    .split("\n")
-    .filter(Boolean)
-    .map((line) => line.slice(3).trim())
+  const worktreeChanges = parsePorcelainPaths(
+    output("git", ["status", "--porcelain"]),
+  )
     .filter((fileName) => !allowedFiles.includes(fileName));
   if (worktreeChanges.length) {
     throw new Error(
