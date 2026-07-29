@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard Natuá · Executivo</title>
 <link rel="icon" href="data:,">
+<script src="./data/dashboard-snapshot.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -18,7 +19,10 @@
 <link rel="stylesheet" href="_ds/design-system-natu-a3c46833-fc06-4b84-97f4-efa82b73d0ae/styles.css">
 <script src="_ds/design-system-natu-a3c46833-fc06-4b84-97f4-efa82b73d0ae/_ds_bundle.js"></script>
 <style>
-  body { margin: 0; background: var(--surface-page); color: var(--text-primary); font-family: var(--font-sans); }
+  body { margin: 0; background:
+    radial-gradient(circle at 78% -12%, rgb(206 177 106 / 13%), transparent 29rem),
+    linear-gradient(180deg, #f8f5ee 0%, var(--surface-page) 30rem);
+    color: var(--text-primary); font-family:var(--font-sans); }
   a { color: var(--forest-700); text-decoration: none; border-bottom: 1px solid var(--gold-400); }
   a:hover { color: var(--forest-600); }
   table { border-collapse: collapse; width: 100%; }
@@ -39,6 +43,53 @@
   .delta-warn { color:var(--coral-700);font-weight:600; }
   .source-note { font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0; }
   .period-kicker { display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:999px;background:var(--forest-50);color:var(--forest-800);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase; }
+  .dashboard-shell { isolation:isolate; }
+  .dashboard-sidebar { box-shadow:18px 0 48px rgb(11 46 38 / 8%); }
+  .dashboard-sidebar::before { content:"";position:absolute;inset:0;background:
+    radial-gradient(circle at 12% 4%,rgb(213 179 88 / 13%),transparent 24rem),
+    repeating-linear-gradient(115deg,transparent 0 18px,rgb(255 255 255 / 1.2%) 18px 19px);
+    pointer-events:none; }
+  .dashboard-sidebar > * { position:relative;z-index:1; }
+  .dashboard-header { position:sticky;top:0;z-index:20;backdrop-filter:blur(18px);background:rgb(255 253 248 / 88%) !important; }
+  .dashboard-content { animation:content-in 520ms cubic-bezier(.2,0,0,1) both; }
+  .mode-data .analysis-panel { display:none; }
+  .view-switch { display:inline-flex;align-items:center;gap:3px;padding:4px;border:1px solid rgb(13 70 56 / 16%);border-radius:999px;background:rgb(13 70 56 / 5%); }
+  .view-switch button { min-height:34px;padding:7px 13px;border:0;border-radius:999px;font-family:var(--font-sans);font-size:11px;font-weight:600;letter-spacing:.02em;cursor:pointer;transition:background-color 160ms cubic-bezier(.2,0,0,1),color 160ms cubic-bezier(.2,0,0,1),box-shadow 160ms cubic-bezier(.2,0,0,1); }
+  .analysis-studio { position:relative;overflow:hidden;border:1px solid rgb(213 179 88 / 30%);border-radius:16px;background:
+    radial-gradient(circle at 92% 10%,rgb(213 179 88 / 16%),transparent 25rem),
+    linear-gradient(145deg,#092f27 0%,#0d4638 56%,#123b32 100%);
+    box-shadow:0 26px 70px rgb(9 47 39 / 18%);color:var(--mineral-50); }
+  .analysis-studio::after { content:"";position:absolute;right:-11rem;top:-13rem;width:28rem;height:28rem;border:1px solid rgb(255 255 255 / 8%);border-radius:50%;box-shadow:0 0 0 4rem rgb(255 255 255 / 2.5%),0 0 0 8rem rgb(255 255 255 / 1.5%);pointer-events:none; }
+  .analysis-studio-hero { position:relative;z-index:1;padding:34px 36px 28px;border-bottom:1px solid rgb(255 255 255 / 10%); }
+  .analysis-studio-grid { position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.7fr); }
+  .analysis-signals { padding:30px 34px 34px;display:flex;flex-direction:column;gap:14px;border-right:1px solid rgb(255 255 255 / 10%); }
+  .analysis-signal { display:grid;grid-template-columns:8px minmax(0,1fr);gap:14px;padding:18px;border:1px solid rgb(255 255 255 / 10%);border-radius:10px;background:rgb(255 255 255 / 4.5%); }
+  .analysis-signal-rail { width:3px;height:100%;min-height:46px;border-radius:99px;background:var(--gold-400); }
+  .analysis-actions { padding:30px 28px 34px;display:flex;flex-direction:column;gap:18px;background:rgb(0 0 0 / 6%); }
+  .analysis-decision { padding:16px 0;border-top:1px solid rgb(255 255 255 / 10%); }
+  .analysis-decision:first-of-type { border-top:0;padding-top:0; }
+  .analysis-meta-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:24px;max-width:760px; }
+  .analysis-meta { padding:11px 13px;border:1px solid rgb(255 255 255 / 10%);border-radius:8px;background:rgb(255 255 255 / 4%); }
+  .analysis-ledger { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;position:relative;z-index:1;padding:20px 34px 26px;border-top:1px solid rgb(255 255 255 / 10%);background:rgb(0 0 0 / 8%); }
+  .import-backdrop { position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgb(5 28 24 / 72%);backdrop-filter:blur(10px); }
+  .import-dialog { width:min(720px,100%);max-height:calc(100vh - 40px);overflow:auto;border:1px solid rgb(213 179 88 / 32%);border-radius:16px;background:#fffdf8;box-shadow:0 36px 100px rgb(0 0 0 / 28%); }
+  .import-dropzone { display:grid;place-items:center;min-height:190px;padding:28px;border:1px dashed rgb(13 70 56 / 34%);border-radius:10px;background:linear-gradient(145deg,rgb(13 70 56 / 4%),rgb(213 179 88 / 8%));text-align:center;cursor:pointer; }
+  .import-status { min-height:44px;padding:12px 14px;border-radius:8px;background:var(--mineral-50);font-size:12px;line-height:1.55;color:var(--mineral-700); }
+  .snapshot-cell { padding:11px 12px;border-bottom:1px solid var(--mineral-100);font-size:13px;vertical-align:top; }
+  .snapshot-cell:first-child { padding-left:0; }
+  .snapshot-cell:last-child { padding-right:0; }
+  .snapshot-cell-number { text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap; }
+  tr:last-child > .snapshot-cell { border-bottom:0; }
+  .snapshot-bar-row { display:grid;grid-template-columns:minmax(110px,1fr) minmax(110px,2fr) auto;gap:12px;align-items:center; }
+  .snapshot-bar-track { height:8px;border-radius:3px;background:var(--mineral-100);overflow:hidden; }
+  .snapshot-bar-fill { height:100%;border-radius:inherit;background:var(--forest-700); }
+  .snapshot-list-row { display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:13px;color:var(--mineral-800); }
+  .quality-badge { display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap; }
+  .quality-badge-ok { background:var(--forest-50);color:var(--forest-800); }
+  .quality-badge-warning { background:var(--gold-50);color:var(--gold-700); }
+  .quality-badge-critical { background:var(--coral-100);color:var(--coral-700); }
+  [data-metric][data-empty="true"] { color:var(--coral-700) !important;font-style:italic; }
+  @keyframes content-in { from { opacity:0;transform:translateY(8px); } to { opacity:1;transform:none; } }
   @media (max-width: 860px) {
     .dashboard-shell { grid-template-columns:minmax(0,1fr) !important;width:100%; }
     .dashboard-sidebar { position:static !important;height:auto !important;padding:18px 16px !important;gap:16px !important;min-width:0;width:100%;max-width:100%; }
@@ -50,17 +101,29 @@
     .dashboard-content { padding:20px 18px 42px !important; }
     .period-switcher { align-items:flex-start !important;width:100%; }
     .period-switcher > div { flex-wrap:wrap; }
+    .analysis-studio-grid { grid-template-columns:1fr; }
+    .analysis-signals { border-right:0;border-bottom:1px solid rgb(255 255 255 / 10%); }
+    .analysis-meta-grid { grid-template-columns:1fr; }
   }
   @media (max-width: 560px) {
     .dashboard-header h1 { font-size:27px !important; }
     .dashboard-header-actions { width:100%;align-items:flex-start !important;flex-direction:column !important; }
     .analysis-panel { padding:21px 18px; }
     .analysis-grid { grid-template-columns:1fr; }
+    .dashboard-header { position:static; }
+    .view-switch { width:100%; }
+    .view-switch button { flex:1; }
+    .analysis-studio-hero,.analysis-signals,.analysis-actions,.analysis-ledger { padding-left:20px;padding-right:20px; }
+    .analysis-studio-hero h2 { font-size:29px !important; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-content { animation:none; }
+    *,*::before,*::after { scroll-behavior:auto !important;transition-duration:.01ms !important; }
   }
 </style>
 </helmet>
 
-<div class="dashboard-shell" style="display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh;background:var(--surface-page)">
+<div class="dashboard-shell {{ viewModeClass }}" style="display:grid;grid-template-columns:264px minmax(0,1fr);min-height:100vh;background:transparent">
 
   <aside class="dashboard-sidebar" style="background:var(--forest-950);color:var(--mineral-50);padding:26px 18px 30px;display:flex;flex-direction:column;gap:26px;position:sticky;top:0;height:100vh">
     <div style="display:flex;flex-direction:column;gap:4px">
@@ -79,8 +142,8 @@
 
     <div class="dashboard-sidebar-footer" style="margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:20px;border-top:1px solid var(--border-inverse)">
       <span style="font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--mineral-400)">Fontes</span>
-      <span style="font-size:11px;line-height:1.6;color:var(--mineral-400)">Marketing · Closer · Agendamentos<br>atualizados até 28/07/2026</span>
-      <span style="font-size:11px;line-height:1.6;color:var(--gold-400)">Financeiro · competência até 05/2026</span>
+      <span style="font-size:11px;line-height:1.6;color:var(--mineral-400)">Marketing · Closer · Agendamentos<br>snapshot gerado em {{ generatedDate }}</span>
+      <span style="font-size:11px;line-height:1.6;color:var(--gold-400)">Financeiro · competência {{ financePeriodLabel }}</span>
     </div>
   </aside>
 
@@ -88,26 +151,104 @@
 
     <header class="dashboard-header" style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:30px 28px 22px;background:var(--surface-base);border-bottom:1px solid var(--border-default)">
       <div>
-        <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 8px">Natuá MedSpa · semana de 22 a 28/07/2026</p>
+        <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 8px">Natuá MedSpa · dados validados de {{ primaryPeriodLong }}</p>
         <h1 style="font-family:var(--font-display);font-size:32px;font-weight:500;line-height:1.1;margin:0;color:var(--mineral-900)">Dashboard executivo semanal</h1>
       </div>
       <div class="dashboard-header-actions" style="display:flex;align-items:center;gap:14px">
+        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
+          <span style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-500)">Modo de leitura</span>
+          <div class="view-switch" role="group" aria-label="Alternar entre dados e análise">
+            <button type="button" onClick="{{ setDataMode }}" style="background:{{ dataModeBg }};color:{{ dataModeFg }};box-shadow:{{ dataModeShadow }}">Dados</button>
+            <button type="button" onClick="{{ setAnalysisMode }}" style="background:{{ analysisModeBg }};color:{{ analysisModeFg }};box-shadow:{{ analysisModeShadow }}">Análise</button>
+          </div>
+        </div>
         <sc-if value="{{ showPeriodControls }}" hint-placeholder-val="{{ true }}">
           <div class="period-switcher" style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
             <span style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600)">Período em leitura</span>
             <div style="display:flex;gap:6px">
-              <button type="button" onClick="{{ setJul }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pjBorder }};background:{{ pjBg }};color:{{ pjFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Julho 01–28 · parcial</button>
-              <button type="button" onClick="{{ setJun }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pnBorder }};background:{{ pnBg }};color:{{ pnFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Junho fechado</button>
-              <button type="button" onClick="{{ setComp }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pcBorder }};background:{{ pcBg }};color:{{ pcFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Comparativo · Jul × Jun</button>
+              <button type="button" onClick="{{ setJul }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pjBorder }};background:{{ pjBg }};color:{{ pjFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">{{ currentPeriodButton }}</button>
+              <button type="button" onClick="{{ setJun }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pnBorder }};background:{{ pnBg }};color:{{ pnFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">{{ previousPeriodButton }}</button>
+              <button type="button" onClick="{{ setComp }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pcBorder }};background:{{ pcBg }};color:{{ pcFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">{{ comparisonPeriodButton }}</button>
             </div>
           </div>
         </sc-if>
-        <button type="button" onClick="{{ goQual }}" style="padding:10px 15px;border-radius:7px;border:1px solid var(--forest-800);background:var(--forest-800);color:var(--mineral-0);font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Atualizar dados</button>
+        <button type="button" onClick="{{ openImport }}" style="padding:11px 16px;border-radius:999px;border:1px solid var(--forest-800);background:var(--forest-800);color:var(--mineral-0);box-shadow:0 8px 20px rgb(13 70 56 / 18%);font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Atualizar dados</button>
       </div>
     </header>
 
     <div class="dashboard-content" style="padding:26px 28px 60px;display:flex;flex-direction:column;gap:22px">
 
+      <sc-if value="{{ isAnalysisMode }}">
+        <section class="analysis-studio" aria-label="Análise executiva gerada pela Skill Analista Natuá">
+          <div class="analysis-studio-hero">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:22px;flex-wrap:wrap">
+              <div style="max-width:820px">
+                <p style="display:flex;align-items:center;gap:9px;font-size:10px;font-weight:600;letter-spacing:.17em;text-transform:uppercase;color:var(--gold-400);margin:0 0 14px"><span class="analysis-dot"></span>Skill Analista Natuá · {{ analysisScreenLabel }}</p>
+                <h2 style="font-family:var(--font-display);font-size:clamp(31px,4vw,48px);font-weight:500;line-height:1.12;letter-spacing:-.025em;color:#fffdf8;margin:0">{{ analysisHeadline }}</h2>
+              </div>
+              <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid rgb(255 255 255 / 13%);border-radius:999px;background:rgb(255 255 255 / 6%);font-size:10px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;color:{{ analysisConfidenceColor }}"><span style="width:7px;height:7px;border-radius:50%;background:{{ analysisConfidenceColor }}"></span>Confiança {{ analysisConfidenceLabel }}</span>
+            </div>
+            <div class="analysis-meta-grid">
+              <div class="analysis-meta"><p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mineral-400);margin:0 0 5px">Competência principal</p><p style="font-size:13px;font-weight:500;color:var(--mineral-50);margin:0">{{ analysisPeriod }}</p></div>
+              <div class="analysis-meta"><p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mineral-400);margin:0 0 5px">Validação</p><p style="font-size:13px;font-weight:500;color:var(--mineral-50);margin:0">{{ analysisValidation }}</p></div>
+              <div class="analysis-meta"><p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mineral-400);margin:0 0 5px">Snapshot</p><p style="font-family:var(--font-mono);font-size:11px;color:var(--mineral-50);margin:0">{{ analysisImportShort }}</p></div>
+            </div>
+          </div>
+
+          <div class="analysis-studio-grid">
+            <div class="analysis-signals">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:14px">
+                <div><p style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-400);margin:0 0 5px">Leitura dos sinais</p><p style="font-size:12px;color:var(--mineral-400);margin:0">Fato, interpretação e evidência permanecem separados.</p></div>
+                <span style="font-family:var(--font-mono);font-size:10px;color:var(--mineral-400)">{{ analysisGeneratedAt }}</span>
+              </div>
+              <sc-for list="{{ analysisSignals }}" as="signal" hint-placeholder-count="3">
+                <article class="analysis-signal">
+                  <span class="analysis-signal-rail" style="background:{{ signal.rail }}"></span>
+                  <div>
+                    <p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:{{ signal.rail }};margin:0 0 7px">{{ signal.typeLabel }}</p>
+                    <p style="font-size:14px;font-weight:500;line-height:1.55;color:var(--mineral-50);margin:0">{{ signal.evidence }}</p>
+                    <p style="font-size:12px;line-height:1.65;color:var(--mineral-300);margin:7px 0 0">{{ signal.interpretation }}</p>
+                  </div>
+                </article>
+              </sc-for>
+            </div>
+
+            <aside class="analysis-actions">
+              <div>
+                <p style="font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-400);margin:0 0 5px">Direção recomendada</p>
+                <p style="font-size:12px;line-height:1.55;color:var(--mineral-400);margin:0">Prioridades geradas pela Skill, nunca novos KPIs.</p>
+              </div>
+              <sc-for list="{{ analysisDecisions }}" as="decision" hint-placeholder-count="2">
+                <div class="analysis-decision">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px">
+                    <span style="font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--gold-400)">{{ decision.priority }}</span>
+                    <span style="font-size:10px;color:var(--mineral-400)">{{ decision.deadline }}</span>
+                  </div>
+                  <p style="font-size:14px;font-weight:500;line-height:1.55;color:var(--mineral-50);margin:0">{{ decision.action }}</p>
+                  <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:7px 0 0">{{ decision.owner }} · medir por {{ decision.successMetric }}</p>
+                </div>
+              </sc-for>
+            </aside>
+          </div>
+
+          <div class="analysis-ledger">
+            <div>
+              <p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-400);margin:0 0 9px">Limitações que permanecem abertas</p>
+              <sc-for list="{{ analysisLimitations }}" as="limitation" hint-placeholder-count="2">
+                <p style="font-size:11px;line-height:1.55;color:var(--mineral-300);margin:4px 0">· {{ limitation.text }}</p>
+              </sc-for>
+            </div>
+            <div>
+              <p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-400);margin:0 0 9px">Ledger de evidências</p>
+              <sc-for list="{{ analysisSources }}" as="source" hint-placeholder-count="2">
+                <p style="font-family:var(--font-mono);font-size:10px;line-height:1.55;color:var(--mineral-400);margin:4px 0">{{ source.text }}</p>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ isDataMode }}" hint-placeholder-val="{{ true }}">
       <!-- ============ VISÃO EXECUTIVA ============ -->
       <sc-if value="{{ isExec }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:22px">
@@ -120,7 +261,7 @@
             <div style="display:flex;align-items:center;gap:8px">
               <span style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600)">Direção</span>
               <button type="button" onClick="{{ setVarA }}" style="padding:7px 12px;border-radius:6px;border:1px solid {{ vaBorder }};background:{{ vaBg }};color:{{ vaFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">1a · Fita de decisão</button>
-              <button type="button" onClick="{{ setVarB }}" style="padding:7px 12px;border-radius:6px;border:1px solid {{ vbBorder }};background:{{ vbBg }};color:{{ vbFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Análise</button>
+              <button type="button" onClick="{{ setVarB }}" style="padding:7px 12px;border-radius:6px;border:1px solid {{ vbBorder }};background:{{ vbBg }};color:{{ vbFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Coluna executiva</button>
             </div>
           </div>
 
@@ -132,22 +273,22 @@
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
                   <div style="background:var(--forest-950);border-radius:8px;padding:20px 22px;color:var(--mineral-50)">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-400);margin:0">Investimento em mídia</p>
-                    <p style="font-family:var(--font-sans);font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0">R$ 24.497,75</p>
+                    <p data-metric="marketing.investment.total.current" style="font-family:var(--font-sans);font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0">R$ 24.497,75</p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-400);margin:6px 0 0">Meta R$ 24.497,75 · Google R$ 0,00<br>Junho fechado: R$ 32.932,54</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:20px 22px">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0">Leads Meta</p>
-                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">1.441</p>
+                    <p data-metric="marketing.leads.meta.current" style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">1.441</p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:6px 0 0">Custo total por lead R$ 17,00 · CPL Meta R$ 14,26<br>Junho: 1.401 leads · R$ 23,51</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:20px 22px">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0">MQL confirmados</p>
-                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">175 <span style="font-size:15px;color:var(--mineral-600)">· 12,59%</span></p>
+                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)"><span data-metric="marketing.mql.current">175</span> <span style="font-size:15px;color:var(--mineral-600)">· <span data-metric="marketing.rate.mql.current">12,59%</span></span></p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:6px 0 0">Custo por MQL R$ 117,43 · 6,25 MQL/dia<br>Junho: 204 · 14,29% · R$ 141,66</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:20px 22px">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0">ROI de primeiros pacientes</p>
-                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">3,28<span style="font-size:18px">x</span></p>
+                    <p data-metric="marketing.roi.treatments.current" style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">3,28x</p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:6px 0 0">Tratamentos de 1ª consulta ÷ investimento<br>Junho: 3,41x · ROI só de consultas 0,50x</p>
                   </div>
                 </div>
@@ -157,22 +298,22 @@
                 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
                   <div style="background:var(--forest-950);border-radius:8px;padding:20px 22px;color:var(--mineral-50)">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-400);margin:0">Investimento em mídia</p>
-                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0">R$ 32.932,54</p>
+                    <p data-metric="marketing.investment.total.previous" style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0">R$ 32.932,54</p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-400);margin:6px 0 0">Meta R$ 31.148,53 · Google R$ 1.784,01<br>R$ 1.097,75 por dia</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:20px 22px">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0">Leads Meta</p>
-                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">1.401</p>
+                    <p data-metric="marketing.leads.meta.previous" style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">1.401</p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:6px 0 0">Custo total por lead R$ 23,51<br>46,7 leads por dia</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:20px 22px">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0">MQL confirmados</p>
-                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">204 <span style="font-size:15px;color:var(--mineral-600)">· 14,29%</span></p>
+                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)"><span data-metric="marketing.mql.previous">204</span> <span style="font-size:15px;color:var(--mineral-600)">· <span data-metric="marketing.rate.mql.previous">14,29%</span></span></p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:6px 0 0">Custo por MQL R$ 141,66 · 6,8 MQL/dia<br>1.428 formulários válidos</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:20px 22px">
                     <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0">ROI de primeiros pacientes</p>
-                    <p style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">3,41<span style="font-size:18px">x</span></p>
+                    <p data-metric="marketing.roi.treatments.previous" style="font-size:clamp(22px,2.1vw,30px);font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap;margin:8px 0 0;color:var(--mineral-900)">3,41x</p>
                     <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:6px 0 0">R$ 112.406,56 em tratamentos de 1ª consulta<br>ROI só de consultas 0,60x</p>
                   </div>
                 </div>
@@ -202,13 +343,13 @@
               <sc-if value="{{ periodoJulOuComp }}">
               <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:14px">
                 <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
-                  <p style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Agendamentos</p>
-                  <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">19</p>
-                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">14 marketing · 5 indicação<br>3 pendentes sem pagamento não contam</p>
+                  <p style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Agendamentos MKT</p>
+                  <p data-metric="marketing.appointments.marketing.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">14</p>
+                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">Consolidado validado de Marketing<br>Total confirmado permanece sem base</p>
                 </div>
                 <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                   <p style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">CAC por agendamento MKT</p>
-                  <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 1.749,84</p>
+                  <p data-metric="marketing.cac.appointment.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 1.749,84</p>
                   <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">24.497,75 ÷ 14<br>Junho: R$ 1.733,29</p>
                 </div>
                 <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
@@ -218,18 +359,18 @@
                 </div>
                 <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                   <p style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Consultas realizadas</p>
-                  <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">34</p>
-                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">Base Closer validada · 2 status pendentes<br>Junho: 46</p>
+                  <p data-metric="commercial.attended.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">33</p>
+                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">Base Closer validada · <span data-metric="commercial.missing_status.current">1</span> status pendente<br>Junho: 46</p>
                 </div>
                 <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                   <p style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Tratamentos fechados</p>
-                  <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">26 <span style="font-size:13px;color:var(--forest-700)">· 76,47%</span></p>
-                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">Conversão do closer 26 ÷ 34<br>5 em negociação · 1 não fechou · 2 sem status</p>
+                  <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)"><span data-metric="commercial.closed.current">26</span> <span style="font-size:13px;color:var(--forest-700)">· <span data-metric="commercial.close_rate.current">78,79%</span></span></p>
+                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">Conversão da Closer 26 ÷ 33<br>5 em negociação · 1 não fechou · 1 sem status</p>
                 </div>
                 <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                   <p style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Ticket médio</p>
-                  <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 7.290,04</p>
-                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">por atendido · R$ 9.533,12 por fechado<br>1ª consulta: R$ 5.141,47</p>
+                  <p data-metric="commercial.ticket_attended.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 7.409,46</p>
+                  <p style="font-size:11px;line-height:1.5;color:var(--mineral-600);margin:5px 0 0">por atendido · <span data-metric="commercial.ticket_closed.current">R$ 9.404,31</span> por fechado<br>1ª consulta: R$ 5.141,47</p>
                 </div>
               </div>
 
@@ -282,18 +423,18 @@
                     <div style="display:flex;flex-direction:column;gap:12px">
                       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
                         <span style="font-size:13px;color:var(--mineral-800)">Receita fechada comercial</span>
-                        <span style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 247.861,20</span>
+                        <span data-metric="commercial.revenue.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 244.512,10</span>
                       </div>
                       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
                         <span style="font-size:13px;color:var(--mineral-800)">Pipeline aberto auditado</span>
-                        <span style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--gold-700)">R$ 31.400,63</span>
+                        <span data-metric="commercial.pipeline.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--gold-700)">R$ 31.400,63</span>
                       </div>
                       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-top:12px;border-top:1px solid var(--mineral-100)">
-                        <span style="font-size:13px;color:var(--mineral-800)">Movimentações Support</span>
-                        <span style="font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600)">R$ 293.136,89</span>
+                        <span style="font-size:13px;color:var(--mineral-800)">Resultado gerencial · financeiro</span>
+                        <span data-metric="finance.result.current" style="font-size:15px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600)">R$ 31.356,99</span>
                       </div>
                     </div>
-                    <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">Support é caixa e movimentação financeira; não substitui a receita da Closer. Pipeline não entra no ROI até o fechamento ser confirmado.</p>
+                    <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">Receita da Closer e resultado financeiro pertencem a conceitos e competências diferentes. Pipeline não entra no ROI até o fechamento ser confirmado.</p>
                   </div>
                   <x-import component-from-global-scope="DesignSystemNatu_a3c468.StatusMessage" tone="warning" title="Três leituras que a planilha não sustenta" hint-size="100%,140px">No-show não existe como campo nas bases enviadas. ROI por origem do paciente não é calculável: a receita da Closer não é segmentada entre marketing e indicação. O financeiro tem competência até 05/2026 e não cobre julho.</x-import>
                 </div>
@@ -336,8 +477,8 @@
                   <div style="display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--border-inverse)">
                     <span style="width:8px;height:8px;border-radius:50%;background:var(--forest-500);margin-top:7px;flex-shrink:0"></span>
                     <div>
-                      <p style="font-size:14px;line-height:1.6;margin:0">Quem chega na cadeira fecha: 26 de 34 pacientes atendidos, R$ 247.861,20 de receita fechada.</p>
-                      <sc-if value="{{ evid }}"><p style="font-family:var(--font-mono);font-size:11px;color:var(--mineral-400);margin:5px 0 0">26 ÷ 34 = 76,47% · CLOSER_JULHO_VALIDADA (2) · 2 status pendentes</p></sc-if>
+                      <p style="font-size:14px;line-height:1.6;margin:0">Quem chega na cadeira fecha: 26 de 33 pacientes atendidos, R$ 244.512,10 de receita comercial.</p>
+                      <sc-if value="{{ evid }}"><p style="font-family:var(--font-mono);font-size:11px;color:var(--mineral-400);margin:5px 0 0">26 ÷ 33 = 78,79% · Closer validada · 1 status pendente</p></sc-if>
                     </div>
                   </div>
                   <div style="display:flex;gap:14px;padding:16px 0;border-top:1px solid var(--border-inverse)">
@@ -379,18 +520,18 @@
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                     <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Consultas realizadas</p>
-                    <p style="font-size:clamp(17px,1.5vw,21px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">34</p>
+                    <p data-metric="commercial.attended.current" style="font-size:clamp(17px,1.5vw,21px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">33</p>
                     <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Junho: 46</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                     <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Fechados · conversão</p>
-                    <p style="font-size:clamp(17px,1.5vw,21px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">26 · 76,47%</p>
-                    <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">5 em negociação · 2 sem status</p>
+                    <p style="font-size:clamp(17px,1.5vw,21px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)"><span data-metric="commercial.closed.current">26</span> · <span data-metric="commercial.close_rate.current">78,79%</span></p>
+                    <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">5 em negociação · 1 não fechou · 1 sem status</p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                     <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Ticket por fechado</p>
-                    <p style="font-size:clamp(17px,1.5vw,21px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 9.533,12</p>
-                    <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Por atendido R$ 7.290,04</p>
+                    <p data-metric="commercial.ticket_closed.current" style="font-size:clamp(17px,1.5vw,21px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 9.404,31</p>
+                    <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Por atendido <span data-metric="commercial.ticket_attended.current">R$ 7.409,46</span></p>
                   </div>
                   <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
                     <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">ROI tratamentos 1ª consulta</p>
@@ -402,10 +543,10 @@
                 <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:20px 22px">
                   <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Perda absoluta no caminho</p>
                   <div style="display:flex;flex-direction:column;gap:11px">
-                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>7.879 cliques → 1.390 formulários válidos</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−6.489</span></div>
-                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>1.390 formulários → 175 MQL confirmados</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−1.215</span></div>
-                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>175 MQL → 14 agendamentos de marketing</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−161</span></div>
-                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>34 atendidos → 26 fechados</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−8</span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span><span data-metric="marketing.clicks.link.current">7.879</span> cliques → <span data-metric="marketing.forms.valid.current">1.390</span> formulários válidos</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−<span data-metric="marketing.loss.click_to_form.current">6.489</span></span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span><span data-metric="marketing.forms.valid.current">1.390</span> formulários → <span data-metric="marketing.mql.current">175</span> MQL confirmados</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−<span data-metric="marketing.loss.form_to_mql.current">1.215</span></span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span><span data-metric="marketing.mql.current">175</span> MQL → <span data-metric="marketing.appointments.marketing.current">14</span> agendamentos de marketing</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−<span data-metric="marketing.loss.mql_to_appointment.current">161</span></span></div>
+                    <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span><span data-metric="commercial.attended.current">33</span> atendidos → <span data-metric="commercial.closed.current">26</span> fechados</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700)">−<span data-metric="commercial.not_closed_total.current">7</span></span></div>
                   </div>
                   <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">Atendimentos vêm da Closer e incluem retornos e indicações: não descendem dos 14 agendamentos de marketing.</p>
                 </div>
@@ -430,37 +571,37 @@
               <div style="display:grid;grid-template-columns:minmax(150px,210px) minmax(120px,1fr) minmax(110px,130px);gap:18px;align-items:center">
                 <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Cliques no link</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">Meta Ads leadgen · 3 campanhas</p></div>
                 <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:var(--forest-800)"></div></div>
-                <div style="text-align:right"><p style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">7.879</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">R$ 3,11 por clique</p></div>
+                <div style="text-align:right"><p data-metric="marketing.clicks.link.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">7.879</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0"><span data-metric="marketing.cpc.current">R$ 3,11</span> por clique</p></div>
               </div>
               <div style="display:grid;grid-template-columns:minmax(150px,210px) minmax(120px,1fr) minmax(110px,130px);gap:18px;align-items:center">
                 <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Formulários válidos</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">314 de 01–07 + 1.076 de 08–28</p></div>
-                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div style="width:17.64%;height:100%;background:var(--forest-700)"></div><span style="position:absolute;left:calc(17.64% + 10px);top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-600)">17,64% dos cliques</span></div>
-                <div style="text-align:right"><p style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">1.390</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">R$ 17,62 por formulário</p></div>
+                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div data-metric-width="marketing.click_to_form_rate.current" style="width:17.64%;height:100%;background:var(--forest-700)"></div><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-50)"><span data-metric="marketing.click_to_form_rate.current">17,64%</span> dos cliques</span></div>
+                <div style="text-align:right"><p data-metric="marketing.forms.valid.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">1.390</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0"><span data-metric="marketing.cost.form.current">R$ 17,62</span> por formulário</p></div>
               </div>
               <div style="display:grid;grid-template-columns:minmax(150px,210px) minmax(120px,1fr) minmax(110px,130px);gap:18px;align-items:center">
                 <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">MQL confirmados</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">+ 272 potenciais · 943 não MQL</p></div>
-                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div style="width:12.59%;height:100%;background:var(--forest-600)"></div><span style="position:absolute;left:calc(12.59% + 10px);top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-600)">12,59% dos formulários</span></div>
-                <div style="text-align:right"><p style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">175</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">R$ 117,43 por MQL</p></div>
+                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div data-metric-width="marketing.rate.mql.current" style="width:12.59%;height:100%;background:var(--forest-600)"></div><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-50)"><span data-metric="marketing.rate.mql.current">12,59%</span> dos formulários</span></div>
+                <div style="text-align:right"><p data-metric="marketing.mql.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">175</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0"><span data-metric="marketing.cost.mql.current">R$ 117,43</span> por MQL</p></div>
               </div>
               <div style="display:grid;grid-template-columns:minmax(150px,210px) minmax(120px,1fr) minmax(110px,130px);gap:18px;align-items:center">
-                <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Agendamentos de marketing</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">19 totais − 5 indicações</p></div>
-                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div style="width:8%;height:100%;background:var(--gold-500)"></div><span style="position:absolute;left:calc(8% + 10px);top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-600)">8,00% dos MQL</span></div>
-                <div style="text-align:right"><p style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">14</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">CAC R$ 1.749,84</p></div>
+                <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Agendamentos de marketing</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">Consolidado da aba Marketing · origem da agenda bruta não é subtraída</p></div>
+                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div data-metric-width="marketing.mql_to_appointment_rate.current" style="width:8%;height:100%;background:var(--gold-500)"></div><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-50)"><span data-metric="marketing.mql_to_appointment_rate.current">8,00%</span> dos MQL</span></div>
+                <div style="text-align:right"><p data-metric="marketing.appointments.marketing.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">14</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">CAC <span data-metric="marketing.cac.appointment.current">R$ 1.749,84</span></p></div>
               </div>
               <div style="display:grid;grid-template-columns:minmax(150px,210px) minmax(120px,1fr) minmax(110px,130px);gap:18px;align-items:center;padding:14px 0;border-top:1px dashed var(--border-strong);border-bottom:1px dashed var(--border-strong)">
                 <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Consultas realizadas</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">Base Closer · inclui retornos e indicações</p></div>
                 <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;color:var(--coral-700)"><span style="width:8px;height:8px;border-radius:50%;background:var(--coral-500);flex-shrink:0"></span>Denominador diferente · conversão a partir de agendamentos não é calculável</div>
-                <div style="text-align:right"><p style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">34</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">Junho: 46</p></div>
+                <div style="text-align:right"><p data-metric="commercial.attended.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">33</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">Junho: 46</p></div>
               </div>
               <div style="display:grid;grid-template-columns:minmax(150px,210px) minmax(120px,1fr) minmax(110px,130px);gap:18px;align-items:center">
-                <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Pacientes fechados</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">5 em negociação · 1 não fechou · 2 sem status</p></div>
-                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div style="width:76.47%;height:100%;background:var(--forest-600)"></div><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-50)">76,47% dos atendidos</span></div>
-                <div style="text-align:right"><p style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">26</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">Ticket R$ 9.533,12</p></div>
+                <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Pacientes fechados</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">5 em negociação · 1 não fechou · 1 sem status</p></div>
+                <div style="height:26px;background:var(--mineral-100);border-radius:3px;overflow:hidden;position:relative"><div data-metric-width="commercial.close_rate.current" style="width:78.79%;height:100%;background:var(--forest-600)"></div><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--mineral-50)"><span data-metric="commercial.close_rate.current">78,79%</span> dos atendidos</span></div>
+                <div style="text-align:right"><p data-metric="commercial.closed.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">26</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">Ticket <span data-metric="commercial.ticket_closed.current">R$ 9.404,31</span></p></div>
               </div>
               <div style="display:grid;grid-template-columns:minmax(150px,210px) minmax(120px,1fr) minmax(110px,130px);gap:18px;align-items:center">
                 <div><p style="font-size:14px;font-weight:600;margin:0;color:var(--mineral-900)">Receita fechada</p><p style="font-size:11px;color:var(--mineral-600);margin:3px 0 0">Fonte oficial: Closer validada</p></div>
-                <div style="height:26px;background:var(--forest-950);border-radius:3px;display:flex;align-items:center;padding:0 12px"><span style="font-size:11px;font-weight:600;color:var(--gold-400)">+ R$ 31.400,63 de pipeline aberto, fora do ROI</span></div>
-                <div style="text-align:right"><p style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">R$ 247.861,20</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">ROI tratamentos 3,28x</p></div>
+                <div style="height:26px;background:var(--forest-950);border-radius:3px;display:flex;align-items:center;padding:0 12px"><span style="font-size:11px;font-weight:600;color:var(--gold-400)">+ <span data-metric="commercial.pipeline.current">R$ 31.400,63</span> de pipeline aberto, fora do ROI</span></div>
+                <div style="text-align:right"><p data-metric="commercial.revenue.current" style="font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:0;color:var(--mineral-900)">R$ 244.512,10</p><p style="font-size:11px;color:var(--mineral-600);margin:2px 0 0">ROI tratamentos <span data-metric="marketing.roi.treatments.current">3,28x</span></p></div>
               </div>
             </div>
           </div>
@@ -470,7 +611,7 @@
               <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Custo por etapa</p>
               <table>
                 <thead><tr><th style="text-align:left;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 12px 10px 0;border-bottom:1px solid var(--border-default)">Etapa</th><th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">Custo</th><th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">Fórmula</th></tr></thead>
-                <tbody>
+                <tbody id="funnel-cost-rows">
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Clique</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 3,11</td><td style="font-family:var(--font-mono);font-size:11px;text-align:right;color:var(--mineral-400);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">24.497,75 ÷ 7.879</td></tr>
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Formulário válido</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 17,62</td><td style="font-family:var(--font-mono);font-size:11px;text-align:right;color:var(--mineral-400);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">24.497,75 ÷ 1.390</td></tr>
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">MQL confirmado</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 117,43</td><td style="font-family:var(--font-mono);font-size:11px;text-align:right;color:var(--mineral-400);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">24.497,75 ÷ 175</td></tr>
@@ -482,11 +623,11 @@
               <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Julho parcial × junho fechado</p>
               <table>
                 <thead><tr><th style="text-align:left;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 12px 10px 0;border-bottom:1px solid var(--border-default)">Etapa</th><th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">Jul 1–28</th><th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">Jun</th></tr></thead>
-                <tbody>
+                <tbody id="funnel-comparison-rows">
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Formulários válidos</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">1.390</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">1.428</td></tr>
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">MQL confirmados</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">175</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">204</td></tr>
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Agendamentos MKT</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">14</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">19</td></tr>
-                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Consultas realizadas</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">34</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">46</td></tr>
+                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Consultas realizadas</td><td data-metric="commercial.attended.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">33</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">46</td></tr>
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0">Faturamento de 1ª consulta</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">R$ 12.300,00</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600);padding:11px 0 11px 12px">R$ 19.800,00</td></tr>
                 </tbody>
               </table>
@@ -519,27 +660,27 @@
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px">
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Investimento total</p>
-              <p style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 24.497,75</p>
+              <p data-metric="marketing.investment.total.current" style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 24.497,75</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Meta geração de leads</p>
-              <p style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 20.550,33</p>
+              <p data-metric="marketing.investment.leadgen.current" style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 20.550,33</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Leads Meta</p>
-              <p style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">1.441</p>
+              <p data-metric="marketing.leads.meta.current" style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">1.441</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">CPL Meta</p>
-              <p style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 14,26</p>
+              <p data-metric="marketing.cpl.leadgen.current" style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 14,26</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Custo total por lead</p>
-              <p style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 17,00</p>
+              <p data-metric="marketing.cpl.total.current" style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 17,00</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:16px 18px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Custo por MQL</p>
-              <p style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 117,43</p>
+              <p data-metric="marketing.cost.mql.current" style="font-size:clamp(17px,1.5vw,20px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 117,43</p>
             </div>
           </div>
 
@@ -554,7 +695,7 @@
                 <th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">MQL</th>
                 <th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">% MQL</th>
               </tr></thead>
-              <tbody>
+              <tbody id="marketing-campaign-rows">
                 <tr><td style="font-size:13px;padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">Campanha Junho 2 · ABO Remarketing</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">R$ 13.517,59</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">915</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">R$ 14,77</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">109</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">12,37%</td></tr>
                 <tr><td style="font-size:13px;padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">Campanha Junho 3 · ABO Teste de Criativos</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">R$ 3.921,57</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">279</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">R$ 14,06</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">35</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px;border-bottom:1px solid var(--mineral-100)">13,16%</td></tr>
                 <tr><td style="font-size:13px;padding:12px 12px 12px 0">Campanha Junho 1 · ABO Campeões</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px">R$ 3.111,17</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px">247</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px">R$ 12,60</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px">31</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:12px 0 12px 12px">12,76%</td></tr>
@@ -653,12 +794,12 @@
 
           <sc-if value="{{ periodoJun }}">
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px">
-              <div style="background:var(--forest-950);border-radius:8px;padding:18px 20px;color:var(--mineral-50)"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-400);margin:0">Investimento total</p><p style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0">R$ 32.932,54</p><p style="font-size:11px;color:var(--mineral-400);margin:5px 0 0">Meta R$ 31.148,53 · Google R$ 1.784,01</p></div>
-              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Leads Meta</p><p style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">1.401</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">R$ 23,51 por lead</p></div>
-              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">MQL confirmados</p><p style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">204 · 14,29%</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">R$ 141,66 por MQL</p></div>
-              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Agendamentos MKT</p><p style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">19</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">CAC R$ 1.733,29</p></div>
-              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Formulários válidos</p><p style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">1.428</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">Fonte: MARKETING JULHO · coluna junho</p></div>
-              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Tratamentos · 1ª consulta</p><p style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">R$ 112.406,56</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">ROI sobre mídia 3,41x</p></div>
+              <div style="background:var(--forest-950);border-radius:8px;padding:18px 20px;color:var(--mineral-50)"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-400);margin:0">Investimento total</p><p data-metric="marketing.investment.total.previous" style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0">R$ 32.932,54</p><p style="font-size:11px;color:var(--mineral-400);margin:5px 0 0">Meta R$ 31.148,53 · Google R$ 1.784,01</p></div>
+              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Leads Meta</p><p data-metric="marketing.leads.meta.previous" style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">1.401</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0"><span data-metric="marketing.cpl.total.previous">R$ 23,51</span> por lead</p></div>
+              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">MQL confirmados</p><p style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)"><span data-metric="marketing.mql.previous">204</span> · <span data-metric="marketing.rate.mql.previous">14,29%</span></p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0"><span data-metric="marketing.cost.mql.previous">R$ 141,66</span> por MQL</p></div>
+              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Agendamentos MKT</p><p data-metric="marketing.appointments.marketing.previous" style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">19</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">CAC R$ 1.733,29</p></div>
+              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Formulários válidos</p><p data-metric="marketing.forms.valid.previous" style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">1.428</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">Fonte: MARKETING JULHO · coluna junho</p></div>
+              <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Tratamentos · 1ª consulta</p><p data-metric="marketing.first_patient.treatments.previous" style="font-size:clamp(18px,1.7vw,23px);font-weight:500;white-space:nowrap;margin:7px 0 0;color:var(--mineral-900)">R$ 112.406,56</p><p style="font-size:11px;color:var(--mineral-600);margin:5px 0 0">ROI sobre mídia <span data-metric="marketing.roi.treatments.previous">3,41x</span></p></div>
             </div>
 
             <div class="comparison-table-wrap">
@@ -695,7 +836,7 @@
               </div>
               <table>
                 <thead><tr><th style="text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mineral-600)">Mês</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mineral-600)">Investimento</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mineral-600)">Leads</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mineral-600)">CPL total</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mineral-600)">Taxa MQL</th><th style="text-align:right;padding:0 0 10px 12px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--mineral-600)">Agend.</th></tr></thead>
-                <tbody>
+                <tbody id="marketing-history-rows">
                   <tr><td style="padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Março</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">R$ 15.639,45</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">811</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">R$ 19,28</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">14,43%</td><td style="padding:11px 0 11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">18</td></tr>
                   <tr><td style="padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Abril</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">R$ 18.415,14</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">1.586</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">R$ 11,61</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">12,74%</td><td style="padding:11px 0 11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">25</td></tr>
                   <tr><td style="padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Maio</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">R$ 36.532,19</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">1.481</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">R$ 24,67</td><td style="padding:11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">10,80%</td><td style="padding:11px 0 11px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">32</td></tr>
@@ -733,34 +874,34 @@
             <div style="background:var(--forest-950);border-radius:8px;padding:24px;color:var(--mineral-50)">
               <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-400);margin:0 0 18px">Dr. Luciano</p>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Visualizações</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">836.931</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Contas alcançadas</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">215.239</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Interações</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">4.679</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Visitas ao perfil</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">10.640</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Cliques na bio</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">840</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Clique por visita</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">7,89%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Visualizações</p><p data-metric="organic.doctor.views.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">836.931</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Contas alcançadas</p><p data-metric="organic.doctor.reach.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">215.239</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Interações</p><p data-metric="organic.doctor.interactions.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">4.679</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Visitas ao perfil</p><p data-metric="organic.doctor.profile_visits.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">10.640</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Cliques na bio</p><p data-metric="organic.doctor.bio_clicks.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">840</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Clique por visita</p><p data-metric="organic.doctor.bio_click_rate.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0">7,89%</p></div>
               </div>
               <div style="display:flex;gap:24px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border-inverse)">
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Interação / alcance</p><p style="font-size:15px;font-weight:500;margin:3px 0 0">2,17%</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Visita / alcance</p><p style="font-size:15px;font-weight:500;margin:3px 0 0">4,94%</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Clique / alcance</p><p style="font-size:15px;font-weight:500;margin:3px 0 0">0,39%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Interação / alcance</p><p data-metric="organic.doctor.interaction_rate.current" style="font-size:15px;font-weight:500;margin:3px 0 0">2,17%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Visita / alcance</p><p data-metric="organic.doctor.visit_rate.current" style="font-size:15px;font-weight:500;margin:3px 0 0">4,94%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-400);margin:0">Clique / alcance</p><p data-metric="organic.doctor.reach_click_rate.current" style="font-size:15px;font-weight:500;margin:3px 0 0">0,39%</p></div>
               </div>
             </div>
 
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:24px">
               <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 18px">Natuá</p>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Visualizações</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">290.049</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Contas alcançadas</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">70.115</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Interações</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">1.018</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Visitas ao perfil</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">612</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Cliques na bio</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">53</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Clique por visita</p><p style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">8,66%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Visualizações</p><p data-metric="organic.natua.views.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">290.049</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Contas alcançadas</p><p data-metric="organic.natua.reach.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">70.115</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Interações</p><p data-metric="organic.natua.interactions.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">1.018</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Visitas ao perfil</p><p data-metric="organic.natua.profile_visits.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">612</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Cliques na bio</p><p data-metric="organic.natua.bio_clicks.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">53</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Clique por visita</p><p data-metric="organic.natua.bio_click_rate.current" style="font-size:clamp(19px,1.7vw,23px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:4px 0 0;color:var(--mineral-900)">8,66%</p></div>
               </div>
               <div style="display:flex;gap:24px;margin-top:20px;padding-top:16px;border-top:1px solid var(--mineral-100)">
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Interação / alcance</p><p style="font-size:15px;font-weight:500;margin:3px 0 0;color:var(--mineral-900)">1,45%</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Visita / alcance</p><p style="font-size:15px;font-weight:500;margin:3px 0 0;color:var(--mineral-900)">0,87%</p></div>
-                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Clique / alcance</p><p style="font-size:15px;font-weight:500;margin:3px 0 0;color:var(--mineral-900)">0,08%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Interação / alcance</p><p data-metric="organic.natua.interaction_rate.current" style="font-size:15px;font-weight:500;margin:3px 0 0;color:var(--mineral-900)">1,45%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Visita / alcance</p><p data-metric="organic.natua.visit_rate.current" style="font-size:15px;font-weight:500;margin:3px 0 0;color:var(--mineral-900)">0,87%</p></div>
+                <div><p style="font-size:11px;color:var(--mineral-600);margin:0">Clique / alcance</p><p data-metric="organic.natua.reach_click_rate.current" style="font-size:15px;font-weight:500;margin:3px 0 0;color:var(--mineral-900)">0,08%</p></div>
               </div>
             </div>
           </div>
@@ -789,7 +930,7 @@
                 <p style="font-size:12px;color:var(--mineral-600);margin:0 0 16px">Mais publicação, menos distribuição e menos ações de perfil.</p>
                 <table>
                   <thead><tr><th style="text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Métrica</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Junho</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Maio</th><th style="text-align:right;padding:0 0 10px 12px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Δ</th></tr></thead>
-                  <tbody>
+                  <tbody id="organic-doctor-history-rows">
                     <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Posts</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">38</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">21</td><td class="delta-good" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">+81,0%</td></tr>
                     <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Visualizações</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">1.198.443</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">1.693.544</td><td class="delta-warn" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">−29,2%</td></tr>
                     <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Alcance</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">281.946</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">437.249</td><td class="delta-warn" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">−35,5%</td></tr>
@@ -804,7 +945,7 @@
                 <p style="font-size:12px;color:var(--mineral-600);margin:0 0 16px">Distribuição cresceu muito mais que a intenção de visitar o perfil.</p>
                 <table>
                   <thead><tr><th style="text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Métrica</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Junho</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Maio</th><th style="text-align:right;padding:0 0 10px 12px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Δ</th></tr></thead>
-                  <tbody>
+                  <tbody id="organic-natua-history-rows">
                     <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Posts</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">23</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">14</td><td class="delta-good" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">+64,3%</td></tr>
                     <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Visualizações</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">363.823</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">69.990</td><td class="delta-good" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">+419,8%</td></tr>
                     <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Alcance</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">136.186</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">28.793</td><td class="delta-good" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">+372,9%</td></tr>
@@ -835,7 +976,7 @@
               </div>
               <table>
                 <thead><tr><th style="text-align:left;padding:0 12px 10px 0;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Perfil / métrica</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Atual</th><th style="text-align:right;padding:0 12px 10px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Junho</th><th style="text-align:right;padding:0 0 10px 12px;border-bottom:1px solid var(--border-default);font-size:11px;text-transform:uppercase;color:var(--mineral-600)">Δ</th></tr></thead>
-                <tbody>
+                <tbody id="organic-current-comparison-rows">
                   <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Dr. Luciano · alcance</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">215.239</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">281.946</td><td class="delta-warn" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">−23,7%</td></tr>
                   <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Dr. Luciano · visitas</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">10.640</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">6.169</td><td class="delta-good" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">+72,5%</td></tr>
                   <tr><td style="padding:10px 12px 10px 0;border-bottom:1px solid var(--mineral-100);font-size:13px">Dr. Luciano · cliques</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">840</td><td style="padding:10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">816</td><td class="delta-good" style="padding:10px 0 10px 12px;text-align:right;border-bottom:1px solid var(--mineral-100);font-size:13px">+2,9%</td></tr>
@@ -872,22 +1013,22 @@
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Pacientes atendidos</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">34</p>
-              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">26 fechados · 5 em negociação · 1 não fechou · 2 sem status</p>
+              <p data-metric="commercial.attended.current" style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">33</p>
+              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">26 fechados · 5 em negociação · 1 não fechou · 1 sem status</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Conversão geral</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--forest-700)">76,47%</p>
-              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">26 ÷ 34</p>
+              <p data-metric="commercial.close_rate.current" style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--forest-700)">78,79%</p>
+              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">26 ÷ 33</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Receita fechada</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 247.861,20</p>
+              <p data-metric="commercial.revenue.current" style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 244.512,10</p>
               <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Fonte oficial: Alessandra / Closer</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Pipeline aberto</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--gold-700)">R$ 31.400,63</p>
+              <p data-metric="commercial.pipeline.current" style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--gold-700)">R$ 31.400,63</p>
               <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Não entra no ROI até fechar</p>
             </div>
           </div>
@@ -903,7 +1044,7 @@
                   <th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">Conversão</th>
                   <th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">Ticket médio</th>
                 </tr></thead>
-                <tbody>
+                <tbody id="commercial-journey-rows">
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Consulta 1</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">18</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">12</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">66,67%</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 5.141,47</td></tr>
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Consulta 2</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">6</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">5</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">83,33%</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 6.865,39</td></tr>
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Consulta 5</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">2</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">1</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">50,00%</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 4.738,27</td></tr>
@@ -914,23 +1055,23 @@
                   <tr><td style="font-size:13px;padding:11px 12px 11px 0">Consulta 13</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">1</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">1</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">100,00%</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">R$ 15.991,94</td></tr>
                 </tbody>
               </table>
-              <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">A primeira consulta concentra 18 dos 34 atendimentos e tem a menor conversão da jornada: 66,67%.</p>
+              <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">A primeira consulta concentra 18 dos 33 atendimentos e tem a menor conversão da jornada: 66,67%.</p>
             </div>
 
             <div style="display:flex;flex-direction:column;gap:16px">
               <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
-                <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Tratamentos fechados na 1ª consulta</p>
-                <div style="display:flex;flex-direction:column;gap:12px">
+                <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Receita de tratamentos fechados por profissional</p>
+                <div id="commercial-treatment-bars" style="display:flex;flex-direction:column;gap:12px">
                   <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">Dr. Luca</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 31.924,79</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:var(--forest-700)"></div></div></div>
                   <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">Dra. Vivian</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 26.212,03</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:82.1%;height:100%;background:var(--forest-700)"></div></div></div>
                   <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">Dr. Luciano</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 18.532,53</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:58.1%;height:100%;background:var(--forest-700)"></div></div></div>
                   <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">Dra. Gislaine</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 3.577,10</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:11.2%;height:100%;background:var(--forest-700)"></div></div></div>
                 </div>
-                <p style="font-size:12px;font-weight:600;color:var(--mineral-800);margin:14px 0 0">Total R$ 80.246,45 · ROI de 3,28x sobre a mídia</p>
+                <p style="font-size:12px;font-weight:600;color:var(--mineral-800);margin:14px 0 0">Total <span data-metric="commercial.treatment_revenue.current">R$ 228.062,10</span> · receita comercial, sem atribuição por origem</p>
               </div>
               <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
                 <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Negociação em aberto</p>
-                <div style="display:flex;flex-direction:column;gap:10px">
+                <div id="commercial-pipeline-rows" style="display:flex;flex-direction:column;gap:10px">
                   <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>Dra. Gislaine</span><span style="font-variant-numeric:tabular-nums">R$ 11.875,40</span></div>
                   <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>Dr. Luciano</span><span style="font-variant-numeric:tabular-nums">R$ 10.248,69</span></div>
                   <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>Dra. Vivian</span><span style="font-variant-numeric:tabular-nums">R$ 9.276,54</span></div>
@@ -947,8 +1088,8 @@
             <p class="analysis-eyebrow"><span class="analysis-dot"></span>Agente de análise · comercial</p>
             <p style="font-family:var(--font-display);font-size:23px;line-height:1.3;margin:0;position:relative;z-index:1">O fechamento segue forte, mas dois atendimentos sem status impedem uma leitura comercial totalmente fechada.</p>
             <div class="analysis-grid">
-              <div class="analysis-item"><p class="analysis-label">Diagnóstico</p><p class="analysis-copy">26 de 34 atendidos fecharam. Na Consulta 1, a conversão é 66,67%; dois atendimentos seguem sem status.</p></div>
-              <div class="analysis-item"><p class="analysis-label">Decisão</p><p class="analysis-copy">Resolver os dois status pendentes e auditar a condução da primeira consulta antes de mexer na oferta.</p></div>
+              <div class="analysis-item"><p class="analysis-label">Diagnóstico</p><p class="analysis-copy">26 de 33 atendidos fecharam. Na Consulta 1, a conversão é 66,67%; um atendimento segue sem status.</p></div>
+              <div class="analysis-item"><p class="analysis-label">Decisão</p><p class="analysis-copy">Resolver o status pendente e auditar a condução da primeira consulta antes de mexer na oferta.</p></div>
               <div class="analysis-item"><p class="analysis-label">Potencial</p><p class="analysis-copy">R$ 31.400,63 estão em negociação. Tratar como pipeline com prazo, responsável e próxima ação, nunca como receita.</p></div>
               <div class="analysis-item"><p class="analysis-label">Próximo passo</p><p class="analysis-copy">Padronizar objeção, prazo de follow-up e motivo de perda para transformar o pipeline em gestão semanal.</p></div>
             </div>
@@ -966,31 +1107,31 @@
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
             <div style="background:var(--forest-950);border-radius:8px;padding:18px 20px;color:var(--mineral-50)">
-              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-400);margin:0">Auditados no painel</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0">19</p>
-              <p style="font-size:11px;line-height:1.5;color:var(--mineral-400);margin:4px 0 0">3 pendentes sem pagamento não contam</p>
+              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-400);margin:0">Registros no período</p>
+              <p data-metric="appointments.raw.current" style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0">20</p>
+              <p style="font-size:11px;line-height:1.5;color:var(--mineral-400);margin:4px 0 0">Contagem bruta com data de agendamento</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">De marketing</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">14</p>
+              <p data-metric="marketing.appointments.marketing.current" style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">14</p>
               <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">CAC R$ 1.749,84</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
-              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Por indicação</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">5</p>
-              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Sem custo de mídia atribuído</p>
+              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Confirmados</p>
+              <p data-metric="appointments.confirmed.current" style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--coral-700)">sem base</p>
+              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Sem regra inequívoca de pagamento ou status</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Com data de consulta</p>
-              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">14 <span style="font-size:14px;color:var(--coral-700)">de 21</span></p>
-              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">7 linhas sem data da consulta</p>
+              <p style="font-size:clamp(20px,1.8vw,26px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)"><span data-metric="appointments.with_consultation_date.current">14</span> <span style="font-size:14px;color:var(--coral-700)">de <span data-metric="appointments.raw.current">20</span></span></p>
+              <p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0"><span data-metric="appointments.missing_consultation_date.current">6</span> linhas sem data da consulta</p>
             </div>
           </div>
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:16px">
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
               <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Por profissional · julho</p>
-              <div style="display:flex;flex-direction:column;gap:12px">
+              <div id="appointments-professional-bars" style="display:flex;flex-direction:column;gap:12px">
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">Vivian</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">10</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:var(--forest-700)"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">Lucca</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">5</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:50%;height:100%;background:var(--forest-700)"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">Luciano</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">5</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:50%;height:100%;background:var(--forest-700)"></div></div></div>
@@ -999,7 +1140,7 @@
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
               <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Por responsável</p>
-              <div style="display:flex;flex-direction:column;gap:12px">
+              <div id="appointments-mode-origin-rows" style="display:flex;flex-direction:column;gap:12px">
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">GIS</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">7</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:100%;height:100%;background:var(--forest-600)"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">MARCOS</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">6</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:85.7%;height:100%;background:var(--forest-600)"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span style="color:var(--mineral-800)">ALE</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">4</span></div><div style="height:8px;background:var(--mineral-100);border-radius:3px;overflow:hidden"><div style="width:57.1%;height:100%;background:var(--forest-600)"></div></div></div>
@@ -1017,7 +1158,7 @@
                 <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>MKT / indicação</span><span style="font-variant-numeric:tabular-nums">1</span></div>
                 <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>MKT follow-up</span><span style="font-variant-numeric:tabular-nums">1</span></div>
               </div>
-              <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">Contagem bruta das 20 linhas de julho. O painel auditado consolida em 14 marketing e 5 indicação.</p>
+              <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">Contagem bruta das 20 linhas de julho. O consolidado de Marketing publica 14 MKT; indicação confirmada permanece sem base nesta planilha.</p>
             </div>
           </div>
 
@@ -1044,31 +1185,31 @@
             <p style="font-size:13px;color:var(--mineral-600);margin:6px 0 0">RELATÓRIOS DE FECHAMENTO V31 · aba BASE por competência · aba REL DRE.</p>
           </div>
 
-          <x-import component-from-global-scope="DesignSystemNatu_a3c468.StatusMessage" tone="warning" title="Fonte defasada em relação ao marketing" hint-size="100%,96px">A última competência com movimentações na base é 05/2026 e o DRE lido é de 03/2026. Nenhum número desta tela cobre julho: não confronte com a receita da Closer de 01–28/07.</x-import>
+          <x-import component-from-global-scope="DesignSystemNatu_a3c468.StatusMessage" tone="warning" title="Fonte defasada em relação ao marketing" hint-size="100%,96px">A última competência conciliada é {{ financePeriodLabel }}. Nenhum número desta tela cobre {{ primaryPeriodLabel }}: não confronte diretamente com a receita corrente da Closer.</x-import>
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px">
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
-              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Entradas · comp. 05/2026</p>
-              <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 475.384,86</p>
+              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Entradas · comp. {{ financePeriodLabel }}</p>
+              <p data-metric="finance.cash_in.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 475.384,86</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
-              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Saídas · comp. 05/2026</p>
-              <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--coral-700)">R$ 680.623,43</p>
+              <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Saídas · comp. {{ financePeriodLabel }}</p>
+              <p data-metric="finance.cash_out.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--coral-700)">R$ 680.623,43</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">A vencer</p>
-              <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 1.064.738,22</p>
+              <p data-metric="finance.due.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--mineral-900)">R$ 1.064.738,22</p>
             </div>
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:18px 20px">
               <p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0">Vencido</p>
-              <p style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--coral-700)">R$ 51.468,54</p>
+              <p data-metric="finance.overdue.current" style="font-size:clamp(19px,1.7vw,24px);font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;margin:6px 0 0;color:var(--coral-700)">R$ 51.468,54</p>
             </div>
           </div>
 
           <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
             <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 4px">Entradas e saídas por competência</p>
             <p style="font-size:12px;color:var(--mineral-600);margin:0 0 18px">Barra superior: entradas. Barra inferior: saídas. Escala comum ao maior mês, 10/2025.</p>
-            <div style="display:flex;flex-direction:column;gap:14px">
+            <div id="finance-cash-flow-rows" style="display:flex;flex-direction:column;gap:14px">
               <div style="display:grid;grid-template-columns:70px minmax(90px,1fr) minmax(150px,210px);gap:14px;align-items:center">
                 <span style="font-size:12px;font-weight:600;color:var(--mineral-800)">08/2025</span>
                 <div style="display:flex;flex-direction:column;gap:3px"><div style="height:9px;background:var(--mineral-100);border-radius:2px;overflow:hidden"><div style="width:31.6%;height:100%;background:var(--forest-700)"></div></div><div style="height:9px;background:var(--mineral-100);border-radius:2px;overflow:hidden"><div style="width:36.6%;height:100%;background:var(--coral-500)"></div></div></div>
@@ -1125,24 +1266,24 @@
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px">
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
-              <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">DRE gerencial · competência 03/2026</p>
+              <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">DRE gerencial · competência {{ financePeriodLabel }}</p>
               <table>
                 <thead><tr><th style="text-align:left;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 12px 10px 0;border-bottom:1px solid var(--border-default)">Linha</th><th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">Valor</th><th style="text-align:right;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 0 10px 12px;border-bottom:1px solid var(--border-default)">% da receita</th></tr></thead>
                 <tbody>
-                  <tr><td style="font-size:13px;font-weight:600;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Vendas operacionais</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 303.065,94</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">100,00%</td></tr>
-                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Deduções das receitas</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−R$ 26.135,30</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−8,62%</td></tr>
-                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Custo variável</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−R$ 146.592,54</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−48,37%</td></tr>
-                  <tr><td style="font-size:13px;font-weight:600;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Lucro bruto</td><td style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 130.338,10</td><td style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">43,01%</td></tr>
-                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Despesas fixas</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−R$ 98.981,11</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−32,66%</td></tr>
-                  <tr><td style="font-size:13px;font-weight:600;padding:11px 12px 11px 0">Lucro bruto − despesas fixas</td><td style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">R$ 31.356,99</td><td style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">10,35%</td></tr>
+                  <tr><td style="font-size:13px;font-weight:600;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Vendas operacionais</td><td data-metric="finance.sales.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 303.065,94</td><td style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">100,00%</td></tr>
+                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Deduções das receitas</td><td data-metric="finance.deductions.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−R$ 26.135,30</td><td data-metric="finance.deductions_rate.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−8,62%</td></tr>
+                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Custo variável</td><td data-metric="finance.variable_cost.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−R$ 146.592,54</td><td data-metric="finance.variable_cost_rate.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−48,37%</td></tr>
+                  <tr><td style="font-size:13px;font-weight:600;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Lucro bruto</td><td data-metric="finance.gross_profit.current" style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">R$ 130.338,10</td><td data-metric="finance.gross_margin.current" style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">43,01%</td></tr>
+                  <tr><td style="font-size:13px;padding:11px 12px 11px 0;border-bottom:1px solid var(--mineral-100)">Despesas fixas</td><td data-metric="finance.fixed_expenses.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--coral-700);padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−R$ 98.981,11</td><td data-metric="finance.fixed_expenses_rate.current" style="font-size:13px;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px;border-bottom:1px solid var(--mineral-100)">−32,66%</td></tr>
+                  <tr><td style="font-size:13px;font-weight:600;padding:11px 12px 11px 0">Lucro bruto − despesas fixas</td><td data-metric="finance.result.current" style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">R$ 31.356,99</td><td data-metric="finance.result_margin.current" style="font-size:13px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums;padding:11px 0 11px 12px">10,35%</td></tr>
                 </tbody>
               </table>
               <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">A última linha é a subtração das duas linhas acima, não uma linha existente da planilha. EBITDA e resultado líquido não são apresentados: a hierarquia do plano de contas não sustenta o cálculo sem definição do cliente.</p>
             </div>
 
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
-              <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Composição das saídas · competência 05/2026</p>
-              <div style="display:flex;flex-direction:column;gap:11px">
+              <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Composição das saídas · competência {{ financePeriodLabel }}</p>
+              <div id="finance-outflow-rows" style="display:flex;flex-direction:column;gap:11px">
                 <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--mineral-800)">Custo de atendimento</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 88,3 mil</span></div><div style="height:8px;background:var(--mineral-100);border-radius:2px;overflow:hidden"><div style="width:100%;height:100%;background:var(--forest-800)"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--mineral-800)">Custos de produtos</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 82,3 mil</span></div><div style="height:8px;background:var(--mineral-100);border-radius:2px;overflow:hidden"><div style="width:93.2%;height:100%;background:var(--forest-800)"></div></div></div>
                 <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--mineral-800)">Despesas com sócios</span><span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">R$ 78,1 mil</span></div><div style="height:8px;background:var(--mineral-100);border-radius:2px;overflow:hidden"><div style="width:88.4%;height:100%;background:var(--forest-700)"></div></div></div>
@@ -1162,7 +1303,7 @@
             <div class="analysis-grid">
               <div class="analysis-item"><p class="analysis-label">Diagnóstico</p><p class="analysis-copy">Em maio, saídas superaram entradas em R$ 205.238,57, mas a base inclui transferências e movimentação societária.</p></div>
               <div class="analysis-item"><p class="analysis-label">Decisão</p><p class="analysis-copy">Não usar a diferença como prejuízo. Gerir caixa pelo fluxo e resultado pelo DRE com plano de contas validado.</p></div>
-              <div class="analysis-item"><p class="analysis-label">Pendente crítico</p><p class="analysis-copy">Faltam competências 06/2026 e 07/2026; o DRE disponível é de 03/2026.</p></div>
+              <div class="analysis-item"><p class="analysis-label">Pendente crítico</p><p class="analysis-copy">Faltam competências 06/2026 e 07/2026; o DRE disponível fecha em 05/2026.</p></div>
               <div class="analysis-item"><p class="analysis-label">Próximo passo</p><p class="analysis-copy">Atualizar financeiro, marcar transferências internas e conciliar contratos novos versus recebimentos.</p></div>
             </div>
           </div>
@@ -1186,7 +1327,7 @@
                 <th style="text-align:left;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 12px 10px 0;border-bottom:1px solid var(--border-default)">Volume lido</th>
                 <th style="text-align:left;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);padding:0 12px 10px 0;border-bottom:1px solid var(--border-default)">Estado</th>
               </tr></thead>
-              <tbody>
+              <tbody id="quality-source-rows">
                 <tr>
                   <td style="font-size:13px;padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">Relatório Marketing 2026 · 28-07</td>
                   <td style="font-size:13px;color:var(--mineral-600);padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">01–28/07/2026</td>
@@ -1196,7 +1337,7 @@
                 <tr>
                   <td style="font-size:13px;padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">CLOSER_JULHO_VALIDADA (2)</td>
                   <td style="font-size:13px;color:var(--mineral-600);padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">até 28/07/2026</td>
-                  <td style="font-size:13px;color:var(--mineral-600);padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">4 profissionais + DASHBOARD · 34 pacientes · 2 status pendentes</td>
+                  <td style="font-size:13px;color:var(--mineral-600);padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)">4 profissionais + DASHBOARD · <span data-metric="commercial.attended.current">33</span> pacientes · <span data-metric="commercial.missing_status.current">1</span> status pendente</td>
                   <td style="padding:12px 12px 12px 0;border-bottom:1px solid var(--mineral-100)"><x-import component-from-global-scope="DesignSystemNatu_a3c468.Badge" tone="warning" hint-size="130px,28px">Com ressalva</x-import></td>
                 </tr>
                 <tr>
@@ -1215,7 +1356,7 @@
                   <td style="font-size:13px;padding:12px 12px 12px 0">FORMULÁRIO DR. LUCIANO 2026</td>
                   <td style="font-size:13px;color:var(--mineral-600);padding:12px 12px 12px 0">abril a julho/2026</td>
                   <td style="font-size:13px;color:var(--mineral-600);padding:12px 12px 12px 0">8 abas · base de formulários</td>
-                  <td style="padding:12px 12px 12px 0"><x-import component-from-global-scope="DesignSystemNatu_a3c468.Badge" tone="neutral" hint-size="110px,28px">Não consumida</x-import></td>
+                  <td style="padding:12px 12px 12px 0"><x-import component-from-global-scope="DesignSystemNatu_a3c468.Badge" tone="success" hint-size="110px,28px">Consumida</x-import></td>
                 </tr>
               </tbody>
             </table>
@@ -1223,18 +1364,18 @@
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px">
             <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
-              <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Divergências entre fontes</p>
-              <div style="display:flex;flex-direction:column;gap:16px">
+              <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Reconciliações e limites</p>
+              <div id="quality-reconciliation-rows" style="display:flex;flex-direction:column;gap:16px">
                 <div>
-                  <p style="font-size:13px;font-weight:600;margin:0;color:var(--mineral-900)">Support R$ 293.136,89 × Closer R$ 247.861,20</p>
-                  <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:4px 0 0">Diferença de R$ 45.275,69. Support é movimentação de caixa; receita comercial é a Closer. Não somar nem substituir.</p>
+                  <p style="font-size:13px;font-weight:600;margin:0;color:var(--mineral-900)">Closer <span data-metric="commercial.revenue.current">R$ 244.512,10</span> × financeiro <span data-metric="finance.sales.current">R$ 303.065,94</span></p>
+                  <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:4px 0 0">Receita comercial e vendas financeiras pertencem a competências e conceitos diferentes; nenhuma diferença é calculada.</p>
                 </div>
                 <div>
-                  <p style="font-size:13px;font-weight:600;margin:0;color:var(--mineral-900)">20 linhas de agendamento × 19 auditados</p>
-                  <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:4px 0 0">3 registros pendentes de pagamento não entram na contagem confirmada; a origem de 1 linha traz observação de pagamento.</p>
+                  <p style="font-size:13px;font-weight:600;margin:0;color:var(--mineral-900)"><span data-metric="appointments.raw.current">20</span> linhas no período × <span data-metric="appointments.with_consultation_date.current">14</span> com data de consulta</p>
+                  <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:4px 0 0">Confirmação e pagamento não têm regra inequívoca; confirmados permanecem sem base.</p>
                 </div>
                 <div>
-                  <p style="font-size:13px;font-weight:600;margin:0;color:var(--mineral-900)">34 consultas × 14 agendamentos de marketing</p>
+                  <p style="font-size:13px;font-weight:600;margin:0;color:var(--mineral-900)"><span data-metric="commercial.attended.current">33</span> consultas × <span data-metric="marketing.appointments.marketing.current">14</span> agendamentos de marketing</p>
                   <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:4px 0 0">Os atendimentos da Closer incluem retornos e indicações. Não formam uma taxa de comparecimento sobre agendamentos.</p>
                 </div>
                 <div>
@@ -1246,14 +1387,14 @@
 
             <div style="display:flex;flex-direction:column;gap:16px">
               <div style="background:var(--surface-base);border:1px solid var(--border-default);border-radius:8px;padding:22px">
-                <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Duplicados detectados</p>
-                <div style="display:flex;flex-direction:column;gap:10px">
-                  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>Julho · pessoas com 2 submissões</span><span style="font-variant-numeric:tabular-nums">7</span></div>
-                  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>Junho · pessoas repetidas</span><span style="font-variant-numeric:tabular-nums">53</span></div>
-                  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>Junho · envios excedentes</span><span style="font-variant-numeric:tabular-nums">57</span></div>
-                  <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mineral-800)"><span>Junho · preencheram 3 vezes</span><span style="font-variant-numeric:tabular-nums">4</span></div>
+                <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 14px">Gates ativos nesta importação</p>
+                <div id="quality-gate-rows" style="display:flex;flex-direction:column;gap:10px">
+                  <div class="snapshot-list-row"><span>Status decisório ausente na Closer</span><span class="quality-badge quality-badge-warning">Ressalva</span></div>
+                  <div class="snapshot-list-row"><span>Confirmação da agenda sem regra auditável</span><span class="quality-badge quality-badge-warning">Ressalva</span></div>
+                  <div class="snapshot-list-row"><span>Responsável ausente em parte da agenda</span><span class="quality-badge quality-badge-warning">Ressalva</span></div>
+                  <div class="snapshot-list-row"><span>Financeiro defasado do período principal</span><span class="quality-badge quality-badge-warning">Ressalva</span></div>
                 </div>
-                <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">Duas linhas de julho têm classificações conflitantes entre submissões da mesma pessoa: MQL em uma e NÃO MQL na outra. Caso de revisão humana, não de exclusão automática.</p>
+                <p style="font-size:11px;line-height:1.55;color:var(--mineral-400);margin:14px 0 0">Ressalvas ficam visíveis; apenas erro crítico rejeita a importação e preserva o snapshot anterior.</p>
               </div>
               <div style="background:var(--forest-950);border-radius:8px;padding:22px;color:var(--mineral-50)">
                 <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-400);margin:0 0 14px">O que o painel não calcula</p>
@@ -1283,7 +1424,7 @@
           <div class="comparison-table-wrap">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
               <div><span class="period-kicker">Fluxo proposto</span><h3 style="font-family:var(--font-display);font-size:22px;font-weight:500;margin:10px 0 0;color:var(--mineral-900)">Atualizar dados com revisão e retorno seguro</h3></div>
-              <p style="font-size:12px;line-height:1.55;color:var(--mineral-600);margin:0;max-width:46ch">Esta versão desenha o processo; upload e publicação dependem do backend privado do repositório.</p>
+              <p style="font-size:12px;line-height:1.55;color:var(--mineral-600);margin:0;max-width:46ch">Fluxo implementado: cinco planilhas, validação, Skill, publicação allowlisted e rollback.</p>
             </div>
             <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px">
               <div style="padding:16px;border:1px solid var(--border-default);border-radius:8px"><p style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-700);margin:0">01 · Upload privado</p><p style="font-size:13px;line-height:1.55;color:var(--mineral-800);margin:8px 0 0">Receber planilhas fora do repositório público e registrar data, origem e responsável.</p></div>
@@ -1294,16 +1435,45 @@
             <div style="margin-top:18px;padding-top:16px;border-top:1px solid var(--mineral-100)">
               <p style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 9px">Histórico de importações · referência</p>
               <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-                <div><p style="font-size:13px;font-weight:600;color:var(--mineral-900);margin:0">Snapshot 2026-07-28 · Closer atualizada</p><p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Closer: 34 atendidos, 26 fechados e 2 status pendentes · Financeiro até 05/2026</p></div>
+                <div><p style="font-size:13px;font-weight:600;color:var(--mineral-900);margin:0">Snapshot {{ analysisImportShort }}</p><p style="font-size:11px;color:var(--mineral-600);margin:4px 0 0">Closer: <span data-metric="commercial.attended.current">33</span> atendidos, <span data-metric="commercial.closed.current">26</span> fechados e <span data-metric="commercial.missing_status.current">1</span> status pendente · Financeiro {{ financePeriodLabel }}</p></div>
                 <span style="padding:5px 9px;border-radius:999px;background:var(--forest-50);color:var(--forest-800);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em">Publicado com ressalvas</span>
               </div>
             </div>
           </div>
         </div>
       </sc-if>
+      </sc-if>
 
     </div>
   </main>
+
+  <sc-if value="{{ showImport }}">
+    <div class="import-backdrop" role="presentation">
+      <section class="import-dialog" role="dialog" aria-modal="true" aria-labelledby="import-title">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:26px 28px 20px;border-bottom:1px solid var(--border-default)">
+          <div>
+            <p style="font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-700);margin:0 0 7px">Fluxo privado e auditável</p>
+            <h2 id="import-title" style="font-family:var(--font-display);font-size:29px;font-weight:500;line-height:1.15;color:var(--mineral-900);margin:0">Atualizar com cinco planilhas</h2>
+            <p style="font-size:12px;line-height:1.6;color:var(--mineral-600);margin:8px 0 0;max-width:58ch">Selecione Marketing, Closer, Agendamentos, Formulário e Financeiro. O sistema reconhece pelo conteúdo, valida e só ativa se todos os gates críticos passarem.</p>
+          </div>
+          <button type="button" onClick="{{ closeImport }}" aria-label="Fechar" style="width:36px;height:36px;flex:0 0 auto;border:1px solid var(--border-default);border-radius:50%;background:transparent;color:var(--forest-800);font-size:20px;line-height:1;cursor:pointer">×</button>
+        </div>
+        <form id="natua-import-form" style="display:flex;flex-direction:column;gap:16px;padding:24px 28px 28px">
+          <label class="import-dropzone" for="natua-workbooks">
+            <span style="display:inline-grid;place-items:center;width:44px;height:44px;margin-bottom:12px;border-radius:50%;background:var(--forest-800);color:#fff;font-family:var(--font-display);font-size:24px">+</span>
+            <strong style="font-size:14px;color:var(--mineral-900)">Escolha exatamente cinco arquivos Excel</strong>
+            <span id="natua-file-summary" style="font-size:11px;line-height:1.55;color:var(--mineral-600);margin-top:6px">Nenhum arquivo selecionado · os arquivos brutos não são gravados no repositório</span>
+            <input id="natua-workbooks" name="files" type="file" accept=".xlsx,.xlsm,.xls" multiple required style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none">
+          </label>
+          <div id="natua-import-status" class="import-status" role="status">Depois de escolher os cinco arquivos, pressione Enter. A última versão válida será preservada em qualquer falha.</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+            <p style="font-size:10px;line-height:1.5;color:var(--mineral-500);margin:0;max-width:44ch">Publicação no GitHub ocorre pelo agente/CLI após build, testes e allowlist. O navegador ativa a prévia local validada.</p>
+            <button id="natua-import-submit" type="submit" style="padding:12px 18px;border:1px solid var(--forest-800);border-radius:999px;background:var(--forest-800);color:#fff;font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Validar e ativar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </sc-if>
 </div>
 
 </x-dc>
@@ -1314,7 +1484,9 @@ class Component extends DCLogic {
     this.state = {
       screen: props.telaInicial || 'exec',
       variant: props.varianteExecutiva || 'a',
-      periodo: 'jul'
+      periodo: 'jul',
+      viewMode: 'data',
+      showImport: false
     };
   }
 
@@ -1327,6 +1499,7 @@ class Component extends DCLogic {
 
   renderVals() {
     const s = this.state.screen;
+    const viewMode = this.state.viewMode;
     const items = [
       ['exec', 'Visão executiva'],
       ['funil', 'Funil integrado'],
@@ -1352,12 +1525,126 @@ class Component extends DCLogic {
     const jun = this.state.periodo === 'jun';
     const comp = this.state.periodo === 'comp';
     const va = this.state.variant === 'a';
+    const packet = globalThis.NATUA_DASHBOARD_DATA || {};
+    const snapshot = packet.snapshot || {};
+    const analysisPackage = packet.analysis || {};
+    const scopeByScreen = {
+      exec: 'executive',
+      funil: 'funnel',
+      mkt: 'marketing',
+      org: 'organic',
+      com: 'commercial',
+      age: 'appointments',
+      fin: 'finance',
+      qual: 'data_quality'
+    };
+    const sectionAnalysis = (analysisPackage.sections || []).find(
+      (section) => section.scope === scopeByScreen[s]
+    ) || {
+      headline: 'A análise desta seção ainda não foi gerada pelo snapshot validado.',
+      confidence: 'LOW',
+      signals: [{
+        type: 'LIMITATION',
+        evidence: 'Pacote de análise indisponível.',
+        interpretation: 'Execute o pipeline de atualização antes de tomar decisões.',
+        metricIds: []
+      }],
+      decisions: [],
+      limitations: ['Sem pacote de análise ativo.'],
+      sourceRefs: ['pipeline:aguardando-snapshot']
+    };
+    const signalTone = {
+      POSITIVE: { label: 'Sinal positivo', color: '#9ec7b9' },
+      WARNING: { label: 'Atenção', color: 'var(--gold-400)' },
+      RISK: { label: 'Risco', color: '#ef9a91' },
+      LIMITATION: { label: 'Limitação da base', color: 'var(--mineral-300)' },
+      HYPOTHESIS: { label: 'Hipótese', color: '#9ec7b9' }
+    };
+    const analysisSignals = (sectionAnalysis.signals || []).map((signal) => ({
+      ...signal,
+      typeLabel: (signalTone[signal.type] || signalTone.LIMITATION).label,
+      rail: (signalTone[signal.type] || signalTone.LIMITATION).color
+    }));
+    const confidence = {
+      HIGH: { label: 'alta', color: '#9ec7b9' },
+      MEDIUM: { label: 'média', color: 'var(--gold-400)' },
+      LOW: { label: 'baixa', color: '#ef9a91' }
+    }[sectionAnalysis.confidence] || { label: 'baixa', color: '#ef9a91' };
+    const warningCount = ((snapshot.validation || {}).issues || []).filter(
+      (issue) => issue.severity === 'WARNING'
+    ).length;
+    const formatPeriod = (period) => {
+      if (!period || !/^\d{4}-\d{2}$/.test(period)) return 'não definido';
+      const [year, month] = period.split('-');
+      return `${month}/${year}`;
+    };
+    const formatPeriodLong = (period) => {
+      if (!period || !/^\d{4}-\d{2}$/.test(period)) return 'período não definido';
+      const [year, month] = period.split('-').map(Number);
+      return new Date(year, month - 1, 1).toLocaleDateString('pt-BR', {
+        month: 'long',
+        year: 'numeric'
+      });
+    };
+    const previousSnapshotPeriod = (() => {
+      if (!snapshot.primaryPeriod || !/^\d{4}-\d{2}$/.test(snapshot.primaryPeriod)) return '';
+      const [year, month] = snapshot.primaryPeriod.split('-').map(Number);
+      const date = new Date(year, month - 2, 1);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    })();
+    const capitalize = (value) => value
+      ? `${value.charAt(0).toUpperCase()}${value.slice(1)}`
+      : value;
+    const generatedAt = snapshot.generatedAt
+      ? new Date(snapshot.generatedAt).toLocaleString('pt-BR', {
+          dateStyle: 'short',
+          timeStyle: 'short'
+        })
+      : 'aguardando atualização';
+    const financePeriod =
+      (snapshot.sources || []).find((source) => source.role === 'finance')?.period;
 
     return {
       navItems,
       isExec: s === 'exec', isFunil: s === 'funil', isMkt: s === 'mkt', isOrg: s === 'org',
       isCom: s === 'com', isAge: s === 'age', isFin: s === 'fin', isQual: s === 'qual',
-      goQual: this.go('qual'),
+      viewModeClass: viewMode === 'analysis' ? 'mode-analysis' : 'mode-data',
+      isDataMode: viewMode === 'data',
+      isAnalysisMode: viewMode === 'analysis',
+      setDataMode: () => this.setState({ viewMode: 'data' }),
+      setAnalysisMode: () => this.setState({ viewMode: 'analysis' }),
+      dataModeBg: viewMode === 'data' ? 'var(--forest-800)' : 'transparent',
+      dataModeFg: viewMode === 'data' ? 'var(--mineral-0)' : 'var(--forest-800)',
+      dataModeShadow: viewMode === 'data' ? '0 5px 14px rgb(13 70 56 / 17%)' : 'none',
+      analysisModeBg: viewMode === 'analysis' ? 'var(--forest-800)' : 'transparent',
+      analysisModeFg: viewMode === 'analysis' ? 'var(--mineral-0)' : 'var(--forest-800)',
+      analysisModeShadow: viewMode === 'analysis' ? '0 5px 14px rgb(13 70 56 / 17%)' : 'none',
+      showImport: this.state.showImport,
+      openImport: () => this.setState({ showImport: true }),
+      closeImport: () => this.setState({ showImport: false }),
+      analysisScreenLabel: items.find(([key]) => key === s)?.[1] || 'Dashboard',
+      analysisHeadline: sectionAnalysis.headline,
+      analysisSignals,
+      analysisDecisions: sectionAnalysis.decisions || [],
+      analysisLimitations: (sectionAnalysis.limitations || []).map((text) => ({ text })),
+      analysisSources: (sectionAnalysis.sourceRefs || []).map((text) => ({ text })),
+      analysisConfidenceLabel: confidence.label,
+      analysisConfidenceColor: confidence.color,
+      analysisPeriod: formatPeriod(snapshot.primaryPeriod),
+      analysisValidation: snapshot.validation?.status === 'APPROVED'
+        ? `Aprovado · ${warningCount} ressalvas`
+        : 'Snapshot não aprovado',
+      analysisImportShort: String(snapshot.importId || 'sem-snapshot').slice(0, 28),
+      analysisGeneratedAt: generatedAt,
+      primaryPeriodLabel: formatPeriod(snapshot.primaryPeriod),
+      primaryPeriodLong: formatPeriodLong(snapshot.primaryPeriod),
+      financePeriodLabel: formatPeriod(financePeriod),
+      generatedDate: snapshot.generatedAt
+        ? new Date(snapshot.generatedAt).toLocaleDateString('pt-BR')
+        : 'aguardando atualização',
+      currentPeriodButton: `${capitalize(formatPeriodLong(snapshot.primaryPeriod))} · atual`,
+      previousPeriodButton: `${capitalize(formatPeriodLong(previousSnapshotPeriod))} · fechado`,
+      comparisonPeriodButton: `Comparativo · ${formatPeriod(snapshot.primaryPeriod)} × ${formatPeriod(previousSnapshotPeriod)}`,
       showPeriodControls: s === 'mkt' || s === 'org',
       periodoJul: jul, periodoJun: jun, periodoComp: comp, periodoJulOuComp: jul || comp,
       setJul: () => this.setState({ periodo: 'jul' }),
@@ -1367,15 +1654,15 @@ class Component extends DCLogic {
       pnBg: jun ? on.bg : off.bg, pnFg: jun ? on.fg : off.fg, pnBorder: jun ? on.border : off.border,
       pcBg: comp ? on.bg : off.bg, pcFg: comp ? on.fg : off.fg, pcBorder: comp ? on.border : off.border,
       periodoMktSubtitle: jul
-        ? 'Meta Ads 01–28/07 · Google Ads R$ 0,00 confirmado manualmente.'
+        ? `${capitalize(formatPeriodLong(snapshot.primaryPeriod))} · aquisição conforme as fontes validadas.`
         : jun
-          ? 'Junho fechado · comparação direta com maio nas abas oficiais.'
-          : 'Comparativo julho parcial × junho fechado · histórico desde março.',
+          ? `${capitalize(formatPeriodLong(previousSnapshotPeriod))} fechado · comparação com o histórico oficial.`
+          : `Comparativo ${formatPeriod(snapshot.primaryPeriod)} × ${formatPeriod(previousSnapshotPeriod)} · histórico disponível.`,
       periodoOrgSubtitle: jul
-        ? '30/06–28/07/2026 · captura parcial em 28/07 · pode incluir conteúdo turbinado.'
+        ? `${capitalize(formatPeriodLong(snapshot.primaryPeriod))} · janela conforme a captura da fonte; pode incluir conteúdo turbinado.`
         : jun
-          ? 'Junho fechado × maio · dados consolidados do aplicativo e capturas manuais.'
-          : 'Período atual 30/06–28/07 × junho fechado · leitura direcional.',
+          ? `${capitalize(formatPeriodLong(previousSnapshotPeriod))} fechado · dados consolidados do aplicativo e capturas manuais.`
+          : `Período atual × ${formatPeriod(previousSnapshotPeriod)} · leitura comparativa direcional.`,
       varA: va, varB: !va,
       setVarA: () => this.setState({ variant: 'a' }),
       setVarB: () => this.setState({ variant: 'b' }),
@@ -1386,6 +1673,436 @@ class Component extends DCLogic {
   }
 }
 
+</script>
+<script>
+(() => {
+  const packet = window.NATUA_DASHBOARD_DATA || {};
+  const snapshot = packet.snapshot || {};
+  const metrics = snapshot.metrics || {};
+  const breakdowns = snapshot.breakdowns || {};
+  const snapshotKey = String(snapshot.importId || 'sem-snapshot');
+  const number = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
+  const currency = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  const percentage = new Intl.NumberFormat('pt-BR', {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 2
+  });
+
+  const formatMetric = (metric) => {
+    if (!metric || metric.value === null) return 'sem base';
+    if (metric.unit === 'BRL') return currency.format(metric.value);
+    if (metric.unit === 'PERCENT') return percentage.format(metric.value);
+    if (metric.unit === 'RATIO') {
+      return `${metric.value.toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}x`;
+    }
+    return number.format(metric.value);
+  };
+
+  const escapeHtml = (value) => String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+  const finite = (value) => typeof value === 'number' && Number.isFinite(value);
+  const formatCount = (value) => finite(value) ? number.format(value) : 'sem base';
+  const formatMoney = (value) => finite(value) ? currency.format(value) : 'sem base';
+  const formatPercent = (value) => finite(value) ? percentage.format(value) : 'sem base';
+  const monthLabel = (period) => {
+    if (!/^\d{4}-\d{2}$/.test(String(period))) return String(period || 'sem período');
+    const [year, month] = period.split('-').map(Number);
+    return new Date(year, month - 1, 1).toLocaleDateString('pt-BR', {
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+  const previousPeriod = (period) => {
+    if (!/^\d{4}-\d{2}$/.test(String(period))) return '';
+    const [year, month] = period.split('-').map(Number);
+    const date = new Date(year, month - 2, 1);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+  };
+  const change = (current, previous) =>
+    finite(current) && finite(previous) && previous !== 0
+      ? (current - previous) / Math.abs(previous)
+      : null;
+  const formatChange = (value) => {
+    if (!finite(value)) return 'sem base';
+    const rendered = percentage.format(Math.abs(value));
+    return `${value >= 0 ? '+' : '−'}${rendered}`;
+  };
+  const installHtml = (id, html) => {
+    const element = document.getElementById(id);
+    if (!element || !html || element.dataset.snapshotKey === snapshotKey) return;
+    element.innerHTML = html;
+    element.dataset.snapshotKey = snapshotKey;
+  };
+
+  const hydrateBreakdowns = () => {
+    const metricText = (id) => formatMetric(metrics[id]);
+    const funnelCosts = [
+      ['Clique', 'marketing.cpc.current', 'marketing.clicks.link.current'],
+      ['Formulário válido', 'marketing.cost.form.current', 'marketing.forms.valid.current'],
+      ['MQL confirmado', 'marketing.cost.mql.current', 'marketing.mql.current'],
+      ['Agendamento de marketing', 'marketing.cac.appointment.current', 'marketing.appointments.marketing.current']
+    ];
+    installHtml('funnel-cost-rows', funnelCosts.map(([label, costId, denominatorId]) => `
+      <tr>
+        <td class="snapshot-cell">${label}</td>
+        <td class="snapshot-cell snapshot-cell-number">${metricText(costId)}</td>
+        <td class="snapshot-cell snapshot-cell-number" style="font-family:var(--font-mono);font-size:11px;color:var(--mineral-400)">${metricText('marketing.investment.total.current')} ÷ ${metricText(denominatorId)}</td>
+      </tr>
+    `).join(''));
+    const funnelComparison = [
+      ['Formulários válidos', 'marketing.forms.valid.current', 'marketing.forms.valid.previous'],
+      ['MQL confirmados', 'marketing.mql.current', 'marketing.mql.previous'],
+      ['Agendamentos MKT', 'marketing.appointments.marketing.current', 'marketing.appointments.marketing.previous'],
+      ['Consultas realizadas', 'commercial.attended.current', 'marketing.commercial.attended.previous'],
+      ['Faturamento de 1ª consulta', 'marketing.first_consultation.revenue.current', 'marketing.first_consultation.revenue.previous']
+    ];
+    installHtml('funnel-comparison-rows', funnelComparison.map(([label, currentId, previousId]) => `
+      <tr>
+        <td class="snapshot-cell">${label}</td>
+        <td class="snapshot-cell snapshot-cell-number">${metricText(currentId)}</td>
+        <td class="snapshot-cell snapshot-cell-number" style="color:var(--mineral-600)">${metricText(previousId)}</td>
+      </tr>
+    `).join(''));
+
+    const campaigns = [...(breakdowns['marketing.campaigns'] || [])]
+      .sort((left, right) => (right.investment || 0) - (left.investment || 0));
+    installHtml('marketing-campaign-rows', campaigns.map((row) => `
+      <tr>
+        <td class="snapshot-cell">${escapeHtml(row.name)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatMoney(row.investment)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatCount(row.leads)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatMoney(row.cpl)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatCount(row.mql)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatPercent(row.mqlRate)}</td>
+      </tr>
+    `).join(''));
+
+    const marketingHistory = [...(breakdowns['marketing.history'] || [])]
+      .sort((left, right) => String(left.period).localeCompare(String(right.period)));
+    installHtml('marketing-history-rows', marketingHistory.map((row) => `
+      <tr>
+        <td class="snapshot-cell" style="font-weight:${row.period === snapshot.primaryPeriod ? 600 : 400}">${escapeHtml(monthLabel(row.period))}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatMoney(row.investment)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatCount(row.leads)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatMoney(row.cpl)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatPercent(row.mqlRate)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatCount(row.appointments)}</td>
+      </tr>
+    `).join(''));
+
+    const organicTimeline = breakdowns['organic.timeline'] || [];
+    const point = (profileKey, period) => organicTimeline.find(
+      (row) => row.profileKey === profileKey && row.period === period
+    );
+    const priorPeriod = previousPeriod(snapshot.primaryPeriod);
+    const twoPeriodsBack = previousPeriod(priorPeriod);
+    const organicFields = [
+      ['posts', 'Posts'],
+      ['views', 'Visualizações'],
+      ['reach', 'Alcance'],
+      ['profileVisits', 'Visitas ao perfil'],
+      ['bioClicks', 'Cliques na bio']
+    ];
+    const organicHistoryRows = (profileKey) => {
+      const current = point(profileKey, priorPeriod);
+      const previous = point(profileKey, twoPeriodsBack);
+      if (!current || !previous) return '';
+      return organicFields.map(([key, label]) => {
+        const delta = change(current[key], previous[key]);
+        return `
+          <tr>
+            <td class="snapshot-cell">${label}</td>
+            <td class="snapshot-cell snapshot-cell-number">${formatCount(current[key])}</td>
+            <td class="snapshot-cell snapshot-cell-number">${formatCount(previous[key])}</td>
+            <td class="snapshot-cell snapshot-cell-number ${finite(delta) && delta >= 0 ? 'delta-good' : 'delta-warn'}">${formatChange(delta)}</td>
+          </tr>
+        `;
+      }).join('');
+    };
+    installHtml('organic-doctor-history-rows', organicHistoryRows('doctor'));
+    installHtml('organic-natua-history-rows', organicHistoryRows('natua'));
+
+    const organicComparisonFields = [
+      ['reach', 'alcance'],
+      ['profileVisits', 'visitas'],
+      ['bioClicks', 'cliques na bio']
+    ];
+    const organicComparison = ['doctor', 'natua'].flatMap((profileKey) => {
+      const current = point(profileKey, snapshot.primaryPeriod);
+      const previous = point(profileKey, priorPeriod);
+      if (!current || !previous) return [];
+      const profile = profileKey === 'doctor' ? 'Dr. Luciano' : 'Natuá';
+      return organicComparisonFields.map(([key, label]) => {
+        const delta = change(current[key], previous[key]);
+        return `
+          <tr>
+            <td class="snapshot-cell">${profile} · ${label}</td>
+            <td class="snapshot-cell snapshot-cell-number">${formatCount(current[key])}</td>
+            <td class="snapshot-cell snapshot-cell-number">${formatCount(previous[key])}</td>
+            <td class="snapshot-cell snapshot-cell-number ${finite(delta) && delta >= 0 ? 'delta-good' : 'delta-warn'}">${formatChange(delta)}</td>
+          </tr>
+        `;
+      });
+    }).join('');
+    installHtml('organic-current-comparison-rows', organicComparison);
+
+    const journeys = [...(breakdowns['commercial.journeys'] || [])]
+      .sort((left, right) => parseInt(left.journey, 10) - parseInt(right.journey, 10));
+    installHtml('commercial-journey-rows', journeys.map((row) => `
+      <tr>
+        <td class="snapshot-cell">Consulta ${escapeHtml(String(row.journey).replace(/\D/g, ''))}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatCount(row.attended)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatCount(row.closed)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatPercent(row.closeRate)}</td>
+        <td class="snapshot-cell snapshot-cell-number">${formatMoney(row.ticket)}</td>
+      </tr>
+    `).join(''));
+
+    const professionals = [...(breakdowns['commercial.professionals'] || [])];
+    const treatmentMaximum = Math.max(
+      1,
+      ...professionals.map((row) => finite(row.treatmentRevenue) ? row.treatmentRevenue : 0)
+    );
+    installHtml('commercial-treatment-bars', professionals
+      .sort((left, right) => (right.treatmentRevenue || 0) - (left.treatmentRevenue || 0))
+      .map((row) => `
+        <div class="snapshot-bar-row">
+          <span style="font-size:13px;color:var(--mineral-800)">${escapeHtml(row.professional)}</span>
+          <div class="snapshot-bar-track"><div class="snapshot-bar-fill" style="width:${Math.max(0, Math.min(100, ((row.treatmentRevenue || 0) / treatmentMaximum) * 100))}%"></div></div>
+          <span style="font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap">${formatMoney(row.treatmentRevenue)}</span>
+        </div>
+      `).join(''));
+    const openPipeline = professionals
+      .filter((row) => finite(row.pipeline) && row.pipeline > 0)
+      .sort((left, right) => right.pipeline - left.pipeline);
+    installHtml('commercial-pipeline-rows', `
+      ${openPipeline.map((row) => `
+        <div class="snapshot-list-row"><span>${escapeHtml(row.professional)}</span><span style="font-variant-numeric:tabular-nums">${formatMoney(row.pipeline)}</span></div>
+      `).join('')}
+      <div class="snapshot-list-row" style="font-weight:600;color:var(--mineral-900);padding-top:10px;border-top:1px solid var(--mineral-100)"><span>Total em negociação</span><span style="font-variant-numeric:tabular-nums">${formatMoney(metrics['commercial.pipeline.current']?.value)}</span></div>
+    `);
+
+    const appointmentProfessionals = [...(breakdowns['appointments.professionals'] || [])]
+      .sort((left, right) => (right.count || 0) - (left.count || 0));
+    const missingOwner = metrics['appointments.missing_owner.current']?.value;
+    const ownerMaximum = Math.max(
+      1,
+      ...appointmentProfessionals.map((row) => finite(row.count) ? row.count : 0),
+      finite(missingOwner) ? missingOwner : 0
+    );
+    installHtml('appointments-professional-bars', `
+      ${appointmentProfessionals.map((row) => `
+        <div class="snapshot-bar-row">
+          <span style="font-size:13px;color:var(--mineral-800)">${escapeHtml(row.professional)}</span>
+          <div class="snapshot-bar-track"><div class="snapshot-bar-fill" style="width:${Math.max(0, Math.min(100, ((row.count || 0) / ownerMaximum) * 100))}%"></div></div>
+          <span style="font-size:13px;font-variant-numeric:tabular-nums">${formatCount(row.count)}</span>
+        </div>
+      `).join('')}
+      ${finite(missingOwner) && missingOwner > 0 ? `
+        <div class="snapshot-bar-row">
+          <span style="font-size:13px;color:var(--coral-700)">Sem responsável</span>
+          <div class="snapshot-bar-track"><div class="snapshot-bar-fill" style="width:${(missingOwner / ownerMaximum) * 100}%;background:var(--coral-500)"></div></div>
+          <span style="font-size:13px;color:var(--coral-700);font-variant-numeric:tabular-nums">${formatCount(missingOwner)}</span>
+        </div>
+      ` : ''}
+    `);
+    const modalities = breakdowns['appointments.modalities'] || [];
+    const origins = breakdowns['appointments.origins'] || [];
+    installHtml('appointments-mode-origin-rows', `
+      ${modalities.map((row) => `<div class="snapshot-list-row"><span>${escapeHtml(row.mode)}</span><span style="font-variant-numeric:tabular-nums">${formatCount(row.count)}</span></div>`).join('')}
+      <div style="height:1px;background:var(--mineral-100);margin:2px 0"></div>
+      ${origins.map((row) => `<div class="snapshot-list-row"><span>${escapeHtml(row.origin)}</span><span style="font-variant-numeric:tabular-nums">${formatCount(row.count)}</span></div>`).join('')}
+    `);
+
+    const cashFlow = breakdowns['finance.monthly_cash_flow'] || [];
+    installHtml('finance-cash-flow-rows', cashFlow.map((row) => `
+      <div style="display:grid;grid-template-columns:70px minmax(90px,1fr) minmax(150px,210px);gap:14px;align-items:center">
+        <span style="font-size:12px;font-weight:600;color:${row.period === metrics['finance.cash_in.current']?.period ? 'var(--forest-800)' : 'var(--mineral-800)'}">${escapeHtml(String(row.period).slice(5) + '/' + String(row.period).slice(0, 4))}</span>
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <div class="snapshot-bar-track"><div class="snapshot-bar-fill" style="width:${Math.max(0, Math.min(100, row.cashInWidth || 0))}%"></div></div>
+          <div class="snapshot-bar-track"><div class="snapshot-bar-fill" style="width:${Math.max(0, Math.min(100, row.cashOutWidth || 0))}%;background:var(--coral-500)"></div></div>
+        </div>
+        <span style="font-size:12px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-600)">${formatMoney(row.cashIn).replace('R$', '').trim()} · ${formatMoney(row.cashOut).replace('R$', '').trim()}</span>
+      </div>
+    `).join(''));
+
+    const outflows = breakdowns['finance.outflow_composition'] || [];
+    installHtml('finance-outflow-rows', outflows.map((row) => `
+      <div>
+        <div style="display:flex;justify-content:space-between;gap:12px;font-size:12px;margin-bottom:4px">
+          <span style="color:var(--mineral-800)">${escapeHtml(row.group)}</span>
+          <span style="font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--mineral-900)">${formatMoney(row.value)}</span>
+        </div>
+        <div class="snapshot-bar-track"><div class="snapshot-bar-fill" style="width:${Math.max(0, Math.min(100, row.width || 0))}%"></div></div>
+      </div>
+    `).join(''));
+
+    const sourceLabels = {
+      marketing: 'Marketing, tráfego e orgânico',
+      closer: 'Closer',
+      appointments: 'Agendamentos',
+      form: 'Formulário',
+      finance: 'Financeiro'
+    };
+    const issues = snapshot.validation?.issues || [];
+    const sourceRows = (snapshot.sources || []).map((source) => {
+      const sourceIssues = issues.filter((issue) => issue.source === source.role);
+      const hasError = sourceIssues.some((issue) => issue.severity === 'ERROR');
+      const hasWarning = sourceIssues.some((issue) => issue.severity === 'WARNING');
+      const badgeClass = hasError
+        ? 'quality-badge-critical'
+        : hasWarning
+          ? 'quality-badge-warning'
+          : 'quality-badge-ok';
+      const badgeText = hasError ? 'Bloqueado' : hasWarning ? 'Com ressalva' : 'Validado';
+      const sourceName = sourceLabels[source.role] || source.role;
+      const coverage = `${monthLabel(source.period)} · ${source.sheets?.length || 0} abas`;
+      return `
+        <tr>
+          <td class="snapshot-cell"><strong>${escapeHtml(sourceName)}</strong><br><span style="font-family:var(--font-mono);font-size:10px;color:var(--mineral-400)">${escapeHtml(source.fileName)}</span></td>
+          <td class="snapshot-cell" style="color:var(--mineral-600)">${escapeHtml(coverage)}</td>
+          <td class="snapshot-cell" style="color:var(--mineral-600)">${formatCount(source.records)} registros</td>
+          <td class="snapshot-cell"><span class="quality-badge ${badgeClass}">${badgeText}</span></td>
+        </tr>
+      `;
+    }).join('');
+    installHtml('quality-source-rows', sourceRows);
+
+    const severityPresentation = {
+      ERROR: ['quality-badge-critical', 'Bloqueio'],
+      WARNING: ['quality-badge-warning', 'Ressalva'],
+      INFO: ['quality-badge-ok', 'Informação']
+    };
+    installHtml('quality-gate-rows', issues.map((issue) => {
+      const [badgeClass, badgeText] = severityPresentation[issue.severity] || severityPresentation.INFO;
+      return `
+        <div class="snapshot-list-row" style="align-items:flex-start">
+          <span>
+            ${escapeHtml(issue.message)}
+            <small style="display:block;margin-top:3px;font-family:var(--font-mono);font-size:9px;color:var(--mineral-400)">${escapeHtml(issue.code)}</small>
+          </span>
+          <span class="quality-badge ${badgeClass}">${badgeText}</span>
+        </div>
+      `;
+    }).join(''));
+  };
+
+  const hydrateMetrics = () => {
+    document.querySelectorAll('[data-metric]').forEach((element) => {
+      const metric = metrics[element.dataset.metric];
+      if (!metric) return;
+      const rendered = formatMetric(metric);
+      if (element.textContent !== rendered) element.textContent = rendered;
+      element.dataset.empty = metric.value === null ? 'true' : 'false';
+      element.title = [
+        metric.label,
+        `Fonte: ${metric.source} · ${metric.sheet}`,
+        `Período: ${metric.period}`,
+        metric.formula ? `Fórmula: ${metric.formula}` : ''
+      ].filter(Boolean).join('\n');
+    });
+    document.querySelectorAll('[data-metric-width]').forEach((element) => {
+      const metric = metrics[element.dataset.metricWidth];
+      if (!metric || metric.value === null) return;
+      const width = Math.max(0, Math.min(1, metric.value)) * 100;
+      element.style.width = `${width}%`;
+    });
+  };
+
+  let hydrateQueued = false;
+  const observer = new MutationObserver(() => {
+    if (hydrateQueued) return;
+    hydrateQueued = true;
+    requestAnimationFrame(() => {
+      hydrateQueued = false;
+      hydrateMetrics();
+      hydrateBreakdowns();
+    });
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  hydrateMetrics();
+  hydrateBreakdowns();
+
+  document.addEventListener('change', (event) => {
+    if (event.target?.id !== 'natua-workbooks') return;
+    const files = event.target.files || [];
+    const summary = document.getElementById('natua-file-summary');
+    if (summary) {
+      summary.textContent = files.length === 5
+        ? '5 arquivos selecionados · pronto para validar'
+        : `${files.length} arquivo(s) selecionado(s) · são necessários exatamente 5`;
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (
+      event.key !== 'Enter' ||
+      !document.querySelector('.import-dialog') ||
+      event.target?.tagName === 'BUTTON'
+    ) return;
+    const input = document.getElementById('natua-workbooks');
+    if (input?.files?.length === 5) {
+      event.preventDefault();
+      document.getElementById('natua-import-form')?.requestSubmit();
+    }
+  });
+
+  document.addEventListener('submit', async (event) => {
+    if (event.target?.id !== 'natua-import-form') return;
+    event.preventDefault();
+    const form = event.target;
+    const input = document.getElementById('natua-workbooks');
+    const status = document.getElementById('natua-import-status');
+    const submit = document.getElementById('natua-import-submit');
+    const files = input?.files || [];
+
+    if (files.length !== 5) {
+      if (status) status.textContent = 'Importação bloqueada: selecione exatamente cinco planilhas.';
+      return;
+    }
+
+    const body = new FormData();
+    [...files].forEach((file) => body.append('files', file));
+    body.append('activate', 'true');
+    body.append('publish', 'true');
+    if (submit) submit.disabled = true;
+    if (status) status.textContent = 'Classificando fontes, reconciliando fórmulas e validando privacidade...';
+
+    try {
+      const response = await fetch('/api/imports', { method: 'POST', body });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        const issues = payload?.issues || [];
+        const message = issues.length
+          ? issues.map((issue) => `${issue.code}: ${issue.message}`).join(' ')
+          : 'O backend privado de importação não está disponível neste ambiente.';
+        throw new Error(message);
+      }
+      if (status) {
+        status.textContent = payload.publishedToGit
+          ? `Snapshot ${payload.importId} aprovado e publicado no GitHub. Recarregando...`
+          : `Snapshot ${payload.importId} aprovado localmente. Recarregando os agregados validados...`;
+      }
+      setTimeout(() => window.location.reload(), 1100);
+    } catch (error) {
+      if (status) status.textContent = `Importação não publicada. ${error.message}`;
+      if (submit) submit.disabled = false;
+    }
+  });
+})();
 </script>
 </body>
 </html>

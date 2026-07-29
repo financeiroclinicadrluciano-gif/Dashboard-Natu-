@@ -1,0 +1,413 @@
+{
+  "version": "1.0.0",
+  "importId": "2026-07-29-b1478057-3ba7-4ce5-be0f-c69c6bf429fd",
+  "generatedAt": "2026-07-29T18:13:22.633Z",
+  "skill": "natua-data-analyst",
+  "sections": [
+    {
+      "scope": "executive",
+      "headline": "A eficiência de mídia melhorou, mas a qualidade captada e a disciplina operacional ainda limitam a decisão executiva.",
+      "confidence": "HIGH",
+      "signals": [
+        {
+          "type": "POSITIVE",
+          "evidence": "R$ 24.497,75 de investimento geraram 1.441 leads.",
+          "interpretation": "O investimento variou -25,61% e os leads 2,86% frente ao período anterior.",
+          "metricIds": [
+            "marketing.investment.total.current",
+            "marketing.investment.total.previous",
+            "marketing.leads.meta.current",
+            "marketing.leads.meta.previous"
+          ]
+        },
+        {
+          "type": "WARNING",
+          "evidence": "175 MQL com taxa de 12,59%.",
+          "interpretation": "O volume de MQL variou -14,22%; ganho de leads não se converteu integralmente em qualidade.",
+          "metricIds": [
+            "marketing.mql.current",
+            "marketing.mql.previous",
+            "marketing.rate.mql.current",
+            "marketing.rate.mql.previous"
+          ]
+        },
+        {
+          "type": "POSITIVE",
+          "evidence": "26 fechamentos em 33 atendimentos, com R$ 244.512,10 de receita comercial.",
+          "interpretation": "A força comercial deve ser preservada, sem atribuir essa receita automaticamente ao marketing.",
+          "metricIds": [
+            "commercial.closed.current",
+            "commercial.attended.current",
+            "commercial.revenue.current"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P1",
+          "action": "Investigar a queda de qualidade por campanha antes de aumentar o orçamento.",
+          "owner": "Marketing e Dados",
+          "deadline": "Antes da próxima reunião executiva",
+          "successMetric": "Taxa MQL e custo por MQL por campanha",
+          "metricIds": [
+            "marketing.rate.mql.current",
+            "marketing.cost.mql.current"
+          ]
+        },
+        {
+          "priority": "P1",
+          "action": "Padronizar status e responsável nos registros operacionais pendentes.",
+          "owner": "Comercial",
+          "deadline": "Na competência atual",
+          "successMetric": "Registros sem status e sem responsável",
+          "metricIds": [
+            "commercial.missing_status.current",
+            "appointments.missing_owner.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "Receita comercial não está atribuída por origem ou campanha.",
+        "Comparecimento e no-show permanecem sem base."
+      ],
+      "sourceRefs": [
+        "marketing:MARKETING JULHO:2026-07",
+        "closer:abas por profissional:2026-07"
+      ]
+    },
+    {
+      "scope": "funnel",
+      "headline": "O maior vazamento observável está entre formulários válidos, MQL e agendamentos de marketing.",
+      "confidence": "MEDIUM",
+      "signals": [
+        {
+          "type": "WARNING",
+          "evidence": "1.390 formulários resultaram em 175 MQL.",
+          "interpretation": "A taxa observada é 12,59% e deve ser lida como qualidade de captação e classificação.",
+          "metricIds": [
+            "marketing.forms.valid.current",
+            "marketing.mql.current",
+            "marketing.rate.mql.current"
+          ]
+        },
+        {
+          "type": "WARNING",
+          "evidence": "175 MQL e 14 agendamentos de marketing no consolidado.",
+          "interpretation": "Sem chave individual entre bases, esta passagem é um indicador operacional, não uma coorte causal.",
+          "metricIds": [
+            "marketing.mql.current",
+            "marketing.appointments.marketing.current"
+          ]
+        },
+        {
+          "type": "LIMITATION",
+          "evidence": "33 atendimentos da Closer incluem jornadas e origens diferentes.",
+          "interpretation": "Não é correto tratá-los como descendentes diretos dos agendamentos de marketing.",
+          "metricIds": [
+            "commercial.attended.current"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P1",
+          "action": "Criar uma chave de lead compartilhada entre formulário, agenda e Closer.",
+          "owner": "Dados e Comercial",
+          "deadline": "Próximo ciclo de importação",
+          "successMetric": "Cobertura de registros conciliados entre etapas",
+          "metricIds": [
+            "marketing.forms.valid.current",
+            "marketing.appointments.marketing.current",
+            "commercial.attended.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "As etapas não formam uma coorte individual completa.",
+        "No-show não pode ser calculado."
+      ],
+      "sourceRefs": [
+        "marketing:MARKETING JULHO:2026-07",
+        "closer:abas por profissional:2026-07"
+      ]
+    },
+    {
+      "scope": "marketing",
+      "headline": "A mídia comprou leads com mais eficiência, mas entregou menos MQL e menor taxa de qualificação.",
+      "confidence": "HIGH",
+      "signals": [
+        {
+          "type": "POSITIVE",
+          "evidence": "CPL total atual de R$ 17,00 contra R$ 23,51.",
+          "interpretation": "O custo de aquisição de volume melhorou no comparativo publicado.",
+          "metricIds": [
+            "marketing.cpl.total.current",
+            "marketing.cpl.total.previous"
+          ]
+        },
+        {
+          "type": "WARNING",
+          "evidence": "12,59% de taxa MQL contra 14,29% no período anterior.",
+          "interpretation": "O ganho de CPL não compensou a perda de qualidade; escala sem segmentação tende a ampliar o desperdício.",
+          "metricIds": [
+            "marketing.rate.mql.current",
+            "marketing.rate.mql.previous"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P1",
+          "action": "Separar orçamento de escala e verba de teste, usando MQL e custo por MQL como gates.",
+          "owner": "Tráfego",
+          "deadline": "Na próxima revisão de campanhas",
+          "successMetric": "Taxa MQL, custo por MQL e volume por campanha",
+          "metricIds": [
+            "marketing.mql.current",
+            "marketing.rate.mql.current",
+            "marketing.cost.mql.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "Receita por campanha não possui cruzamento validado.",
+        "Comparativos parciais exigem leitura por ritmo ou ressalva."
+      ],
+      "sourceRefs": [
+        "marketing:MARKETING JULHO:2026-07"
+      ]
+    },
+    {
+      "scope": "organic",
+      "headline": "O perfil médico transforma alcance em visita; na Natuá, o gargalo atual está antes da chegada ao perfil.",
+      "confidence": "HIGH",
+      "signals": [
+        {
+          "type": "POSITIVE",
+          "evidence": "Dr. Luciano alcançou 215.239 contas, converteu 4,94% em visitas e gerou 840 cliques na bio.",
+          "interpretation": "A taxa de visita era 2,19% no período anterior; o perfil médico ganhou eficiência de intenção.",
+          "metricIds": [
+            "organic.doctor.reach.current",
+            "organic.doctor.visit_rate.current",
+            "organic.doctor.bio_clicks.current",
+            "organic.doctor.visit_rate.previous"
+          ]
+        },
+        {
+          "type": "WARNING",
+          "evidence": "Natuá alcançou 70.115 contas, converteu 0,87% em visitas e gerou 53 cliques na bio.",
+          "interpretation": "A taxa de visita era 5,62% no período anterior; distribuição sem intenção de perfil não deve ser tratada como avanço completo.",
+          "metricIds": [
+            "organic.natua.reach.current",
+            "organic.natua.visit_rate.current",
+            "organic.natua.bio_clicks.current",
+            "organic.natua.visit_rate.previous"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P2",
+          "action": "Usar o perfil médico para descoberta e o perfil Natuá para prova, método e conversão.",
+          "owner": "Conteúdo",
+          "deadline": "Próximo calendário editorial",
+          "successMetric": "Taxa de visita e clique por perfil",
+          "metricIds": [
+            "organic.doctor.visit_rate.current",
+            "organic.natua.visit_rate.current",
+            "organic.natua.bio_click_rate.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "O período orgânico atual pode incluir conteúdo impulsionado.",
+        "A série histórica anterior não está completa em todas as abas."
+      ],
+      "sourceRefs": [
+        "marketing:ORGÂNICO JULHO:2026-07"
+      ]
+    },
+    {
+      "scope": "commercial",
+      "headline": "A conversão comercial é forte, mas o pipeline e os status incompletos precisam de cadência para virar gestão.",
+      "confidence": "HIGH",
+      "signals": [
+        {
+          "type": "POSITIVE",
+          "evidence": "78,79% de fechamento e R$ 244.512,10 de receita comercial.",
+          "interpretation": "A operação fecha bem dentro do universo atendido registrado na Closer.",
+          "metricIds": [
+            "commercial.close_rate.current",
+            "commercial.revenue.current"
+          ]
+        },
+        {
+          "type": "WARNING",
+          "evidence": "R$ 31.400,63 permanecem em negociação e 1 atendimento está sem status.",
+          "interpretation": "Pipeline sem próxima ação e status incompleto reduzem previsibilidade e qualidade do denominador.",
+          "metricIds": [
+            "commercial.pipeline.current",
+            "commercial.missing_status.current"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P1",
+          "action": "Exigir próxima ação, prazo e responsável para toda negociação aberta.",
+          "owner": "Closer",
+          "deadline": "Antes da próxima reunião comercial",
+          "successMetric": "Pipeline com próxima ação preenchida",
+          "metricIds": [
+            "commercial.pipeline.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "Receita fechada não equivale a recebimento financeiro.",
+        "Objeções ainda não possuem taxonomia padronizada."
+      ],
+      "sourceRefs": [
+        "closer:abas por profissional:2026-07"
+      ]
+    },
+    {
+      "scope": "appointments",
+      "headline": "A agenda informa volume bruto, mas ainda não sustenta confirmação, comparecimento ou no-show.",
+      "confidence": "HIGH",
+      "signals": [
+        {
+          "type": "WARNING",
+          "evidence": "20 registros do período e 6 sem data de consulta.",
+          "interpretation": "A ausência de status e regra inequívoca de pagamento impede classificar confirmados com segurança.",
+          "metricIds": [
+            "appointments.raw.current",
+            "appointments.missing_consultation_date.current"
+          ]
+        },
+        {
+          "type": "LIMITATION",
+          "evidence": "Confirmados e no-show estão marcados como sem base.",
+          "interpretation": "Essas métricas só devem aparecer após a criação de um campo operacional de status.",
+          "metricIds": [
+            "appointments.confirmed.current",
+            "appointments.no_show.current"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P0",
+          "action": "Adicionar status obrigatório e regra explícita de confirmação na fonte de agenda.",
+          "owner": "Recepção e Comercial",
+          "deadline": "Antes da próxima importação",
+          "successMetric": "Cobertura do campo status da agenda",
+          "metricIds": [
+            "appointments.confirmed.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "A planilha não contém campo de presença.",
+        "Contagem bruta de origem não equivale a agendamento confirmado."
+      ],
+      "sourceRefs": [
+        "appointments:Página1:2026-07"
+      ]
+    },
+    {
+      "scope": "finance",
+      "headline": "O DRE mostra resultado operacional positivo, mas sua competência está defasada em relação ao marketing e ao comercial.",
+      "confidence": "MEDIUM",
+      "signals": [
+        {
+          "type": "POSITIVE",
+          "evidence": "R$ 303.065,94 em vendas operacionais e R$ 31.356,99 após despesas fixas.",
+          "interpretation": "A leitura é válida para a competência financeira declarada, não para o período atual do marketing.",
+          "metricIds": [
+            "finance.sales.current",
+            "finance.result.current"
+          ]
+        },
+        {
+          "type": "LIMITATION",
+          "evidence": "Financeiro em 2026-05; painel principal em 2026-07.",
+          "interpretation": "ROI integrado e conciliação atual não devem ser calculados com competências diferentes.",
+          "metricIds": [
+            "finance.sales.current"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P1",
+          "action": "Atualizar a competência financeira antes de integrar margem e retorno ao painel atual.",
+          "owner": "Financeiro",
+          "deadline": "Próximo fechamento",
+          "successMetric": "Competência financeira alinhada ao período principal",
+          "metricIds": [
+            "finance.sales.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "A competência financeira não coincide com o período principal.",
+        "Receita comercial e receita financeira representam conceitos diferentes."
+      ],
+      "sourceRefs": [
+        "finance:REL DRE:2026-05"
+      ]
+    },
+    {
+      "scope": "data_quality",
+      "headline": "O núcleo financeiro e comercial é reconciliável; agenda, atribuição e competência ainda limitam análises integradas.",
+      "confidence": "HIGH",
+      "signals": [
+        {
+          "type": "POSITIVE",
+          "evidence": "As cinco fontes foram classificadas e o snapshot passou nos gates críticos.",
+          "interpretation": "A publicação pode ocorrer sem expor linhas ou dados pessoais.",
+          "metricIds": [
+            "marketing.investment.total.current",
+            "commercial.attended.current",
+            "finance.sales.current"
+          ]
+        },
+        {
+          "type": "WARNING",
+          "evidence": "1 status comercial ausente e 6 registros de agenda sem data de consulta.",
+          "interpretation": "Campos operacionais incompletos reduzem a confiabilidade de análises de passagem.",
+          "metricIds": [
+            "commercial.missing_status.current",
+            "appointments.missing_consultation_date.current"
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "priority": "P0",
+          "action": "Manter publicação bloqueada sempre que reconciliação ou privacidade falhar.",
+          "owner": "Dados",
+          "deadline": "Regra permanente",
+          "successMetric": "Nenhuma publicação com gate crítico",
+          "metricIds": [
+            "marketing.investment.total.current"
+          ]
+        }
+      ],
+      "limitations": [
+        "A Closer possui atendimentos sem status decisorio.",
+        "A base nao possui regra auditavel de confirmacao/pagamento; confirmados permanecem SEM_BASE.",
+        "Existem agendamentos do periodo sem responsavel.",
+        "Financeiro em 2026-05, defasado do painel principal 2026-07."
+      ],
+      "sourceRefs": [
+        "marketing:2026-07",
+        "closer:2026-07",
+        "appointments:2026-07",
+        "form:2026-07",
+        "finance:2026-05"
+      ]
+    }
+  ]
+}

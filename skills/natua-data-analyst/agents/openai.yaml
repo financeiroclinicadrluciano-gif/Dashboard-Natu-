@@ -1,0 +1,8 @@
+interface:
+  display_name: "Analista de Dados Natua"
+  short_description: "Analises executivas auditaveis para o Dashboard Natua"
+  default_prompt: "Use $natua-data-analyst para interpretar somente o snapshot validado, gerar analises das oito secoes e devolver decisoes com evidencias."
+
+policy:
+  allow_implicit_invocation: true
+

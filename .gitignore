@@ -7,3 +7,13 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Dados privados nunca entram no repositorio publico.
+*.xls
+*.xlsx
+*.xlsm
+*.csv
+uploads/
+data/raw/
+data/private/
+.runtime/

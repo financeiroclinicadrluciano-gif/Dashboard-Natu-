@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://natua.local/schemas/analysis-package.schema.json",
+  "title": "Natua Analysis Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "importId", "generatedAt", "skill", "sections"],
+  "properties": {
+    "version": { "const": "1.0.0" },
+    "importId": { "type": "string", "minLength": 8 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "skill": { "const": "natua-data-analyst" },
+    "sections": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scope", "headline", "confidence", "signals", "decisions", "limitations", "sourceRefs"],
+        "properties": {
+          "scope": {
+            "enum": ["executive", "funnel", "marketing", "organic", "commercial", "appointments", "finance", "data_quality"]
+          },
+          "headline": { "type": "string", "minLength": 12, "maxLength": 220 },
+          "confidence": { "enum": ["HIGH", "MEDIUM", "LOW"] },
+          "signals": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["type", "evidence", "interpretation", "metricIds"],
+              "properties": {
+                "type": { "enum": ["POSITIVE", "WARNING", "RISK", "LIMITATION", "HYPOTHESIS"] },
+                "evidence": { "type": "string", "minLength": 8 },
+                "interpretation": { "type": "string", "minLength": 8 },
+                "metricIds": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 3 },
+                  "uniqueItems": true
+                }
+              }
+            }
+          },
+          "decisions": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["priority", "action", "owner", "deadline", "successMetric", "metricIds"],
+              "properties": {
+                "priority": { "enum": ["P0", "P1", "P2"] },
+                "action": { "type": "string", "minLength": 10 },
+                "owner": { "type": "string", "minLength": 2 },
+                "deadline": { "type": "string", "minLength": 2 },
+                "successMetric": { "type": "string", "minLength": 5 },
+                "metricIds": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 3 },
+                  "uniqueItems": true
+                }
+              }
+            }
+          },
+          "limitations": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 5 },
+            "uniqueItems": true
+          },
+          "sourceRefs": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 3 },
+            "uniqueItems": true
+          }
+        }
+      }
+    }
+  }
+}
