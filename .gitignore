@@ -17,3 +17,7 @@ uploads/
 data/raw/
 data/private/
 .runtime/
+
+# Planilhas-fonte para o teste end-to-end local. Contem dados de paciente e
+# lead: ficam na maquina de quem opera, nunca no repositorio publico.
+.data/

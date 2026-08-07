@@ -3,5 +3,6 @@ export { adaptCloser } from "./closer";
 export { adaptFinance } from "./finance";
 export { adaptForm } from "./form";
 export { adaptMarketing } from "./marketing";
+export { adaptWeekly, CATEGORIES, detectBlockEnd, findPivotHeader } from "./weekly";
 export type { AdapterResult } from "./common";
 

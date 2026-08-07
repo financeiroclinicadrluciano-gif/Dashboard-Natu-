@@ -36,3 +36,14 @@ Planilhas e linhas brutas nao entram no Git. O publicador aceita somente:
 - `public/data/analysis-package.json`
 
 Metricas sem fonte permanecem `SEM_BASE`; nenhum agente pode estima-las para preencher a interface.
+
+## Indice navegavel
+
+Os contratos acima estao em backtick, o que nao gera aresta no grafo do vault (regra 8) — nenhum deles era alcancavel por navegacao. Os mesmos arquivos, dentro do proprio repo:
+
+- `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/AGENTS.md` — regras obrigatorias para qualquer IA
+- `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/DATA-CONTRACT.md` — definicoes, formulas e fontes
+- `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/AI-OPERATING-SYSTEM.md` · `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/UPDATE-RUNBOOK.md` · `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/ARCHITECTURE.md`
+- `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/skills/natua-data-analyst/SKILL.md` — metodo das oito analises
+
+Frente do vault que consome este dashboard: [[03-PROJETOS/03.1-NATUA/6-Natua-Dashboard-Reunioes-Semanais/README|Dashboard de Reunioes Semanais]].

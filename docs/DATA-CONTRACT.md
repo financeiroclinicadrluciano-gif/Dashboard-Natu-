@@ -12,6 +12,16 @@
 
 Os nomes dos arquivos nao sao contrato. O importador classifica cada arquivo por assinaturas de abas e cabecalhos.
 
+## Fonte opcional
+
+| Papel | Conteudo esperado | Uso principal |
+|---|---|---|
+| Semanal (`weekly`) | Aba unica: detalhe de pacientes e, abaixo, bloco de totais por profissional | comparecimento, categorias de pacote, receita por canal e por profissional |
+
+As cinco fontes acima continuam obrigatorias. A semanal e opcional: sua ausencia
+nao bloqueia a publicacao, mas sua presenca traz metricas que nenhuma outra
+fonte fornece (comparecimento auditavel e vendas por categoria).
+
 ## Regras de metrica
 
 ### Marketing
@@ -39,6 +49,37 @@ Os nomes dos arquivos nao sao contrato. O importador classifica cada arquivo por
 - Um agendamento elegivel deve possuir o sinal operacional exigido pela fonte, incluindo pagamento quando esse for o criterio vigente.
 - Origens sao normalizadas, mas o valor original nao e publicado.
 - `CAC operacional = investimento / agendamentos de marketing`.
+
+### Semanal
+
+- `weekly.attended`: linhas do **bloco de detalhe**, delimitado pelo detector de
+  fim-de-bloco. A planilha cola a tabela de totais na mesma aba; ler a aba
+  inteira contaria `TOTAL GERAL`, `%` e o cabecalho do pivo como pacientes.
+- `weekly.attendance_rate = comparecidos / (comparecidos + faltas)`, ambos lidos
+  **do bloco de totais**. A coluna rotulada `PRESENCA` no detalhe guarda canal de
+  origem, nao presenca — o rotulo mente e o adaptador nao acredita nele.
+- `weekly.category.<cat>.units` e `.revenue`: seis categorias, incluindo
+  **Ginecologicos**, confirmada como 6a em 2026-08-07.
+- Categoria sem coluna de receita na planilha devolve `SEM_BASE`, nunca `0`.
+  Zero seria um numero inventado com aparencia de medido.
+- `weekly.acquisition.*`: exclui o canal `RECORRENCIA`. Contar recompra no
+  denominador de aquisicao infla o resultado do marketing.
+
+#### Taxonomia de canal — fechada em 6 valores
+
+`FORMULARIO` · `TRAFEGO_PAGO` · `ORGANICO` · `BIO` · `INDICACAO` · `RECORRENCIA`
+
+A planilha grava canal em texto livre. Em 2026-08 havia **11 grafias para 5
+canais reais** (`organico` e `organico perfil natua`; `formulario`,
+`formulario - mounjaro`, `formulario - trat obesidade`; `indicacao` e
+`indicacao dra vivian`). Agregar texto livre produz numero errado com aparencia
+de certo, entao o canal e normalizado antes de qualquer soma.
+
+A campanha (`mounjaro`, `trat obesidade`, `depoimento`) e um campo separado, nao
+um canal. Texto que nao casa com nenhuma regra devolve canal nulo e gera
+`WEEKLY_CHANNEL_UNMAPPED`: o paciente permanece no total e sai dos recortes por
+canal. **Nao existe bucket "outros"** — bucket generico esconde o erro em vez de
+mostra-lo.
 
 ### Financeiro
 
@@ -86,6 +127,24 @@ A publicacao e bloqueada quando:
 - o snapshot contem chave ou valor com padrao de PII;
 - o periodo principal nao pode ser determinado;
 - uma formula usa denominador zero sem marcar `SEM_BASE`;
-- a analise cita numero ausente do snapshot.
+- a analise cita numero ausente do snapshot;
+- **a planilha semanal nao fecha com o proprio bloco de totais** — 13 baterias
+  comparam detalhe e pivo (atendimentos, faturamento, unidades e receita das
+  categorias). Divergencia acima de R$ 0,01 e `WEEKLY_RECONCILIATION_FAILED`,
+  severidade CRITICAL. Publicar numero que nao fecha com o proprio arquivo e
+  pior do que nao publicar;
+- a planilha semanal perde `NOME` ou `VALOR`, ou chega sem nenhuma linha de
+  paciente.
+
+### Regressao do fechamento aprovado
+
+`tests/baselines/fechamento-2026-07.json` congela os 30 numeros do fechamento
+`01-28/07`. Enquanto o painel estiver nesse periodo, os 30 tem que bater; passando
+o periodo, continuam valendo os testes de existencia, unidade, proveniencia e
+nao-regressao para `SEM_BASE`.
+
+Numero que muda porque a fonte mudou exige **novo fechamento aprovado** e edicao
+explicita do baseline. Editar o baseline para o teste passar inverte o proposito
+do gate.
 
 Alertas nao criticos podem publicar com ressalva, por exemplo competencia financeira defasada ou linhas comerciais sem status.

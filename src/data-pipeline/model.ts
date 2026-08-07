@@ -6,6 +6,10 @@ export const sourceRoleSchema = z.enum([
   "appointments",
   "form",
   "finance",
+  // Fonte opcional: a planilha que o time preenche durante a semana. As cinco
+  // acima continuam obrigatorias; ausencia de qualquer uma delas segue sendo
+  // gate critico em classifyWorkbooks.
+  "weekly",
 ]);
 
 export type SourceRole = z.infer<typeof sourceRoleSchema>;
@@ -63,7 +67,7 @@ export const dashboardSnapshotSchema = z.object({
     status: z.enum(["APPROVED", "REJECTED"]),
     issues: z.array(validationIssueSchema),
   }),
-  sources: z.array(sourceSummarySchema).length(5),
+  sources: z.array(sourceSummarySchema).min(5).max(6),
   metrics: z.record(z.string(), metricSchema),
   breakdowns: z.record(
     z.string(),
