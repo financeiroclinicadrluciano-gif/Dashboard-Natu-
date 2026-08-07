@@ -52,7 +52,7 @@ Cada importacao recebe um `importId`. O motor gera uma versao candidata, valida,
 Todas as IAs usam os mesmos artefatos:
 
 - `AGENTS.md`: regras operacionais.
-- `docs/DATA-CONTRACT.md`: semantica e formulas.
+- `docs/contrato-de-dados.md`: semantica e formulas.
 - `skills/natua-data-analyst/SKILL.md`: metodo de analise.
 - `DashboardSnapshot`: unica entrada permitida para analise.
 - `AnalysisPackage`: unica saida permitida da etapa de analise.

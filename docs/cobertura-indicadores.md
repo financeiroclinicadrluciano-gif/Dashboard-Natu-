@@ -6,7 +6,7 @@
 > `PENDENTE` para tudo que depende de fonte ainda não conectada.
 >
 > Regra que governa este arquivo: métrica sem fonte auditável **permanece `SEM_BASE`**.
-> Nenhum agente estima número para preencher tela (`docs/DATA-CONTRACT.md`, seção Gates críticos).
+> Nenhum agente estima número para preencher tela (`docs/contrato-de-dados.md`, seção Gates críticos).
 
 ## Legenda
 
@@ -225,5 +225,5 @@ semana, que o importador leu o bloco certo.
 
 ---
 
-Contrato que governa este mapa: `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/DATA-CONTRACT.md`.
+Contrato que governa este mapa: `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/contrato-de-dados.md`.
 Frente do vault que consome: [[03-PROJETOS/03.1-NATUA/6-Natua-Dashboard-Reunioes-Semanais/README|Dashboard de Reuniões Semanais]].

@@ -76,5 +76,5 @@ Caminho em backtick nao gera aresta no grafo do vault (regra 8): as referencias 
 - `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/skills/natua-data-analyst/references/metric-dictionary.md`
 - `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/skills/natua-data-analyst/references/decision-rules.md`
 - `references/analysis-contract.schema.json` — schema, nao e nota do vault
-- Contrato de dados do repo: `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/DATA-CONTRACT.md`
+- Contrato de dados do repo: `03-PROJETOS/03.1-NATUA/Dashboard-Codebase-GitHub/docs/contrato-de-dados.md`
 
