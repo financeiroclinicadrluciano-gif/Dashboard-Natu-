@@ -6,6 +6,7 @@
 <title>Dashboard Natuá · Executivo</title>
 <link rel="icon" href="data:,">
 <script src="./data/dashboard-snapshot.js"></script>
+<script src="./data/meta-live.js"></script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -117,6 +118,11 @@
   .current-month-value { font-size:27px;font-weight:600;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--mineral-900);margin:0 0 5px; }
   .current-month-value-muted { color:var(--mineral-600); }
   .current-month-note { font-size:11px;line-height:1.5;color:var(--mineral-600);margin:0; }
+  .current-month-meta { margin-top:14px;padding-top:14px;border-top:1px solid rgb(13 70 56 / 12%); }
+  .current-month-meta-head { display:flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--forest-700);margin:0 0 12px; }
+  .current-month-meta-dot { width:6px;height:6px;border-radius:50%;background:var(--forest-600); }
+  .current-month-value-sm { font-size:22px; }
+  .current-month-stat-valid { border-color:rgb(42 102 77 / 34%);background:rgb(42 102 77 / 5%); }
   .current-month-warning { margin:14px 0 0;padding-top:12px;border-top:1px solid rgb(13 70 56 / 12%);font-size:11.5px;line-height:1.6;color:var(--mineral-600); }
   @media (prefers-reduced-motion: reduce) { .current-month-pulse { animation:none; } }
 
@@ -400,6 +406,30 @@
                   <p class="current-month-note">{{ currentMonthPaceNote }}</p>
                 </div>
               </div>
+
+              <sc-if value="{{ hasMetaAugust }}">
+                <div class="current-month-meta">
+                  <p class="current-month-meta-head"><span class="current-month-meta-dot"></span>Tráfego pago · Meta Ads API · {{ metaAugustPeriod }}</p>
+                  <div class="current-month-grid">
+                    <div class="current-month-stat">
+                      <p class="current-month-label">Investimento</p>
+                      <p class="current-month-value current-month-value-sm">{{ metaAugustInvestment }}</p>
+                      <p class="current-month-note">geração de leads: {{ metaAugustLeadgen }}</p>
+                    </div>
+                    <div class="current-month-stat">
+                      <p class="current-month-label">CPL leadgen</p>
+                      <p class="current-month-value current-month-value-sm">{{ metaAugustCpl }}</p>
+                      <p class="current-month-note">{{ metaAugustLeads }} leads no Meta</p>
+                    </div>
+                    <div class="current-month-stat current-month-stat-valid">
+                      <p class="current-month-label">Validação cruzada</p>
+                      <p class="current-month-value current-month-value-sm" style="color:var(--forest-700)">{{ metaAugustMatch }}</p>
+                      <p class="current-month-note">Meta {{ metaAugustLeads }} × CRM {{ metaAugustCrm }} leads</p>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
               <p class="current-month-warning">{{ currentMonthLimitation }}</p>
             </section>
           </sc-if>
@@ -1851,6 +1881,19 @@ class Component extends DCLogic {
     });
     const hasCurrentMonth = cmLeads !== null && cmDays !== null;
 
+    // Camada Meta-live: tráfego pago do mês corrente, consultado da API e cruzado
+    // contra a CRM. Fica separado do snapshot deterministico de proposito.
+    const metaLive = globalThis.NATUA_META_LIVE || {};
+    const metaAug = metaLive.august || null;
+    const brl = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+    const hasMetaAugust = Boolean(metaAug && cmPeriod && metaAug.period && metaAug.period.startsWith(cmPeriod));
+    const metaMatch = metaAug && metaAug.leadsLeadgen && metaAug.crmFormLeads
+      ? 1 - Math.abs(metaAug.leadsLeadgen - metaAug.crmFormLeads) / metaAug.crmFormLeads
+      : null;
+
     const periodRangeLabel = historyRows.length
       ? `${monthShort(historyRows[0].period)}–${monthShort(historyRows[historyRows.length - 1].period)} ${String(historyRows[0].period).slice(0, 4)}`
       : 'sem série';
@@ -1898,7 +1941,17 @@ class Component extends DCLogic {
       currentMonthPaceNote: cmPace === null
         ? 'sem recorte comparável'
         : cmPace >= 0 ? 'acima do mesmo recorte' : 'abaixo do mesmo recorte',
-      currentMonthLimitation: `Só existe lead em ${formatPeriod(cmPeriod)}. Investimento, MQL, agendamento e receita ainda não têm fonte para este mês — as demais telas continuam em ${formatPeriod(snapshot.primaryPeriod)}.`,
+      hasMetaAugust,
+      metaAugustPeriod: metaAug ? `01–${String(metaAug.period.match(/\d+\)/)?.[0] || '').replace(')', '') || '07'}/08 · parcial` : '',
+      metaAugustInvestment: metaAug ? brl.format(metaAug.investmentTotal) : '—',
+      metaAugustLeadgen: metaAug ? brl.format(metaAug.investmentLeadgen) : '—',
+      metaAugustCpl: metaAug ? brl.format(metaAug.cplLeadgen) : '—',
+      metaAugustLeads: metaAug ? integers.format(metaAug.leadsLeadgen) : '—',
+      metaAugustCrm: metaAug ? integers.format(metaAug.crmFormLeads) : '—',
+      metaAugustMatch: metaMatch === null ? '—' : `${oneDecimal.format(metaMatch * 100)}%`,
+      currentMonthLimitation: hasMetaAugust
+        ? `Tráfego pago vem da Meta Ads API (${metaLive.queriedAt}), leads da CRM. MQL, agendamento e receita de ${formatPeriod(cmPeriod)} ainda não fecharam — as demais telas continuam em ${formatPeriod(snapshot.primaryPeriod)}.`
+        : `Só existe lead em ${formatPeriod(cmPeriod)}. Investimento, MQL, agendamento e receita ainda não têm fonte para este mês — as demais telas continuam em ${formatPeriod(snapshot.primaryPeriod)}.`,
       showImport: this.state.showImport,
       openImport: () => this.setState({ showImport: true }),
       closeImport: () => this.setState({ showImport: false }),
