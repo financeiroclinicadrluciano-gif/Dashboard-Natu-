@@ -17,6 +17,12 @@
 <link rel="stylesheet" href="_ds/design-system-natu-a3c46833-fc06-4b84-97f4-efa82b73d0ae/tokens/fonts.css">
 <link rel="stylesheet" href="_ds/design-system-natu-a3c46833-fc06-4b84-97f4-efa82b73d0ae/tokens/base.css">
 <link rel="stylesheet" href="_ds/design-system-natu-a3c46833-fc06-4b84-97f4-efa82b73d0ae/styles.css">
+<!-- Camadas do sistema visual, nesta ordem: superficie -> controle -> movimento.
+     Cada arquivo tem um dono unico; a ordem importa porque movimento sobrescreve
+     transicoes declaradas nas outras duas camadas. -->
+<link rel="stylesheet" href="_ds/surfaces.css">
+<link rel="stylesheet" href="_ds/controls.css">
+<link rel="stylesheet" href="_ds/motion.css">
 <script src="_ds/design-system-natu-a3c46833-fc06-4b84-97f4-efa82b73d0ae/_ds_bundle.js"></script>
 <style>
   body { margin: 0; background:
@@ -74,7 +80,7 @@
   .import-backdrop { position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgb(5 28 24 / 72%);backdrop-filter:blur(10px); }
   .import-dialog { width:min(720px,100%);max-height:calc(100vh - 40px);overflow:auto;border:1px solid rgb(213 179 88 / 32%);border-radius:16px;background:#fffdf8;box-shadow:0 36px 100px rgb(0 0 0 / 28%); }
   .import-dropzone { display:grid;place-items:center;min-height:190px;padding:28px;border:1px dashed rgb(13 70 56 / 34%);border-radius:10px;background:linear-gradient(145deg,rgb(13 70 56 / 4%),rgb(213 179 88 / 8%));text-align:center;cursor:pointer; }
-  .import-status { min-height:44px;padding:12px 14px;border-radius:8px;background:var(--mineral-50);font-size:12px;line-height:1.55;color:var(--mineral-700); }
+  .import-status { min-height:44px;padding:12px 14px;border-radius:8px;background:var(--mineral-50);font-size:12px;line-height:1.55;color:var(--mineral-800); }
   .snapshot-cell { padding:11px 12px;border-bottom:1px solid var(--mineral-100);font-size:13px;vertical-align:top; }
   .snapshot-cell:first-child { padding-left:0; }
   .snapshot-cell:last-child { padding-right:0; }
@@ -90,6 +96,29 @@
   .quality-badge-critical { background:var(--coral-100);color:var(--coral-700); }
   [data-metric][data-empty="true"] { color:var(--coral-700) !important;font-style:italic; }
   @keyframes content-in { from { opacity:0;transform:translateY(8px); } to { opacity:1;transform:none; } }
+
+  /* ---------------------------------------------------------------------
+     Faixa do mes corrente.
+     A base de formulario chega antes das outras fontes; sem esta faixa o painel
+     dizia "julho" enquanto agosto ja estava rodando havia uma semana.
+     --------------------------------------------------------------------- */
+  .current-month { position:relative;overflow:hidden;padding:20px 24px 18px;border:1px solid rgb(213 179 88 / 34%);border-radius:12px;background:
+    radial-gradient(circle at 96% -40%, rgb(213 179 88 / 12%), transparent 20rem),
+    linear-gradient(180deg, var(--gold-50) 0%, var(--surface-base) 78%); }
+  .current-month-head { display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px; }
+  .current-month-kicker { display:flex;align-items:center;gap:8px;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-700);margin:0 0 6px; }
+  .current-month-pulse { width:7px;height:7px;border-radius:50%;background:var(--forest-600);box-shadow:0 0 0 0 rgb(42 102 77 / 45%);animation:cm-pulse 2.6s cubic-bezier(.2,0,0,1) infinite; }
+  @keyframes cm-pulse { 0% { box-shadow:0 0 0 0 rgb(42 102 77 / 42%); } 70% { box-shadow:0 0 0 9px rgb(42 102 77 / 0%); } 100% { box-shadow:0 0 0 0 rgb(42 102 77 / 0%); } }
+  .current-month-title { font-family:var(--font-display);font-size:21px;font-weight:500;line-height:1.15;margin:0;color:var(--mineral-900); }
+  .current-month-tag { display:inline-flex;align-items:center;padding:6px 11px;border:1px solid rgb(13 70 56 / 18%);border-radius:999px;background:rgb(255 255 255 / 66%);font-size:11px;font-weight:600;color:var(--forest-800);white-space:nowrap; }
+  .current-month-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px; }
+  .current-month-stat { padding:13px 15px;border:1px solid var(--border-default);border-radius:9px;background:rgb(255 255 255 / 72%); }
+  .current-month-label { font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 7px; }
+  .current-month-value { font-size:27px;font-weight:600;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--mineral-900);margin:0 0 5px; }
+  .current-month-value-muted { color:var(--mineral-600); }
+  .current-month-note { font-size:11px;line-height:1.5;color:var(--mineral-600);margin:0; }
+  .current-month-warning { margin:14px 0 0;padding-top:12px;border-top:1px solid rgb(13 70 56 / 12%);font-size:11.5px;line-height:1.6;color:var(--mineral-600); }
+  @media (prefers-reduced-motion: reduce) { .current-month-pulse { animation:none; } }
 
   /* ---------------------------------------------------------------------
      Lampada de insight + balao de vidro fosco.
@@ -299,7 +328,7 @@
                   <div>
                     <p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:{{ signal.rail }};margin:0 0 7px">{{ signal.typeLabel }}</p>
                     <p style="font-size:14px;font-weight:500;line-height:1.55;color:var(--mineral-50);margin:0">{{ signal.evidence }}</p>
-                    <p style="font-size:12px;line-height:1.65;color:var(--mineral-300);margin:7px 0 0">{{ signal.interpretation }}</p>
+                    <p style="font-size:12px;line-height:1.65;color:var(--mineral-200);margin:7px 0 0">{{ signal.interpretation }}</p>
                   </div>
                 </article>
               </sc-for>
@@ -327,7 +356,7 @@
             <div>
               <p style="font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-400);margin:0 0 9px">Limitações que permanecem abertas</p>
               <sc-for list="{{ analysisLimitations }}" as="limitation" hint-placeholder-count="2">
-                <p style="font-size:11px;line-height:1.55;color:var(--mineral-300);margin:4px 0">· {{ limitation.text }}</p>
+                <p style="font-size:11px;line-height:1.55;color:var(--mineral-200);margin:4px 0">· {{ limitation.text }}</p>
               </sc-for>
             </div>
             <div>
@@ -344,6 +373,36 @@
       <!-- ============ VISÃO EXECUTIVA ============ -->
       <sc-if value="{{ isExec }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;flex-direction:column;gap:22px">
+
+          <sc-if value="{{ hasCurrentMonth }}">
+            <section class="current-month" aria-label="Mês corrente em andamento">
+              <div class="current-month-head">
+                <div>
+                  <p class="current-month-kicker"><span class="current-month-pulse"></span>Mês corrente · em andamento</p>
+                  <h2 class="current-month-title">{{ currentMonthTitle }}</h2>
+                </div>
+                <span class="current-month-tag">{{ currentMonthDaysLabel }}</span>
+              </div>
+              <div class="current-month-grid">
+                <div class="current-month-stat">
+                  <p class="current-month-label">Leads no mês</p>
+                  <p class="current-month-value">{{ currentMonthLeads }}</p>
+                  <p class="current-month-note">{{ currentMonthAverage }} por dia</p>
+                </div>
+                <div class="current-month-stat">
+                  <p class="current-month-label">Mesmos dias de {{ baselineMonthShort }}</p>
+                  <p class="current-month-value current-month-value-muted">{{ currentMonthBaseline }}</p>
+                  <p class="current-month-note">recorte comparável</p>
+                </div>
+                <div class="current-month-stat">
+                  <p class="current-month-label">Ritmo</p>
+                  <p class="current-month-value" style="color:{{ currentMonthPaceColor }}">{{ currentMonthPace }}</p>
+                  <p class="current-month-note">{{ currentMonthPaceNote }}</p>
+                </div>
+              </div>
+              <p class="current-month-warning">{{ currentMonthLimitation }}</p>
+            </section>
+          </sc-if>
 
           <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
             <div style="display:flex;align-items:baseline;gap:12px">
@@ -1559,7 +1618,7 @@
           </label>
           <div id="natua-import-status" class="import-status" role="status">Depois de escolher os cinco arquivos, pressione Enter. A última versão válida será preservada em qualquer falha.</div>
           <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
-            <p style="font-size:10px;line-height:1.5;color:var(--mineral-500);margin:0;max-width:44ch">Publicação no GitHub ocorre pelo agente/CLI após build, testes e allowlist. O navegador ativa a prévia local validada.</p>
+            <p style="font-size:10px;line-height:1.5;color:var(--mineral-600);margin:0;max-width:44ch">Publicação no GitHub ocorre pelo agente/CLI após build, testes e allowlist. O navegador ativa a prévia local validada.</p>
             <button id="natua-import-submit" type="submit" style="padding:12px 18px;border:1px solid var(--forest-800);border-radius:999px;background:var(--forest-800);color:#fff;font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Validar e ativar</button>
           </div>
         </form>
@@ -1656,7 +1715,7 @@ class Component extends DCLogic {
       POSITIVE: { label: 'Sinal positivo', color: '#9ec7b9' },
       WARNING: { label: 'Atenção', color: 'var(--gold-400)' },
       RISK: { label: 'Risco', color: '#ef9a91' },
-      LIMITATION: { label: 'Limitação da base', color: 'var(--mineral-300)' },
+      LIMITATION: { label: 'Limitação da base', color: 'var(--mineral-200)' },
       HYPOTHESIS: { label: 'Hipótese', color: '#9ec7b9' }
     };
     const analysisSignals = (sectionAnalysis.signals || []).map((signal) => ({
@@ -1762,6 +1821,36 @@ class Component extends DCLogic {
       fg: selectedKey === 'comp' && !focusPeriod ? 'var(--mineral-0)' : 'var(--forest-800)',
       border: selectedKey === 'comp' && !focusPeriod ? 'var(--forest-800)' : 'var(--border-strong)'
     });
+    /* -------------------------------------------------------------------
+       Mes corrente parcial.
+
+       A base de formulario chega antes das outras fontes. Em 07/08/2026 ela ja
+       tinha 7 dias de agosto enquanto marketing, closer e agenda paravam em
+       28/07. O painel dizia "julho" e nao havia nenhum sinal de que o mes
+       seguinte ja estava rodando.
+
+       A comparacao usa o MESMO numero de dias corridos do mes de referencia.
+       Comparar 7 dias contra 30 nao seria queda: seria aritmetica errada.
+       ------------------------------------------------------------------- */
+    const metricValue = (id) => {
+      const found = (snapshot.metrics || {})[id];
+      return found && found.value !== null && found.value !== undefined
+        ? found.value
+        : null;
+    };
+    const cmLeads = metricValue('form.current_month.leads.current');
+    const cmDays = metricValue('form.current_month.days.current');
+    const cmAverage = metricValue('form.current_month.daily_average.current');
+    const cmBaseline = metricValue('form.current_month.baseline_leads.current');
+    const cmPace = metricValue('form.current_month.pace.current');
+    const cmPeriod = (snapshot.metrics || {})['form.current_month.leads.current']?.period || '';
+    const integers = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 0 });
+    const oneDecimal = new Intl.NumberFormat('pt-BR', {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1
+    });
+    const hasCurrentMonth = cmLeads !== null && cmDays !== null;
+
     const periodRangeLabel = historyRows.length
       ? `${monthShort(historyRows[0].period)}–${monthShort(historyRows[historyRows.length - 1].period)} ${String(historyRows[0].period).slice(0, 4)}`
       : 'sem série';
@@ -1791,6 +1880,25 @@ class Component extends DCLogic {
       hasDecisions: (sectionAnalysis.decisions || []).length > 0,
       periodOptions,
       periodRangeLabel,
+      hasCurrentMonth,
+      currentMonthTitle: capitalize(formatPeriodLong(cmPeriod)),
+      currentMonthDaysLabel: cmDays === 1 ? '1 dia corrido' : `${cmDays} dias corridos`,
+      currentMonthLeads: cmLeads === null ? '—' : integers.format(cmLeads),
+      currentMonthAverage: cmAverage === null ? '—' : oneDecimal.format(cmAverage),
+      currentMonthBaseline: cmBaseline === null ? '—' : integers.format(cmBaseline),
+      baselineMonthShort: monthShort(snapshot.primaryPeriod || ''),
+      currentMonthPace: cmPace === null
+        ? 'sem base'
+        : `${cmPace >= 0 ? '+' : ''}${oneDecimal.format(cmPace * 100)}%`,
+      // Verde e coral vem dos tokens semanticos. A cor nunca carrega o sinal
+      // sozinha: o sinal de + ou - esta no proprio numero.
+      currentMonthPaceColor: cmPace === null
+        ? 'var(--mineral-600)'
+        : cmPace >= 0 ? 'var(--forest-700)' : 'var(--coral-700)',
+      currentMonthPaceNote: cmPace === null
+        ? 'sem recorte comparável'
+        : cmPace >= 0 ? 'acima do mesmo recorte' : 'abaixo do mesmo recorte',
+      currentMonthLimitation: `Só existe lead em ${formatPeriod(cmPeriod)}. Investimento, MQL, agendamento e receita ainda não têm fonte para este mês — as demais telas continuam em ${formatPeriod(snapshot.primaryPeriod)}.`,
       showImport: this.state.showImport,
       openImport: () => this.setState({ showImport: true }),
       closeImport: () => this.setState({ showImport: false }),

@@ -1,0 +1,660 @@
+/* ============================================================================
+   NATUÁ — SISTEMA DE MOVIMENTO (motion.css)
+   ----------------------------------------------------------------------------
+   Carrega DEPOIS dos tokens e ANTES do CSS inline da página.
+
+   Princípio: num dashboard executivo o movimento existe para explicar a mudança
+   de estado — de onde o número veio, o que acabou de aparecer, o que está sob o
+   cursor. Nada aqui é decorativo. Se a animação não responde "o que mudou?",
+   ela não deveria estar no arquivo.
+
+   Por que durações curtas: o médico abre este painel várias vezes por dia. O
+   que encanta na primeira visita irrita na vigésima. Teto de 480ms só para a
+   entrada inicial da tela; o resto vive entre 120ms e 260ms, faixa em que o
+   olho percebe continuidade sem perceber espera.
+
+   Por que só transform/opacity: são as duas propriedades que o browser resolve
+   no compositor, sem recalcular layout. Animar width/height/top numa grade de
+   KPIs derruba o frame rate justamente na hora em que os números aparecem.
+   ============================================================================ */
+
+:root {
+  /* --- Durações -----------------------------------------------------------
+     Escala de 3 degraus para não haver invenção de número solto no meio do
+     código. Quem for adicionar componente novo escolhe um destes, nunca "0,35s
+     porque ficou bom". Sistema de movimento é sistema justamente por isso. */
+  --motion-fast: 120ms;   /* resposta tátil: hover, foco, pressionar */
+  --motion-base: 200ms;   /* mudança de estado visível: card, linha, badge */
+  --motion-slow: 260ms;   /* entrada de conteúdo: cards, painéis, barras */
+  --motion-screen: 320ms; /* troca de tela — teto prático, nunca ultrapassar */
+
+  /* --- Atrasos do stagger -------------------------------------------------
+     58ms é o intervalo mínimo em que a leitura ainda percebe "um depois do
+     outro" em vez de "todos juntos". Abaixo disso vira ruído; acima de ~80ms a
+     grade parece lenta e o último card chega tarde demais. */
+  --motion-stagger: 58ms;
+
+  /* --- Curvas -------------------------------------------------------------
+     Nenhuma curva com overshoot (nada de back/elastic). Bounce em painel
+     clínico transmite brinquedo, não instrumento. */
+
+  /* Padrão da casa: sai rápido do repouso e desacelera longo no fim — dá
+     sensação de peso controlado, como porta com amortecedor. */
+  --ease-natua: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* Entrada de elemento que aparece: começa devagar, chega firme. Usada quando
+     o conteúdo "vem de fora" e precisa parecer que assentou. */
+  --ease-entrada: cubic-bezier(0.16, 0.84, 0.44, 1);
+
+  /* Saída: acelera e some. Ninguém precisa acompanhar o que está indo embora —
+     o custo de esperar a saída é atraso puro na percepção do que vem depois. */
+  --ease-saida: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Simétrica: para o que muda sem sair da tela (largura de barra, cor de
+     borda, translação de indicador). */
+  --ease-suave: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================================
+   1. ENTRADA ESCALONADA DOS CARTÕES DE KPI
+   ----------------------------------------------------------------------------
+   Deslocamento de 8px e opacidade. Sem scale — escala em cartão com borda de
+   1px faz a borda "engordar" durante a animação e entrega que é efeito.
+
+   Mira em três seletores de propósito:
+   · [data-metric]        → atributo que JÁ existe no HTML, funciona sem tocar nada
+   · .kpi-card            → classe opcional, para quem quiser explicitar
+   · .dashboard-content section > div  → fallback para a grade descrita no HTML
+   ============================================================================ */
+
+@keyframes natua-entrada-card {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+[data-metric],
+.kpi-card,
+.dashboard-content section[style*="grid"] > div {
+  animation: natua-entrada-card var(--motion-slow) var(--ease-entrada) both;
+  /* backface-visibility evita o "tremor" de subpixel em texto durante o
+     translate em telas não-retina — problema clássico em número grande. */
+  backface-visibility: hidden;
+}
+
+/* Atraso por posição. 10 posições cobrem a grade real; da 11ª em diante o
+   atraso congela no teto para que uma lista longa não demore a existir. */
+[data-metric]:nth-child(1),
+.kpi-card:nth-child(1),
+.dashboard-content section[style*="grid"] > div:nth-child(1) { animation-delay: 0ms; }
+
+[data-metric]:nth-child(2),
+.kpi-card:nth-child(2),
+.dashboard-content section[style*="grid"] > div:nth-child(2) { animation-delay: calc(var(--motion-stagger) * 1); }
+
+[data-metric]:nth-child(3),
+.kpi-card:nth-child(3),
+.dashboard-content section[style*="grid"] > div:nth-child(3) { animation-delay: calc(var(--motion-stagger) * 2); }
+
+[data-metric]:nth-child(4),
+.kpi-card:nth-child(4),
+.dashboard-content section[style*="grid"] > div:nth-child(4) { animation-delay: calc(var(--motion-stagger) * 3); }
+
+[data-metric]:nth-child(5),
+.kpi-card:nth-child(5),
+.dashboard-content section[style*="grid"] > div:nth-child(5) { animation-delay: calc(var(--motion-stagger) * 4); }
+
+[data-metric]:nth-child(6),
+.kpi-card:nth-child(6),
+.dashboard-content section[style*="grid"] > div:nth-child(6) { animation-delay: calc(var(--motion-stagger) * 5); }
+
+[data-metric]:nth-child(7),
+.kpi-card:nth-child(7),
+.dashboard-content section[style*="grid"] > div:nth-child(7) { animation-delay: calc(var(--motion-stagger) * 6); }
+
+[data-metric]:nth-child(8),
+.kpi-card:nth-child(8),
+.dashboard-content section[style*="grid"] > div:nth-child(8) { animation-delay: calc(var(--motion-stagger) * 7); }
+
+[data-metric]:nth-child(n + 9),
+.kpi-card:nth-child(n + 9),
+.dashboard-content section[style*="grid"] > div:nth-child(n + 9) { animation-delay: calc(var(--motion-stagger) * 8); }
+
+/* Blocos de contexto do mês seguem a mesma família, um degrau depois da grade,
+   para que a leitura vá do topo (números) para o detalhe (mês corrente). */
+.current-month {
+  animation: natua-entrada-card var(--motion-slow) var(--ease-entrada) both;
+  animation-delay: calc(var(--motion-stagger) * 3);
+}
+
+.current-month-stat {
+  animation: natua-entrada-card var(--motion-base) var(--ease-entrada) both;
+}
+.current-month-stat:nth-child(1) { animation-delay: calc(var(--motion-stagger) * 4); }
+.current-month-stat:nth-child(2) { animation-delay: calc(var(--motion-stagger) * 5); }
+.current-month-stat:nth-child(3) { animation-delay: calc(var(--motion-stagger) * 6); }
+.current-month-stat:nth-child(n + 4) { animation-delay: calc(var(--motion-stagger) * 7); }
+
+/* Linhas de lista: mesmo princípio, deslocamento menor (4px) porque linha fina
+   com 8px de curso parece que pulou. */
+@keyframes natua-entrada-linha {
+  from { opacity: 0; transform: translate3d(0, 4px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.snapshot-list-row {
+  animation: natua-entrada-linha var(--motion-base) var(--ease-entrada) both;
+}
+.snapshot-list-row:nth-child(1) { animation-delay: 0ms; }
+.snapshot-list-row:nth-child(2) { animation-delay: calc(var(--motion-stagger) * 0.5); }
+.snapshot-list-row:nth-child(3) { animation-delay: calc(var(--motion-stagger) * 1); }
+.snapshot-list-row:nth-child(4) { animation-delay: calc(var(--motion-stagger) * 1.5); }
+.snapshot-list-row:nth-child(5) { animation-delay: calc(var(--motion-stagger) * 2); }
+.snapshot-list-row:nth-child(n + 6) { animation-delay: calc(var(--motion-stagger) * 2.5); }
+
+/* ============================================================================
+   2. BARRAS CRESCENDO DA ORIGEM
+   ----------------------------------------------------------------------------
+   scaleX com origin à esquerda em vez de animar width: o browser não refaz
+   layout, e a barra cresce a partir do zero do eixo — que é a leitura correta
+   de "quanto foi", não "apareceu do nada já preenchida".
+
+   O tamanho final continua sendo definido por width (inline, vindo do dado). O
+   CSS só controla a REVELAÇÃO desse tamanho.
+   ============================================================================ */
+
+@keyframes natua-cresce-barra {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.snapshot-bar-fill {
+  transform-origin: left center;
+  animation: natua-cresce-barra var(--motion-slow) var(--ease-natua) both;
+  /* will-change só na barra: são poucos elementos e o ganho é real. Espalhar
+     will-change pela grade inteira gasta memória de GPU sem retorno. */
+  will-change: transform;
+}
+
+/* O trilho aparece antes do preenchimento — primeiro o eixo, depois o dado.
+   Sem isso a barra parece crescer no vazio. */
+.snapshot-bar-track {
+  animation: natua-entrada-linha var(--motion-fast) var(--ease-entrada) both;
+}
+
+/* Cada barra da lista herda o atraso da própria linha; este degrau extra faz o
+   preenchimento sair depois que o trilho já assentou. */
+.snapshot-list-row:nth-child(1) .snapshot-bar-fill { animation-delay: 60ms; }
+.snapshot-list-row:nth-child(2) .snapshot-bar-fill { animation-delay: 90ms; }
+.snapshot-list-row:nth-child(3) .snapshot-bar-fill { animation-delay: 120ms; }
+.snapshot-list-row:nth-child(4) .snapshot-bar-fill { animation-delay: 150ms; }
+.snapshot-list-row:nth-child(5) .snapshot-bar-fill { animation-delay: 180ms; }
+.snapshot-list-row:nth-child(n + 6) .snapshot-bar-fill { animation-delay: 210ms; }
+
+/* Quando o dado é atualizado sem recarregar a tela, o JS troca a width e
+   adiciona .is-updating por ~200ms — a barra reassenta em vez de saltar. */
+.snapshot-bar-fill.is-updating {
+  transition: transform var(--motion-base) var(--ease-suave);
+}
+
+/* ============================================================================
+   3. MICRO-INTERAÇÕES DE HOVER
+   ----------------------------------------------------------------------------
+   Regra: elevação e borda, nunca deslocamento perceptível. Um card que sobe
+   4px empurra a leitura do vizinho. 1px de translateY + escurecimento da borda
+   já comunica "isto responde ao cursor" sem mexer com a grade.
+
+   A sombra é verde-floresta com alfa baixo, não preto. Sombra preta sobre
+   fundo mineral quente suja o tom e dá aspecto de template genérico.
+   ============================================================================ */
+
+[data-metric],
+.kpi-card,
+.dashboard-content section[style*="grid"] > div,
+.insight-card,
+.snapshot-list-row,
+.current-month-stat {
+  transition:
+    transform var(--motion-fast) var(--ease-natua),
+    box-shadow var(--motion-base) var(--ease-natua),
+    border-color var(--motion-base) var(--ease-suave),
+    background-color var(--motion-base) var(--ease-suave);
+}
+
+[data-metric]:hover,
+.kpi-card:hover,
+.dashboard-content section[style*="grid"] > div:hover,
+.insight-card:hover {
+  transform: translate3d(0, -1px, 0);
+  border-color: var(--border-strong, var(--mineral-200));
+  box-shadow: 0 6px 18px -10px rgba(6, 19, 15, 0.22);
+}
+
+/* Linha de tabela/lista não eleva — linha que levanta rompe o alinhamento da
+   coluna vizinha. Ela só ganha fundo e um fio dourado à esquerda, que é a
+   assinatura Natuá aplicada com parcimônia. */
+.snapshot-list-row,
+.comparison-table-wrap tbody tr {
+  transition:
+    background-color var(--motion-fast) var(--ease-suave),
+    box-shadow var(--motion-fast) var(--ease-suave);
+}
+
+.snapshot-list-row:hover,
+.comparison-table-wrap tbody tr:hover {
+  background-color: var(--mineral-50);
+  box-shadow: inset 2px 0 0 0 var(--gold-400);
+}
+
+/* Célula individual do snapshot: realce discreto, só para não perder a linha
+   de leitura em tabela larga. */
+.snapshot-cell {
+  transition: background-color var(--motion-fast) var(--ease-suave);
+}
+
+.snapshot-cell:hover {
+  background-color: var(--gold-50);
+}
+
+/* Navegação: o indicador é a borda inferior, que cresce da esquerda. Botão de
+   nav não muda de tamanho no hover — texto que redimensiona reflui a barra
+   inteira e é o erro mais comum em nav de dashboard. */
+.dashboard-nav button,
+.period-switcher button {
+  position: relative;
+  transition:
+    color var(--motion-fast) var(--ease-suave),
+    background-color var(--motion-fast) var(--ease-suave),
+    border-color var(--motion-fast) var(--ease-suave);
+}
+
+.dashboard-nav button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--forest-600);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--motion-base) var(--ease-natua);
+  pointer-events: none;
+}
+
+.dashboard-nav button:hover::after {
+  transform: scaleX(1);
+}
+
+/* Aba ativa: o fio fica dourado e permanece. Adicionar .is-active (ou
+   aria-selected="true") no botão da seção corrente. */
+.dashboard-nav button.is-active::after,
+.dashboard-nav button[aria-selected="true"]::after,
+.dashboard-nav button[aria-current="page"]::after {
+  background: var(--gold-700);
+  transform: scaleX(1);
+}
+
+.period-switcher button:hover {
+  background-color: var(--mineral-100);
+}
+
+.period-switcher button.is-active,
+.period-switcher button[aria-pressed="true"] {
+  background-color: var(--forest-800);
+  color: var(--mineral-0);
+}
+
+/* Feedback de clique: 60ms de recuo. Existe porque em painel operado por
+   toque/trackpad o usuário precisa saber que o clique registrou antes do dado
+   chegar. É a única compressão de escala do arquivo — 0.5%, imperceptível
+   conscientemente, sentida na mão. */
+.dashboard-nav button:active,
+.period-switcher button:active {
+  transform: scale(0.995);
+  transition-duration: 60ms;
+}
+
+/* Badge de qualidade: aparece com o card e responde ao cursor sem chamar mais
+   atenção que o número que ele qualifica. */
+.quality-badge {
+  transition:
+    opacity var(--motion-fast) var(--ease-suave),
+    background-color var(--motion-fast) var(--ease-suave);
+  opacity: 0.88;
+}
+
+.quality-badge:hover,
+[data-metric]:hover .quality-badge,
+.kpi-card:hover .quality-badge {
+  opacity: 1;
+}
+
+/* Sinal de análise: quando o JS marca .is-new, o item pulsa UMA vez. Pulso
+   infinito em dashboard clínico vira ruído de fundo e deixa de significar
+   novidade em 10 segundos. */
+.analysis-signal {
+  transition: opacity var(--motion-base) var(--ease-suave);
+}
+
+@keyframes natua-pulso-unico {
+  0%   { opacity: 0.45; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+.analysis-signal.is-new {
+  animation: natua-pulso-unico 480ms var(--ease-suave) 1 both;
+}
+
+/* Lâmpada do insight: sem "brilho" e sem animação em repouso. Só ganha o tom
+   dourado cheio quando o card está sob o cursor — o insight se apresenta
+   quando o usuário demonstra interesse, não antes. */
+.insight-bulb {
+  transition:
+    color var(--motion-base) var(--ease-suave),
+    transform var(--motion-base) var(--ease-natua);
+}
+
+.insight-card:hover .insight-bulb,
+.insight-bulb:hover {
+  color: var(--gold-700);
+  transform: translate3d(0, -1px, 0);
+}
+
+/* .insight-pop já tem entrada própria definida em outro arquivo — aqui só
+   entram a SAÍDA e o comportamento de hover, que faltavam. Não redeclarar
+   animation de entrada: sobrescreveria o que já funciona. */
+.insight-pop {
+  transition:
+    opacity var(--motion-fast) var(--ease-saida),
+    transform var(--motion-fast) var(--ease-saida);
+}
+
+.insight-pop.is-leaving {
+  opacity: 0;
+  transform: translate3d(0, -4px, 0);
+}
+
+/* Dropzone de importação: a única superfície do painel que pode reagir com
+   mais energia, porque é ação destrutiva-adjacente (substitui dados) e precisa
+   confirmar visualmente que o arquivo está no alvo certo. Ainda assim: sem
+   scale, só borda e fundo. */
+.import-dropzone {
+  transition:
+    border-color var(--motion-base) var(--ease-suave),
+    background-color var(--motion-base) var(--ease-suave),
+    box-shadow var(--motion-base) var(--ease-suave);
+}
+
+.import-dropzone:hover {
+  border-color: var(--forest-600);
+  background-color: var(--mineral-50);
+}
+
+.import-dropzone.is-dragover {
+  border-color: var(--forest-700);
+  background-color: var(--forest-50);
+  box-shadow: inset 0 0 0 1px var(--forest-600);
+}
+
+/* Estado de processamento: varredura horizontal lenta e de baixo contraste.
+   Comunica "trabalhando" sem spinner — spinner em área grande transmite
+   travamento, varredura transmite progresso. */
+@keyframes natua-varredura {
+  from { transform: translate3d(-100%, 0, 0); }
+  to   { transform: translate3d(100%, 0, 0); }
+}
+
+.import-dropzone.is-processing {
+  position: relative;
+  overflow: hidden;
+}
+
+.import-dropzone.is-processing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(206, 182, 111, 0.14) 50%,
+    transparent 100%
+  );
+  animation: natua-varredura 1200ms var(--ease-suave) infinite;
+  pointer-events: none;
+}
+
+/* ============================================================================
+   4. TRANSIÇÃO ENTRE TELAS
+   ----------------------------------------------------------------------------
+   O erro comum é fazer a tela antiga sumir e a nova aparecer com fade cruzado:
+   dá "pisca" e por um instante existem dois conteúdos sobrepostos.
+
+   Aqui a troca é sequencial e curta: o conteúdo antigo sai (rápido, ninguém
+   precisa vê-lo), o novo entra com 6px de deslocamento vertical. Como o stagger
+   dos cards roda em cima disso, a tela nova se monta sozinha — não é preciso
+   nenhuma outra animação de contêiner.
+
+   Uso no JS: adicionar .is-exiting antes de trocar o conteúdo; remover depois.
+   ============================================================================ */
+
+@keyframes natua-entrada-tela {
+  from { opacity: 0; transform: translate3d(0, 6px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.dashboard-content {
+  animation: natua-entrada-tela var(--motion-screen) var(--ease-entrada) both;
+}
+
+.dashboard-content.is-exiting {
+  opacity: 0;
+  transform: translate3d(0, -4px, 0);
+  transition:
+    opacity var(--motion-fast) var(--ease-saida),
+    transform var(--motion-fast) var(--ease-saida);
+  /* Trava a interação durante a saída: clique em botão que está desaparecendo
+     gera ação na tela errada. */
+  pointer-events: none;
+}
+
+/* Tabela comparativa entra depois da tela, como bloco denso que é. Fade sem
+   deslocamento — tabela que desliza parece desalinhada com o cabeçalho. */
+.comparison-table-wrap {
+  animation: natua-fade-simples var(--motion-slow) var(--ease-entrada) both;
+  animation-delay: calc(var(--motion-stagger) * 2);
+}
+
+@keyframes natua-fade-simples {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================================
+   5. ODÔMETRO DE NÚMEROS — SUPORTE CSS
+   ----------------------------------------------------------------------------
+   ESTE ARQUIVO NÃO CONTÉM JS. O que existe aqui é só o suporte visual para a
+   contagem que o JS fará.
+
+   COMO USAR
+   ---------
+   1. O JS que anima o valor adiciona a classe .is-counting no elemento
+      (.current-month-value, ou qualquer nó com [data-metric] no valor) antes de
+      começar a incrementar, e REMOVE ao terminar.
+   2. Enquanto .is-counting está presente, o CSS aqui trava a largura por
+      caractere (font-variant-numeric: tabular-nums) e suaviza a troca de
+      dígito. Sem tabular-nums o número "pula" de largura a cada frame — é o
+      que faz odômetro caseiro parecer defeito, não animação.
+   3. Ao remover a classe, o valor final assenta com um leve realce
+      (.has-counted, opcional, 1 ciclo).
+
+   Por que tabular-nums é o item mais importante daqui: a contagem sobe de 0 a
+   1.284 em ~600ms. Se cada dígito tiver largura própria, o bloco inteiro treme
+   lateralmente e arrasta o layout dos vizinhos. Um número que treme comunica
+   instabilidade do dado — exatamente o oposto do que o painel precisa dizer.
+   ============================================================================ */
+
+.current-month-value,
+[data-metric] .value,
+.is-counting {
+  /* tabular-nums também vale FORA da contagem: mantém a coluna de KPIs
+     alinhada quando o dado é atualizado sem animação. */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.is-counting {
+  /* Reserva o espaço do maior valor previsto para que a caixa não cresça
+     durante a contagem. O JS deve definir min-width inline quando souber o
+     valor final; este é o piso de segurança. */
+  display: inline-block;
+  color: var(--forest-700);
+  transition: color var(--motion-base) var(--ease-suave);
+}
+
+/* Enquanto conta, o dígito não recebe transição de opacidade nenhuma: qualquer
+   fade por frame vira borrão em contagem rápida. O movimento percebido vem do
+   próprio número mudando, não de efeito adicional. */
+.is-counting * {
+  transition: none;
+}
+
+/* Assentamento: aplicar .has-counted por ~300ms ao terminar a contagem.
+   Um único clarear da cor sinaliza "este valor terminou de atualizar" — útil
+   quando só alguns KPIs mudam num refresh parcial. */
+@keyframes natua-assenta-numero {
+  0%   { color: var(--gold-700); }
+  100% { color: inherit; }
+}
+
+.has-counted {
+  animation: natua-assenta-numero 300ms var(--ease-suave) 1 both;
+}
+
+/* ============================================================================
+   6. FOCO DE TECLADO
+   ----------------------------------------------------------------------------
+   :focus-visible, não :focus — o anel só aparece para quem navega por teclado.
+   Mostrar anel no clique de mouse é o motivo pelo qual times acabam removendo
+   o outline por completo e quebrando a acessibilidade inteira.
+
+   O anel não anima de tamanho: cresce em opacidade. Anel que expande num
+   dashboard cheio de bordas lê como erro de renderização.
+   ============================================================================ */
+
+.dashboard-nav button:focus-visible,
+.period-switcher button:focus-visible,
+.import-dropzone:focus-visible,
+.insight-card:focus-visible,
+.snapshot-list-row:focus-visible,
+.quality-badge:focus-visible,
+[data-metric]:focus-visible,
+.kpi-card:focus-visible,
+a:focus-visible,
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--forest-600));
+  outline-offset: 2px;
+  border-radius: inherit;
+  transition: outline-color var(--motion-fast) var(--ease-suave);
+}
+
+/* Fundo escuro (barra floresta): o anel verde some contra o próprio verde.
+   Trocar para dourado mantém o contraste sem introduzir cor de fora da paleta. */
+.dashboard-nav button:focus-visible {
+  outline-color: var(--gold-400);
+}
+
+/* Utilitário de foco programático: aplicar .focus-flash quando o JS mover o
+   foco para uma região (ex.: após importar, focar o resumo). Um pulso curto
+   evita que o usuário perca de vista para onde o foco foi. */
+.focus-flash {
+  animation: natua-pulso-unico 320ms var(--ease-suave) 1 both;
+}
+
+/* ============================================================================
+   7. PREFERS-REDUCED-MOTION
+   ----------------------------------------------------------------------------
+   Obrigatório e não negociável. Parte do público deste painel tem enxaqueca
+   vestibular ou sensibilidade a movimento — para essas pessoas, animação não é
+   refinamento, é sintoma.
+
+   Desliga MOVIMENTO, não FEEDBACK: cor, borda e sombra continuam mudando no
+   hover e no foco, então o painel segue respondendo ao cursor e ao teclado.
+   Isto é o único bloco do arquivo com !important, e ele existe justamente para
+   vencer o CSS inline da página, que carrega depois deste arquivo.
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Nada pode ficar preso em opacidade 0 ou deslocado: com a animação zerada,
+     o estado final precisa ser o estado visível. */
+  [data-metric],
+  .kpi-card,
+  .dashboard-content,
+  .dashboard-content section[style*="grid"] > div,
+  .current-month,
+  .current-month-stat,
+  .snapshot-list-row,
+  .snapshot-bar-track,
+  .comparison-table-wrap,
+  .insight-pop {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* A barra precisa aparecer no tamanho final, sem crescer. */
+  .snapshot-bar-fill {
+    transform: scaleX(1) !important;
+    animation: none !important;
+    will-change: auto !important;
+  }
+
+  /* Elevação de hover vira só borda e sombra — o card não se move. */
+  [data-metric]:hover,
+  .kpi-card:hover,
+  .dashboard-content section[style*="grid"] > div:hover,
+  .insight-card:hover,
+  .insight-card:hover .insight-bulb {
+    transform: none !important;
+  }
+
+  /* Indicador de nav aparece inteiro em vez de crescer da esquerda. */
+  .dashboard-nav button::after {
+    transition: none !important;
+  }
+  .dashboard-nav button:hover::after,
+  .dashboard-nav button.is-active::after,
+  .dashboard-nav button[aria-selected="true"]::after,
+  .dashboard-nav button[aria-current="page"]::after {
+    transform: scaleX(1) !important;
+  }
+
+  /* Varredura de processamento é justamente o padrão que mais incomoda quem
+     tem sensibilidade a movimento: remover por completo. O estado continua
+     sendo comunicado pela borda e pelo fundo do dropzone. */
+  .import-dropzone.is-processing::after {
+    display: none !important;
+  }
+
+  /* Sem odômetro: o JS deve checar
+     window.matchMedia('(prefers-reduced-motion: reduce)').matches
+     e escrever o valor final direto. O CSS aqui só garante que, se a contagem
+     rodar mesmo assim, ela não introduza efeito adicional. */
+  .is-counting,
+  .has-counted,
+  .analysis-signal.is-new,
+  .focus-flash {
+    animation: none !important;
+  }
+}

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "importId": "2026-08-07-4c188153-c54b-45d5-bc5d-1a0afe1a0718",
-  "generatedAt": "2026-08-07T20:29:35.484Z",
+  "importId": "2026-08-07-0a5fc774-c6fd-4c80-bedd-e56f8b65ba0f",
+  "generatedAt": "2026-08-07T20:37:54.670Z",
   "skill": "natua-data-analyst",
   "sections": [
     {
@@ -402,7 +402,8 @@
         "A aba cobre dias fora de 2026-07; a serie diaria mostra tudo, os totais do painel nao.",
         "Ha categorias sem coluna de receita na planilha; o faturamento delas fica SEM_BASE.",
         "Financeiro em 2026-05, defasado do painel principal 2026-07.",
-        "Contagem fracionaria em form.daily_average.current; confira se a celula e uma media."
+        "Contagem fracionaria em form.daily_average.current; confira se a celula e uma media.",
+        "Contagem fracionaria em form.current_month.daily_average.current; confira se a celula e uma media."
       ],
       "sourceRefs": [
         "marketing:2026-07",

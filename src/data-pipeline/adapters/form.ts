@@ -250,8 +250,38 @@ export function adaptForm(
   }
 
   // -------------------------------------------------------------------------
-  // Status, plataforma e atribuicao.
+  // Mes corrente parcial.
+  //
+  // A base de formulario chega antes das outras: em 2026-08-07 ela ja tinha 7
+  // dias de agosto enquanto marketing, closer e agenda paravam em 28/07. Isso
+  // permite ler o mes que esta acontecendo — desde que fique explicito que so
+  // existe LEAD, e nao investimento, MQL ou receita.
+  //
+  // A comparacao e feita contra o MESMO recorte de dias do periodo do painel,
+  // nunca contra o mes fechado inteiro: 7 dias contra 30 nao e queda, e
+  // aritmetica errada.
   // -------------------------------------------------------------------------
+  const overflowDays = sortedDays.filter(
+    (day) => day.slice(0, 7) !== periodHint,
+  );
+  const currentMonth = overflowDays.length
+    ? overflowDays[overflowDays.length - 1].slice(0, 7)
+    : null;
+  const currentMonthDays = currentMonth
+    ? sortedDays.filter((day) => day.slice(0, 7) === currentMonth)
+    : [];
+  const currentMonthLeads = currentMonthDays.reduce(
+    (sum, day) => sum + (byDay.get(day) ?? 0),
+    0,
+  );
+  // Mesmo numero de dias corridos no periodo de referencia, a partir do dia 1.
+  const baselineDays = sortedDays
+    .filter((day) => day.slice(0, 7) === periodHint)
+    .slice(0, currentMonthDays.length);
+  const baselineLeads = baselineDays.reduce(
+    (sum, day) => sum + (byDay.get(day) ?? 0),
+    0,
+  );
   const statuses = tally(
     records.map((row) =>
       statusColumn ? normalizeText(row[statusColumn.index]) || "VAZIO" : "SEM CAMPO",
@@ -379,6 +409,75 @@ export function adaptForm(
       sheet: sheetName,
     }),
   ];
+
+  if (currentMonth) {
+    metrics.push(
+      metric({
+        id: "form.current_month.leads.current",
+        label: `Leads do mes corrente (${currentMonth}, parcial)`,
+        value: currentMonthLeads,
+        unit: "COUNT",
+        period: currentMonth,
+        source: "form",
+        sheet: sheetName,
+        note: `Parcial de ${currentMonthDays.length} dia(s). So existe lead: investimento, MQL e receita de ${currentMonth} ainda nao tem fonte.`,
+      }),
+      metric({
+        id: "form.current_month.days.current",
+        label: "Dias corridos do mes corrente",
+        value: currentMonthDays.length,
+        unit: "COUNT",
+        period: currentMonth,
+        source: "form",
+        sheet: sheetName,
+      }),
+      metric({
+        id: "form.current_month.daily_average.current",
+        label: "Media diaria do mes corrente",
+        value: currentMonthDays.length
+          ? currentMonthLeads / currentMonthDays.length
+          : null,
+        unit: "COUNT",
+        period: currentMonth,
+        source: "form",
+        sheet: sheetName,
+        formula:
+          "form.current_month.leads.current / form.current_month.days.current",
+        dependencies: [
+          "form.current_month.leads.current",
+          "form.current_month.days.current",
+        ],
+      }),
+      metric({
+        id: "form.current_month.baseline_leads.current",
+        label: `Leads nos mesmos ${currentMonthDays.length} dias de ${periodHint}`,
+        value: baselineDays.length ? baselineLeads : null,
+        unit: "COUNT",
+        period: periodHint,
+        source: "form",
+        sheet: sheetName,
+        note: baselineDays.length
+          ? "Mesmo numero de dias corridos, para a comparacao ser justa."
+          : "O periodo de referencia nao tem dias suficientes para comparar.",
+      }),
+      metric({
+        id: "form.current_month.pace.current",
+        label: "Ritmo do mes corrente vs mesmo recorte anterior",
+        value: baselineLeads ? currentMonthLeads / baselineLeads - 1 : null,
+        unit: "PERCENT",
+        period: currentMonth,
+        source: "form",
+        sheet: sheetName,
+        formula:
+          "form.current_month.leads.current / form.current_month.baseline_leads.current - 1",
+        dependencies: [
+          "form.current_month.leads.current",
+          "form.current_month.baseline_leads.current",
+        ],
+        note: "Variacao pode ser negativa; nao e uma taxa de 0 a 100%.",
+      }),
+    );
+  }
 
   for (const [platform, count] of platforms) {
     metrics.push(

@@ -52,6 +52,20 @@ const SIGNED_COST_METRICS = new Set([
   "finance.fixed_expenses_rate.current",
 ]);
 
+/**
+ * Metricas de VARIACAO. Elas usam a unidade PERCENT mas nao sao uma proporcao
+ * de um todo: sao "quanto mudou". Cair 30% e -0,305 e subir 40% e +0,40 — os
+ * dois legitimos, nenhum limitado a 0–100%.
+ *
+ * Sem esta distincao, o gate de dominio reprovaria toda queda. E gate que
+ * reprova o caso correto vira ruido, e ruido treina todo mundo a ignora-lo.
+ */
+const VARIATION_METRIC = /\.(pace|delta|variation|growth|change)\./;
+
+function isSignedPercent(id: string): boolean {
+  return SIGNED_COST_METRICS.has(id) || VARIATION_METRIC.test(id);
+}
+
 function valueOf(
   metrics: Record<string, DashboardMetric>,
   id: string,
@@ -255,24 +269,38 @@ function checkDomains(
       continue;
     }
 
-    const signedCost = SIGNED_COST_METRICS.has(item.id);
+    const signedCost = isSignedPercent(item.id);
 
     // Taxa acima de 100% quase sempre significa denominador errado. O gate
     // aceita ate 1 exato; 1,0000001 de ponto flutuante entra na tolerancia.
     // Taxas de custo do DRE sao conferidas pelo limite inferior invertido.
     if (item.unit === "PERCENT") {
-      const low = signedCost ? -1 - ABSOLUTE_TOLERANCE : -ABSOLUTE_TOLERANCE;
-      const high = signedCost ? ABSOLUTE_TOLERANCE : 1 + ABSOLUTE_TOLERANCE;
-      if (item.value < low || item.value > high) {
-        issues.push({
-          severity: "CRITICAL",
-          code: "LOGIC_RATE_OUT_OF_RANGE",
-          message: signedCost
-            ? `Taxa de custo com sinal invertido em ${item.id}; a convencao do DRE e negativa.`
-            : `Taxa fora do intervalo 0–100% em ${item.id}.`,
-          source: item.source,
-          details: { metric: item.id, value: item.value },
-        });
+      if (VARIATION_METRIC.test(item.id)) {
+        // Variacao nao tem teto nem piso naturais; so um valor absurdo denuncia
+        // erro de escala (ex.: cair 100x seria -99, nao -0,99).
+        if (Math.abs(item.value) > 100) {
+          issues.push({
+            severity: "WARNING",
+            code: "LOGIC_VARIATION_IMPLAUSIBLE",
+            message: `Variacao de ${(item.value * 100).toFixed(0)}% em ${item.id}; confira a escala.`,
+            source: item.source,
+            details: { metric: item.id, value: item.value },
+          });
+        }
+      } else {
+        const low = signedCost ? -1 - ABSOLUTE_TOLERANCE : -ABSOLUTE_TOLERANCE;
+        const high = signedCost ? ABSOLUTE_TOLERANCE : 1 + ABSOLUTE_TOLERANCE;
+        if (item.value < low || item.value > high) {
+          issues.push({
+            severity: "CRITICAL",
+            code: "LOGIC_RATE_OUT_OF_RANGE",
+            message: signedCost
+              ? `Taxa de custo com sinal invertido em ${item.id}; a convencao do DRE e negativa.`
+              : `Taxa fora do intervalo 0–100% em ${item.id}.`,
+            source: item.source,
+            details: { metric: item.id, value: item.value },
+          });
+        }
       }
     }
 

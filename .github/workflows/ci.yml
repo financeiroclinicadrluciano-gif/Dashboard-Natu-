@@ -41,6 +41,12 @@ jobs:
       - name: Gate de arquivos proibidos, segredos e PII
         run: npm run check:secrets
 
+      # Tres agentes escrevem CSS em arquivos separados. Um referenciar um token
+      # que outro nao declarou nao quebra o CSS — o navegador usa o fallback em
+      # silencio e o sistema visual deixa de ser um sistema.
+      - name: Gate de tokens CSS orfaos
+        run: npm run check:tokens
+
       - name: Typecheck
         run: npm run lint
 

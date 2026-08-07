@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "importId": "2026-08-07-4c188153-c54b-45d5-bc5d-1a0afe1a0718",
-  "generatedAt": "2026-08-07T20:29:35.484Z",
+  "importId": "2026-08-07-0a5fc774-c6fd-4c80-bedd-e56f8b65ba0f",
+  "generatedAt": "2026-08-07T20:37:54.670Z",
   "primaryPeriod": "2026-07",
   "validation": {
     "status": "APPROVED",
@@ -71,6 +71,16 @@
         "details": {
           "metric": "form.daily_average.current",
           "value": 44.78378378378378
+        }
+      },
+      {
+        "severity": "WARNING",
+        "code": "LOGIC_FRACTIONAL_COUNT",
+        "message": "Contagem fracionaria em form.current_month.daily_average.current; confira se a celula e uma media.",
+        "source": "form",
+        "details": {
+          "metric": "form.current_month.daily_average.current",
+          "value": 29.571428571428573
         }
       }
     ]
@@ -1627,6 +1637,77 @@
       "formula": null,
       "dependencies": [],
       "note": null
+    },
+    "form.current_month.leads.current": {
+      "id": "form.current_month.leads.current",
+      "label": "Leads do mes corrente (2026-08, parcial)",
+      "value": 207,
+      "unit": "COUNT",
+      "status": "VALIDATED",
+      "period": "2026-08",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": null,
+      "dependencies": [],
+      "note": "Parcial de 7 dia(s). So existe lead: investimento, MQL e receita de 2026-08 ainda nao tem fonte."
+    },
+    "form.current_month.days.current": {
+      "id": "form.current_month.days.current",
+      "label": "Dias corridos do mes corrente",
+      "value": 7,
+      "unit": "COUNT",
+      "status": "VALIDATED",
+      "period": "2026-08",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": null,
+      "dependencies": [],
+      "note": null
+    },
+    "form.current_month.daily_average.current": {
+      "id": "form.current_month.daily_average.current",
+      "label": "Media diaria do mes corrente",
+      "value": 29.571428571428573,
+      "unit": "COUNT",
+      "status": "VALIDATED",
+      "period": "2026-08",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": "form.current_month.leads.current / form.current_month.days.current",
+      "dependencies": [
+        "form.current_month.leads.current",
+        "form.current_month.days.current"
+      ],
+      "note": null
+    },
+    "form.current_month.baseline_leads.current": {
+      "id": "form.current_month.baseline_leads.current",
+      "label": "Leads nos mesmos 7 dias de 2026-07",
+      "value": 298,
+      "unit": "COUNT",
+      "status": "VALIDATED",
+      "period": "2026-07",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": null,
+      "dependencies": [],
+      "note": "Mesmo numero de dias corridos, para a comparacao ser justa."
+    },
+    "form.current_month.pace.current": {
+      "id": "form.current_month.pace.current",
+      "label": "Ritmo do mes corrente vs mesmo recorte anterior",
+      "value": -0.30536912751677847,
+      "unit": "PERCENT",
+      "status": "VALIDATED",
+      "period": "2026-08",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": "form.current_month.leads.current / form.current_month.baseline_leads.current - 1",
+      "dependencies": [
+        "form.current_month.leads.current",
+        "form.current_month.baseline_leads.current"
+      ],
+      "note": "Variacao pode ser negativa; nao e uma taxa de 0 a 100%."
     },
     "form.platform.instagram.current": {
       "id": "form.platform.instagram.current",

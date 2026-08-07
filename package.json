@@ -14,7 +14,8 @@
     "dashboard:update": "tsx src/data-pipeline/cli.ts update",
     "dashboard:update:check": "tsx src/data-pipeline/cli.ts check",
     "dashboard:rollback": "tsx src/data-pipeline/cli.ts rollback",
-    "docs:metricas": "python3 scripts/gerar-dicionario-metricas.py"
+    "docs:metricas": "python3 scripts/gerar-dicionario-metricas.py",
+    "check:tokens": "python3 scripts/auditar-tokens-css.py"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
