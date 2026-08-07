@@ -90,6 +90,62 @@
   .quality-badge-critical { background:var(--coral-100);color:var(--coral-700); }
   [data-metric][data-empty="true"] { color:var(--coral-700) !important;font-style:italic; }
   @keyframes content-in { from { opacity:0;transform:translateY(8px); } to { opacity:1;transform:none; } }
+
+  /* ---------------------------------------------------------------------
+     Lampada de insight + balao de vidro fosco.
+     Substitui o antigo alternador "Dados / Analise": a analise deixou de ser
+     um modo de tela e virou um detalhe que se consulta sem sair do numero.
+     --------------------------------------------------------------------- */
+  .insight-bulb { position:relative;display:inline-grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid rgb(213 179 88 / 42%);border-radius:50%;background:
+    radial-gradient(circle at 50% 32%, rgb(213 179 88 / 22%), transparent 70%), rgb(255 253 248 / 84%);
+    cursor:pointer;transition:transform 200ms cubic-bezier(.2,0,0,1),box-shadow 200ms cubic-bezier(.2,0,0,1),border-color 200ms; }
+  .insight-bulb:hover { transform:translateY(-1px);border-color:rgb(213 179 88 / 78%);box-shadow:0 8px 22px rgb(148 122 52 / 20%); }
+  .insight-bulb[aria-expanded="true"] { background:var(--forest-800);border-color:var(--forest-800);box-shadow:0 8px 24px rgb(13 70 56 / 26%); }
+  .insight-bulb[aria-expanded="true"] .insight-bulb-icon { color:var(--gold-400); }
+  .insight-bulb-icon { width:21px;height:21px;color:var(--gold-700);transition:color 200ms; }
+  /* O halo pulsa devagar so para dizer "tem leitura aqui". Some com
+     prefers-reduced-motion e nunca pisca. */
+  .insight-bulb-halo { position:absolute;inset:-5px;border-radius:50%;border:1px solid rgb(213 179 88 / 46%);opacity:0;animation:bulb-halo 3.6s cubic-bezier(.2,0,0,1) infinite;pointer-events:none; }
+  @keyframes bulb-halo { 0% { opacity:.55;transform:scale(.86); } 62% { opacity:0;transform:scale(1.22); } 100% { opacity:0;transform:scale(1.22); } }
+
+  .insight-scrim { position:fixed;inset:0;z-index:60;background:rgb(6 19 15 / 26%);backdrop-filter:blur(2px);animation:scrim-in 220ms cubic-bezier(.2,0,0,1) both; }
+  @keyframes scrim-in { from { opacity:0; } to { opacity:1; } }
+
+  .insight-pop { position:fixed;z-index:61;top:96px;right:28px;width:min(430px,calc(100vw - 40px));max-height:min(74vh,660px);overflow:auto;padding:24px 24px 22px;border:1px solid rgb(255 255 255 / 22%);border-radius:18px;
+    background:linear-gradient(150deg, rgb(12 48 39 / 82%) 0%, rgb(9 36 30 / 88%) 100%);
+    backdrop-filter:blur(26px) saturate(150%);
+    -webkit-backdrop-filter:blur(26px) saturate(150%);
+    box-shadow:0 30px 80px rgb(5 28 24 / 42%), inset 0 1px 0 rgb(255 255 255 / 16%);
+    color:var(--mineral-50);
+    transform-origin:top right;
+    animation:insight-in 320ms cubic-bezier(.16,1,.3,1) both; }
+  @keyframes insight-in {
+    from { opacity:0;transform:translateY(-10px) scale(.94); }
+    to { opacity:1;transform:none; }
+  }
+  /* Brilho de vidro: uma faixa clara no topo, como reflexo. */
+  .insight-pop::before { content:"";position:absolute;left:0;right:0;top:0;height:96px;border-radius:18px 18px 0 0;background:linear-gradient(180deg, rgb(255 255 255 / 11%), transparent);pointer-events:none; }
+  .insight-pop > * { position:relative;z-index:1; }
+  .insight-pop-arrow { position:absolute;top:-7px;right:34px;width:14px;height:14px;transform:rotate(45deg);border-left:1px solid rgb(255 255 255 / 22%);border-top:1px solid rgb(255 255 255 / 22%);background:rgb(12 48 39 / 86%);backdrop-filter:blur(26px);border-radius:3px 0 0 0; }
+  .insight-pop-head { display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px; }
+  .insight-pop-close { display:grid;place-items:center;width:28px;height:28px;flex-shrink:0;border:1px solid rgb(255 255 255 / 18%);border-radius:50%;background:rgb(255 255 255 / 7%);color:var(--mineral-50);font-size:15px;line-height:1;cursor:pointer;transition:background-color 160ms; }
+  .insight-pop-close:hover { background:rgb(255 255 255 / 15%); }
+  .insight-pop-headline { font-family:var(--font-display);font-size:19px;font-weight:500;line-height:1.3;letter-spacing:-.01em;color:#fffdf8;margin:0 0 16px; }
+  .insight-card { padding:14px 15px;border:1px solid rgb(255 255 255 / 13%);border-radius:11px;background:rgb(255 255 255 / 6%);margin-bottom:9px; }
+  .insight-card:last-of-type { margin-bottom:0; }
+  .insight-card-label { display:flex;align-items:center;gap:7px;font-size:9px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--gold-400);margin:0 0 7px; }
+  .insight-card-evidence { font-family:var(--font-mono,ui-monospace,monospace);font-size:11px;line-height:1.5;color:var(--gold-100);margin:0 0 6px; }
+  .insight-card-copy { font-size:12.5px;line-height:1.6;color:var(--mineral-50);margin:0; }
+  .insight-section-title { font-size:9px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-400);margin:18px 0 9px; }
+  .insight-foot { margin:18px 0 0;padding-top:13px;border-top:1px solid rgb(255 255 255 / 12%);font-size:10.5px;line-height:1.6;color:var(--mineral-400); }
+  @media (max-width: 560px) {
+    .insight-pop { top:auto;bottom:14px;right:14px;left:14px;width:auto;max-height:76vh;transform-origin:bottom center; }
+    .insight-pop-arrow { display:none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .insight-bulb-halo { animation:none;opacity:0; }
+    .insight-pop,.insight-scrim { animation:none; }
+  }
   @media (max-width: 860px) {
     .dashboard-shell { grid-template-columns:minmax(0,1fr) !important;width:100%; }
     .dashboard-sidebar { position:static !important;height:auto !important;padding:18px 16px !important;gap:16px !important;min-width:0;width:100%;max-width:100%; }
@@ -154,27 +210,63 @@
         <p style="font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mineral-600);margin:0 0 8px">Natuá MedSpa · dados validados de {{ primaryPeriodLong }}</p>
         <h1 style="font-family:var(--font-display);font-size:32px;font-weight:500;line-height:1.1;margin:0;color:var(--mineral-900)">Dashboard executivo semanal</h1>
       </div>
-      <div class="dashboard-header-actions" style="display:flex;align-items:center;gap:14px">
-        <div style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
-          <span style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-500)">Modo de leitura</span>
-          <div class="view-switch" role="group" aria-label="Alternar entre dados e análise">
-            <button type="button" onClick="{{ setDataMode }}" style="background:{{ dataModeBg }};color:{{ dataModeFg }};box-shadow:{{ dataModeShadow }}">Dados</button>
-            <button type="button" onClick="{{ setAnalysisMode }}" style="background:{{ analysisModeBg }};color:{{ analysisModeFg }};box-shadow:{{ analysisModeShadow }}">Análise</button>
+      <div class="dashboard-header-actions" style="display:flex;align-items:flex-end;gap:14px">
+        <div class="period-switcher" style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+          <span style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600)">Período · {{ periodRangeLabel }}</span>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end" role="group" aria-label="Selecionar período em leitura">
+            <sc-for list="{{ periodOptions }}" as="opt" hint-placeholder-count="6">
+              <button type="button" onClick="{{ opt.go }}" title="{{ opt.title }}" style="padding:7px 12px;border-radius:999px;border:1px solid {{ opt.border }};background:{{ opt.bg }};color:{{ opt.fg }};font-family:var(--font-sans);font-size:11.5px;font-weight:600;cursor:pointer;transition:background-color 160ms,color 160ms,border-color 160ms">{{ opt.label }}</button>
+            </sc-for>
           </div>
         </div>
-        <sc-if value="{{ showPeriodControls }}" hint-placeholder-val="{{ true }}">
-          <div class="period-switcher" style="display:flex;flex-direction:column;gap:4px;align-items:flex-end">
-            <span style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--mineral-600)">Período em leitura</span>
-            <div style="display:flex;gap:6px">
-              <button type="button" onClick="{{ setJul }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pjBorder }};background:{{ pjBg }};color:{{ pjFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">{{ currentPeriodButton }}</button>
-              <button type="button" onClick="{{ setJun }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pnBorder }};background:{{ pnBg }};color:{{ pnFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">{{ previousPeriodButton }}</button>
-              <button type="button" onClick="{{ setComp }}" style="padding:7px 13px;border-radius:999px;border:1px solid {{ pcBorder }};background:{{ pcBg }};color:{{ pcFg }};font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">{{ comparisonPeriodButton }}</button>
-            </div>
-          </div>
-        </sc-if>
+        <button type="button" class="insight-bulb" onClick="{{ toggleInsight }}" aria-expanded="{{ insightExpanded }}" aria-label="Ver a leitura desta tela">
+          <span class="insight-bulb-halo"></span>
+          <svg class="insight-bulb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18h6"></path>
+            <path d="M10 21.5h4"></path>
+            <path d="M12 2.5a6.5 6.5 0 0 0-3.9 11.7c.6.45.9 1.05.9 1.7v.6h6v-.6c0-.65.3-1.25.9-1.7A6.5 6.5 0 0 0 12 2.5Z"></path>
+          </svg>
+        </button>
         <button type="button" onClick="{{ openImport }}" style="padding:11px 16px;border-radius:999px;border:1px solid var(--forest-800);background:var(--forest-800);color:var(--mineral-0);box-shadow:0 8px 20px rgb(13 70 56 / 18%);font-family:var(--font-sans);font-size:12px;font-weight:600;cursor:pointer">Atualizar dados</button>
       </div>
     </header>
+
+    <sc-if value="{{ insightOpen }}">
+      <div class="insight-scrim" onClick="{{ closeInsight }}" aria-hidden="true"></div>
+      <div class="insight-pop" role="dialog" aria-modal="false" aria-label="Leitura desta tela">
+        <span class="insight-pop-arrow" aria-hidden="true"></span>
+        <div class="insight-pop-head">
+          <div>
+            <p style="display:flex;align-items:center;gap:8px;font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-400);margin:0 0 4px"><span class="analysis-dot"></span>{{ analysisScreenLabel }}</p>
+            <p style="font-size:10.5px;color:var(--mineral-400);margin:0">Confiança {{ analysisConfidenceLabel }} · {{ analysisPeriod }}</p>
+          </div>
+          <button type="button" class="insight-pop-close" onClick="{{ closeInsight }}" aria-label="Fechar">×</button>
+        </div>
+
+        <p class="insight-pop-headline">{{ analysisHeadline }}</p>
+
+        <sc-for list="{{ analysisSignals }}" as="signal" hint-placeholder-count="3">
+          <div class="insight-card">
+            <p class="insight-card-label"><span style="width:6px;height:6px;border-radius:50%;background:{{ signal.color }}"></span>{{ signal.label }}</p>
+            <p class="insight-card-evidence">{{ signal.evidence }}</p>
+            <p class="insight-card-copy">{{ signal.interpretation }}</p>
+          </div>
+        </sc-for>
+
+        <sc-if value="{{ hasDecisions }}">
+          <p class="insight-section-title">O que fazer</p>
+          <sc-for list="{{ analysisDecisions }}" as="decision" hint-placeholder-count="2">
+            <div class="insight-card">
+              <p class="insight-card-label">{{ decision.priority }} · {{ decision.owner }}</p>
+              <p class="insight-card-copy">{{ decision.action }}</p>
+              <p class="insight-card-evidence" style="margin:7px 0 0">Sucesso: {{ decision.successMetric }} · até {{ decision.deadline }}</p>
+            </div>
+          </sc-for>
+        </sc-if>
+
+        <p class="insight-foot">Leitura determinística gerada do snapshot {{ analysisImportShort }}. Cada frase cita a métrica que a originou — nenhuma é escrita por modelo de linguagem.</p>
+      </div>
+    </sc-if>
 
     <div class="dashboard-content" style="padding:26px 28px 60px;display:flex;flex-direction:column;gap:22px">
 
@@ -1486,14 +1578,21 @@ class Component extends DCLogic {
       variant: props.varianteExecutiva || 'a',
       periodo: 'jul',
       viewMode: 'data',
-      showImport: false
+      showImport: false,
+      // A analise deixou de ser um modo de tela e virou a lampada do cabecalho:
+      // consulta-se a leitura sem perder o numero de vista.
+      insightOpen: false,
+      // Mes selecionado quando ele so existe no nivel da serie historica.
+      focusPeriod: null
     };
   }
 
   go(screen) {
     return () => this.setState({
       screen,
-      periodo: screen === 'mkt' || screen === 'org' ? this.state.periodo : 'jul'
+      periodo: screen === 'mkt' || screen === 'org' ? this.state.periodo : 'jul',
+      focusPeriod: screen === 'mkt' || screen === 'org' ? this.state.focusPeriod : null,
+      insightOpen: false
     });
   }
 
@@ -1595,6 +1694,77 @@ class Component extends DCLogic {
     const capitalize = (value) => value
       ? `${value.charAt(0).toUpperCase()}${value.slice(1)}`
       : value;
+
+    /* -------------------------------------------------------------------
+       Seletor de periodo.
+
+       Ate 2026-08-07 ele tinha tres botoes fixos e so aparecia em duas telas.
+       Agora e montado a partir da propria serie historica: se a planilha
+       ganhar agosto, o botao aparece sozinho.
+
+       Granularidade e honesta e esta declarada no titulo de cada botao. O mes
+       corrente e o anterior tem metrica detalhada no snapshot; os mais antigos
+       existem so no nivel da serie, entao selecionar um deles abre a tabela
+       comparativa com a linha daquele mes em destaque. Nao ha tela detalhada
+       fingida para mes que so tem seis numeros.
+       ------------------------------------------------------------------- */
+    const historyRows = [...((snapshot.breakdowns || {})['marketing.history'] || [])]
+      .filter((row) => /^\d{4}-\d{2}$/.test(String(row.period)))
+      .sort((a, b) => String(a.period).localeCompare(String(b.period)));
+    const monthShort = (period) => {
+      const [year, month] = String(period).split('-').map(Number);
+      return capitalize(
+        new Date(year, month - 1, 1).toLocaleDateString('pt-BR', { month: 'short' })
+          .replace('.', '')
+      );
+    };
+    const selectedScreen = s;
+    const selectedKey = this.state.periodo;
+    const focusPeriod = this.state.focusPeriod;
+    const periodOptions = historyRows.map((row) => {
+      const period = String(row.period);
+      const isCurrent = period === snapshot.primaryPeriod;
+      const isPrevious = period === previousSnapshotPeriod;
+      const detailed = isCurrent || isPrevious;
+      const active = detailed
+        ? (isCurrent ? selectedKey === 'jul' : selectedKey === 'jun')
+        : selectedKey === 'comp' && focusPeriod === period;
+      return {
+        label: isCurrent ? `${monthShort(period)} · atual` : monthShort(period),
+        title: detailed
+          ? `${capitalize(formatPeriodLong(period))} — métricas detalhadas`
+          : `${capitalize(formatPeriodLong(period))} — só a série histórica; abre o comparativo`,
+        // Serie historica so existe nas telas de Marketing e Organico. Escolher
+        // um mes a partir de outra tela leva para onde aquele mes de fato
+        // existe, em vez de acender um botao que nao muda nada.
+        go: () => this.setState({
+          ...(detailed
+            ? { periodo: isCurrent ? 'jul' : 'jun', focusPeriod: null }
+            : { periodo: 'comp', focusPeriod: period }),
+          ...(s === 'mkt' || s === 'org' ? {} : { screen: 'mkt' }),
+          insightOpen: false
+        }),
+        bg: active ? 'var(--forest-800)' : 'transparent',
+        fg: active ? 'var(--mineral-0)' : 'var(--forest-800)',
+        border: active ? 'var(--forest-800)' : 'var(--border-strong)'
+      };
+    });
+    periodOptions.push({
+      label: 'Comparativo',
+      title: 'Todos os meses lado a lado',
+      go: () => this.setState({
+        periodo: 'comp',
+        focusPeriod: null,
+        ...(selectedScreen === 'mkt' || selectedScreen === 'org' ? {} : { screen: 'mkt' }),
+        insightOpen: false
+      }),
+      bg: selectedKey === 'comp' && !focusPeriod ? 'var(--forest-800)' : 'transparent',
+      fg: selectedKey === 'comp' && !focusPeriod ? 'var(--mineral-0)' : 'var(--forest-800)',
+      border: selectedKey === 'comp' && !focusPeriod ? 'var(--forest-800)' : 'var(--border-strong)'
+    });
+    const periodRangeLabel = historyRows.length
+      ? `${monthShort(historyRows[0].period)}–${monthShort(historyRows[historyRows.length - 1].period)} ${String(historyRows[0].period).slice(0, 4)}`
+      : 'sem série';
     const generatedAt = snapshot.generatedAt
       ? new Date(snapshot.generatedAt).toLocaleString('pt-BR', {
           dateStyle: 'short',
@@ -1608,17 +1778,19 @@ class Component extends DCLogic {
       navItems,
       isExec: s === 'exec', isFunil: s === 'funil', isMkt: s === 'mkt', isOrg: s === 'org',
       isCom: s === 'com', isAge: s === 'age', isFin: s === 'fin', isQual: s === 'qual',
-      viewModeClass: viewMode === 'analysis' ? 'mode-analysis' : 'mode-data',
-      isDataMode: viewMode === 'data',
-      isAnalysisMode: viewMode === 'analysis',
-      setDataMode: () => this.setState({ viewMode: 'data' }),
-      setAnalysisMode: () => this.setState({ viewMode: 'analysis' }),
-      dataModeBg: viewMode === 'data' ? 'var(--forest-800)' : 'transparent',
-      dataModeFg: viewMode === 'data' ? 'var(--mineral-0)' : 'var(--forest-800)',
-      dataModeShadow: viewMode === 'data' ? '0 5px 14px rgb(13 70 56 / 17%)' : 'none',
-      analysisModeBg: viewMode === 'analysis' ? 'var(--forest-800)' : 'transparent',
-      analysisModeFg: viewMode === 'analysis' ? 'var(--mineral-0)' : 'var(--forest-800)',
-      analysisModeShadow: viewMode === 'analysis' ? '0 5px 14px rgb(13 70 56 / 17%)' : 'none',
+      viewModeClass: 'mode-data',
+      isDataMode: true,
+      // O painel de analise em tela cheia foi substituido pela lampada. A tela
+      // fica sempre em modo dados; a leitura vive no balao.
+      isAnalysisMode: false,
+      insightOpen: this.state.insightOpen,
+      insightExpanded: this.state.insightOpen ? 'true' : 'false',
+      toggleInsight: () =>
+        this.setState({ insightOpen: !this.state.insightOpen }),
+      closeInsight: () => this.setState({ insightOpen: false }),
+      hasDecisions: (sectionAnalysis.decisions || []).length > 0,
+      periodOptions,
+      periodRangeLabel,
       showImport: this.state.showImport,
       openImport: () => this.setState({ showImport: true }),
       closeImport: () => this.setState({ showImport: false }),
@@ -1645,7 +1817,8 @@ class Component extends DCLogic {
       currentPeriodButton: `${capitalize(formatPeriodLong(snapshot.primaryPeriod))} · atual`,
       previousPeriodButton: `${capitalize(formatPeriodLong(previousSnapshotPeriod))} · fechado`,
       comparisonPeriodButton: `Comparativo · ${formatPeriod(snapshot.primaryPeriod)} × ${formatPeriod(previousSnapshotPeriod)}`,
-      showPeriodControls: s === 'mkt' || s === 'org',
+      showPeriodControls: true,
+      focusPeriodLabel: focusPeriod ? capitalize(formatPeriodLong(focusPeriod)) : '',
       periodoJul: jul, periodoJun: jun, periodoComp: comp, periodoJulOuComp: jul || comp,
       setJul: () => this.setState({ periodo: 'jul' }),
       setJun: () => this.setState({ periodo: 'jun' }),

@@ -20,6 +20,7 @@ import {
   type SourceRole,
   type ValidationIssue,
 } from "./model";
+import { validateLogic } from "./validators";
 import {
   classifyWorkbooks,
   type WorkbookInput,
@@ -222,6 +223,10 @@ export function processWorkbooks(
     ...classified.issues,
     ...results.flatMap((result) => result.issues),
     ...crossValidate(baseSnapshot),
+    // Os gates acima olham a FORMA do dado. Este olha se os numeros fecham uns
+    // com os outros: identidades aritmeticas, dominio, continencia de conjuntos,
+    // composicao e sanidade da serie historica.
+    ...validateLogic(baseSnapshot),
   ];
 
   if (containsPii(baseSnapshot)) {
