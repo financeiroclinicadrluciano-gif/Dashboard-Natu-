@@ -4,8 +4,8 @@ Este repositorio pode ser operado por Codex, Claude Code, Gemini ou outra IA. To
 
 ## Ordem obrigatoria
 
-1. Ler `docs/ARCHITECTURE.md`.
-2. Ler `docs/DATA-CONTRACT.md`.
+1. Ler `docs/arquitetura.md`.
+2. Ler `docs/contrato-de-dados.md`.
 3. Para qualquer analise, ler `skills/natua-data-analyst/SKILL.md`.
 4. Executar a importacao deterministica antes de interpretar os dados.
 5. Publicar somente quando todos os gates criticos estiverem aprovados.

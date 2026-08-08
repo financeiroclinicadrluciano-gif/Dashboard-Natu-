@@ -1,6 +1,6 @@
 {
-  "name": "Natuamed Spa - Dashboard",
-  "description": "Painel de controle executivo de captação, agendamentos, comparcimentos, funil comercial e receitas do Natuamed Spa.",
+  "name": "Dashboard Executivo Natuá MedSpa",
+  "description": "Painel executivo semanal de marketing, tráfego pago, orgânico, agendamentos, comercial e financeiro da Natuá MedSpa. Os números vêm de um pipeline determinístico com proveniência por métrica; nada é estimado para preencher tela.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }

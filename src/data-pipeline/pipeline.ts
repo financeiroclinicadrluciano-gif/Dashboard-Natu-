@@ -4,6 +4,7 @@ import {
   adaptFinance,
   adaptForm,
   adaptMarketing,
+  adaptWeekly,
   type AdapterResult,
 } from "./adapters";
 import {
@@ -19,6 +20,8 @@ import {
   type SourceRole,
   type ValidationIssue,
 } from "./model";
+import { applyMetaClose, applyMetaCloseToBreakdowns, JULY_2026_META_CLOSE } from "./meta-override";
+import { validateLogic } from "./validators";
 import {
   classifyWorkbooks,
   type WorkbookInput,
@@ -127,6 +130,26 @@ function crossValidate(snapshot: SnapshotBase): ValidationIssue[] {
     });
   }
 
+  // A planilha semanal cobre um recorte contido no mes da Closer. Ela pode ter
+  // menos atendimentos que a Closer; ter MAIS e impossivel e indica recorte
+  // errado, arquivo de outro mes ou o detector de fim-de-bloco tendo lido o
+  // pivo como se fosse detalhe.
+  const weeklyAttended = snapshot.metrics["weekly.attended.current"]?.value;
+  if (
+    typeof weeklyAttended === "number" &&
+    typeof closerAttended === "number" &&
+    weeklyAttended > closerAttended + 0.01
+  ) {
+    issues.push({
+      severity: "WARNING",
+      code: "WEEKLY_EXCEEDS_CLOSER",
+      message:
+        "A planilha semanal tem mais atendimentos que a Closer do mes; confira o recorte do arquivo.",
+      source: "weekly",
+      details: { weeklyAttended, closerAttended },
+    });
+  }
+
   const finance = snapshot.sources.find((source) => source.role === "finance");
   if (
     finance &&
@@ -170,6 +193,10 @@ export function processWorkbooks(
     ],
     ["form", () => adaptForm(classified.inputs.get("form")!, primaryPeriod)],
     ["finance", () => adaptFinance(classified.inputs.get("finance")!)],
+    [
+      "weekly",
+      () => adaptWeekly(classified.inputs.get("weekly")!, primaryPeriod),
+    ],
   ];
 
   for (const [role, adapter] of adapters) {
@@ -179,10 +206,20 @@ export function processWorkbooks(
   }
 
   const generatedAt = new Date().toISOString();
-  const metrics = metricMap(results);
-  const breakdowns = Object.assign(
-    {},
-    ...results.map((result) => result.breakdowns),
+  // Fechamento maduro da Meta sobrescreve as metricas pagas preliminares da
+  // planilha e stampa a proveniencia como "Meta Ads API". So age quando a
+  // competencia principal bate; as derivadas sao recalculadas para as
+  // identidades do validador continuarem fechando.
+  const metrics = applyMetaClose(
+    metricMap(results),
+    primaryPeriod,
+    JULY_2026_META_CLOSE,
+  );
+  const breakdowns = applyMetaCloseToBreakdowns(
+    Object.assign({}, ...results.map((result) => result.breakdowns)),
+    primaryPeriod,
+    JULY_2026_META_CLOSE,
+    metrics["marketing.mql.current"]?.value ?? null,
   );
   const baseSnapshot: SnapshotBase = {
     version: "1.0.0",
@@ -197,6 +234,10 @@ export function processWorkbooks(
     ...classified.issues,
     ...results.flatMap((result) => result.issues),
     ...crossValidate(baseSnapshot),
+    // Os gates acima olham a FORMA do dado. Este olha se os numeros fecham uns
+    // com os outros: identidades aritmeticas, dominio, continencia de conjuntos,
+    // composicao e sanidade da serie historica.
+    ...validateLogic(baseSnapshot),
   ];
 
   if (containsPii(baseSnapshot)) {

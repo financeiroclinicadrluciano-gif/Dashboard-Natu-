@@ -1,0 +1,895 @@
+/* ==========================================================================
+   NATUÁ MEDSPA — DASHBOARD EXECUTIVO
+   controls.css — FORMA E COMPORTAMENTO DOS CONTROLES
+
+   Escopo deste arquivo: geometria, hierarquia e os cinco estados de cada
+   controle clicável (repouso · hover · foco-teclado · pressionado · desabilitado).
+   NÃO é escopo daqui: coreografia de animação (motion.css) nem sombra/elevação
+   de superfície (surfaces.css). Se algo aqui parecer "animação", é apenas a
+   transição curta que dá causalidade ao clique — nada mais.
+
+   Ordem de carga: tokens → controls.css → CSS inline do index.html.
+   Por isso nada aqui usa !important: quem vier depois deve poder ajustar.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   0. VARIÁVEIS LOCAIS DE CONTROLE
+   Por quê: os tokens da marca descrevem COR, não COMPORTAMENTO. Alturas,
+   raios e durações de controle ficam centralizados aqui para que "aumentar o
+   toque no mobile" seja uma linha, não uma caçada por 40 seletores.
+   Não redefine nenhum token existente — só cria a camada de controle.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Alturas — mobile-first. O padrão é o dedo; o mouse é a exceção (§10). */
+  --ctl-h: 40px;          /* toque mínimo confortável no celular */
+  --ctl-h-sm: 34px;       /* variante compacta, liberada só no desktop */
+  --ctl-h-xs: 28px;       /* botões-ícone auxiliares (fechar) */
+
+  /* Raios — cantos moderados. Premium não é arredondado ao extremo:
+     6–8px lê como "instrumento", 20px+ lê como template SaaS. */
+  --ctl-radius: 7px;
+  --ctl-radius-sm: 6px;
+  --ctl-radius-pill: 999px;
+
+  --ctl-pad-x: 16px;
+  --ctl-pad-x-sm: 12px;
+
+  /* Uma duração só. Variar tempo entre controles faz a interface parecer
+     mal montada; ≤200ms mantém a resposta percebida como instantânea. */
+  --ctl-speed: 150ms;
+  --ctl-ease: cubic-bezier(0.2, 0, 0.2, 1);
+
+  /* Cor do anel de foco com rede de segurança: se --focus-ring não estiver
+     definido no ambiente, o dourado assume — nunca ficamos sem foco visível. */
+  --ctl-focus: var(--focus-ring, var(--gold-500));
+
+  /* Véus neutros para hover sobre fundo escuro/claro. Usar rgb()/alpha em vez
+     de uma cor sólida nova evita inventar tom fora da paleta da marca. */
+  --ctl-veil-light: rgb(255 255 255 / 8%);
+  --ctl-veil-light-strong: rgb(255 255 255 / 12%);
+  --ctl-veil-dark: rgb(24 32 29 / 5%);
+  --ctl-veil-dark-strong: rgb(24 32 29 / 9%);
+}
+
+
+/* --------------------------------------------------------------------------
+   1. BASE COMUM DE CONTROLE
+   Por quê: o navegador dá a botões uma fonte e um alinhamento próprios que
+   quebram a tipografia do dashboard. Normalizamos uma vez, no lugar de repetir
+   font-family/line-height em cada variante.
+   -------------------------------------------------------------------------- */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.btn-pill,
+.period-switcher button,
+.view-switch button,
+.dashboard-nav button,
+.insight-bulb,
+.insight-pop-close {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  font: inherit;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 0.005em;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  /* Lista explícita de propriedades: transition:all repinta layout à toa e
+     ainda atropelaria animações de outros arquivos. */
+  transition:
+    background-color var(--ctl-speed) var(--ctl-ease),
+    border-color var(--ctl-speed) var(--ctl-ease),
+    color var(--ctl-speed) var(--ctl-ease),
+    box-shadow var(--ctl-speed) var(--ctl-ease),
+    transform var(--ctl-speed) var(--ctl-ease);
+}
+
+/* Ícones dentro de botão não capturam o clique — evita o alvo "morto" clássico
+   em que o usuário acerta o SVG e nada acontece. */
+.btn svg,
+.btn-primary svg,
+.btn-secondary svg,
+.btn-ghost svg,
+.btn-pill svg,
+.view-switch button svg,
+.dashboard-nav button svg,
+.insight-pop-close svg {
+  pointer-events: none;
+  flex: 0 0 auto;
+}
+
+
+/* --------------------------------------------------------------------------
+   2. FOCO DE TECLADO — REGRA TRANSVERSAL
+   Por quê: um dashboard executivo é operado com teclado por quem o usa todo
+   dia. Nada aqui remove outline sem devolver algo mais legível no lugar.
+   :focus-visible mantém o anel fora do clique de mouse (ruído), presente na
+   navegação por Tab. O offset garante contraste tanto sobre fundo claro
+   quanto sobre a sidebar escura.
+   -------------------------------------------------------------------------- */
+.btn:focus-visible,
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-ghost:focus-visible,
+.btn-pill:focus-visible,
+.period-switcher button:focus-visible,
+.view-switch button:focus-visible,
+.dashboard-nav button:focus-visible,
+.insight-bulb:focus-visible,
+.insight-pop-close:focus-visible,
+.import-dropzone:focus-visible,
+.snapshot-list-row:focus-visible,
+.snapshot-cell:focus-visible {
+  outline: 2px solid var(--ctl-focus);
+  outline-offset: 2px;
+}
+
+/* Fallback para navegadores sem :focus-visible — melhor um anel a mais do que
+   um usuário de teclado perdido na tela. */
+@supports not selector(:focus-visible) {
+  .btn:focus,
+  .btn-primary:focus,
+  .btn-secondary:focus,
+  .btn-ghost:focus,
+  .btn-pill:focus,
+  .period-switcher button:focus,
+  .view-switch button:focus,
+  .dashboard-nav button:focus,
+  .insight-bulb:focus,
+  .insight-pop-close:focus {
+    outline: 2px solid var(--ctl-focus);
+    outline-offset: 2px;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   3. SISTEMA DE BOTÕES
+   Três níveis de ênfase + a pílula. Mais que isso vira decoração e o executivo
+   deixa de saber qual é a ação principal da tela.
+   -------------------------------------------------------------------------- */
+
+/* 3.1 PRIMÁRIO — verde sólido, uma ação principal por bloco.
+   Sem gradiente: gradiente em botão é a assinatura visual de template genérico. */
+.btn-primary {
+  min-height: var(--ctl-h);
+  padding: 0 var(--ctl-pad-x);
+  border-radius: var(--ctl-radius-pill);
+  background-color: var(--forest-800);
+  border-color: var(--forest-800);
+  color: var(--mineral-0);
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  /* Escurece em vez de clarear: o botão "afunda" na marca, não brilha. */
+  background-color: var(--forest-950);
+  border-color: var(--forest-950);
+}
+
+.btn-primary:active {
+  background-color: var(--forest-950);
+  /* 1px de deslocamento é o suficiente para o dedo sentir causalidade.
+     Escala/quique aqui invadiria o território do motion.css. */
+  transform: translateY(1px);
+}
+
+/* 3.2 SECUNDÁRIO — contorno. Ação legítima, porém subordinada. */
+.btn-secondary {
+  min-height: var(--ctl-h);
+  padding: 0 var(--ctl-pad-x);
+  border-radius: var(--ctl-radius);
+  background-color: var(--mineral-0);
+  border-color: var(--border-strong);
+  color: var(--forest-800);
+}
+
+.btn-secondary:hover {
+  background-color: var(--forest-50);
+  border-color: var(--forest-600);
+  color: var(--forest-950);
+}
+
+.btn-secondary:active {
+  background-color: var(--forest-100);
+  transform: translateY(1px);
+}
+
+/* 3.3 GHOST — sem peso em repouso; só aparece quando procurado.
+   Usado para ações terciárias que não podem competir com o dado na tela. */
+.btn-ghost {
+  min-height: var(--ctl-h);
+  padding: 0 var(--ctl-pad-x-sm);
+  border-radius: var(--ctl-radius-sm);
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--mineral-600);
+}
+
+.btn-ghost:hover {
+  background-color: var(--ctl-veil-dark);
+  color: var(--forest-800);
+}
+
+.btn-ghost:active {
+  background-color: var(--ctl-veil-dark-strong);
+  transform: translateY(1px);
+}
+
+/* 3.4 PÍLULA — filtros e alternadores em linha. Raio total, peso menor. */
+.btn-pill {
+  min-height: var(--ctl-h);
+  padding: 0 var(--ctl-pad-x);
+  border-radius: var(--ctl-radius-pill);
+  background-color: transparent;
+  border-color: var(--border-strong);
+  color: var(--mineral-900);
+}
+
+.btn-pill:hover {
+  background-color: var(--mineral-100);
+  border-color: var(--forest-600);
+}
+
+.btn-pill:active {
+  background-color: var(--mineral-200);
+  transform: translateY(1px);
+}
+
+/* 3.5 VARIANTES DE VISUALIZAÇÃO ("1a · Fita de decisão" / "Coluna executiva")
+   Herdam a pílula; o dourado marca a que está no ar. Como cor sozinha não pode
+   carregar o significado, a selecionada também muda peso da fonte e ganha
+   borda de 1px mais escura — legível em impressão e em daltonismo. */
+.btn-pill[aria-pressed="true"],
+.btn-pill.is-selected {
+  background-color: var(--gold-50);
+  border-color: var(--gold-500);
+  color: var(--gold-700);
+  font-weight: 600;
+}
+
+.btn-pill[aria-pressed="true"]:hover,
+.btn-pill.is-selected:hover {
+  background-color: var(--gold-50);
+  border-color: var(--gold-700);
+}
+
+/* 3.6 DESABILITADO — regra única para todo o sistema.
+   Perde o cursor, o hover e o realce, mas mantém texto acima do limiar de
+   leitura: desabilitado precisa ser lido, não adivinhado. */
+.btn[disabled],
+.btn-primary[disabled],
+.btn-secondary[disabled],
+.btn-ghost[disabled],
+.btn-pill[disabled],
+.period-switcher button[disabled],
+.view-switch button[disabled],
+.dashboard-nav button[disabled],
+.insight-bulb[disabled],
+.insight-pop-close[disabled],
+.btn[aria-disabled="true"],
+.btn-primary[aria-disabled="true"],
+.btn-secondary[aria-disabled="true"],
+.btn-pill[aria-disabled="true"] {
+  cursor: not-allowed;
+  background-color: var(--mineral-100);
+  border-color: var(--mineral-200);
+  color: var(--mineral-400);
+  box-shadow: none;
+  transform: none;
+}
+
+/* Neutraliza qualquer feedback residual no estado desabilitado. */
+.btn[disabled]:hover,
+.btn-primary[disabled]:hover,
+.btn-secondary[disabled]:hover,
+.btn-ghost[disabled]:hover,
+.btn-pill[disabled]:hover,
+.btn[disabled]:active,
+.btn-primary[disabled]:active,
+.btn-secondary[disabled]:active,
+.btn-ghost[disabled]:active,
+.btn-pill[disabled]:active {
+  background-color: var(--mineral-100);
+  border-color: var(--mineral-200);
+  color: var(--mineral-400);
+  transform: none;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. NAVEGAÇÃO LATERAL (.dashboard-nav button)
+   Sidebar escura, 8 itens. O problema clássico aqui é o hover competir com o
+   ativo: se ambos usam véu branco, o usuário perde a referência de onde está.
+   Solução: hover só clareia o TEXTO e usa véu fraco; o ATIVO é o único com
+   barra dourada à esquerda. Forma ≠ cor — quem não distingue cor ainda vê a barra.
+   -------------------------------------------------------------------------- */
+.dashboard-nav button {
+  position: relative;
+  width: 100%;
+  min-height: var(--ctl-h);
+  padding: 10px 14px 10px 18px;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+  border-radius: var(--ctl-radius-sm);
+  background-color: transparent;
+  color: var(--forest-100);
+  font-weight: 500;
+}
+
+/* Barra dourada de 2px: sempre presente na estrutura, invisível em repouso.
+   Reservar o espaço evita o item "pular" 2px ao virar ativo. */
+.dashboard-nav button::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  transform: translateY(-50%);
+  background-color: var(--gold-400);
+  border-radius: var(--ctl-radius-pill);
+  transition:
+    background-color var(--ctl-speed) var(--ctl-ease),
+    transform var(--ctl-speed) var(--ctl-ease);
+}
+
+.dashboard-nav button:hover {
+  background-color: rgb(255 255 255 / 5%);
+  color: var(--mineral-0);
+}
+
+.dashboard-nav button:active {
+  background-color: rgb(255 255 255 / 7%);
+}
+
+/* ATIVO — véu de 10% + texto branco + peso 600 + barra dourada.
+   Quatro sinais somados é o que torna o item legível "à distância", que é como
+   um dashboard executivo é realmente lido: de relance. */
+.dashboard-nav button[aria-current="page"],
+.dashboard-nav button[aria-selected="true"],
+.dashboard-nav button.is-active {
+  background-color: rgb(255 255 255 / 10%);
+  color: var(--mineral-0);
+  font-weight: 600;
+}
+
+.dashboard-nav button[aria-current="page"]::before,
+.dashboard-nav button[aria-selected="true"]::before,
+.dashboard-nav button.is-active::before {
+  height: 22px;
+}
+
+/* Hover sobre o item ativo quase não muda — ele já é o destino. */
+.dashboard-nav button[aria-current="page"]:hover,
+.dashboard-nav button[aria-selected="true"]:hover,
+.dashboard-nav button.is-active:hover {
+  background-color: rgb(255 255 255 / 13%);
+}
+
+/* Foco na sidebar escura: offset negativo mantém o anel dentro do item,
+   sem estourar a borda da coluna. */
+.dashboard-nav button:focus-visible {
+  outline-offset: -2px;
+}
+
+
+/* --------------------------------------------------------------------------
+   5. PÍLULAS DE PERÍODO (.period-switcher button)
+   6 opções: 5 meses + Comparativo. Precisam ler como UM grupo, não como seis
+   botões soltos — daí gap fixo e altura idêntica. Wrap permitido: em telas
+   estreitas a linha quebra em vez de espremer ou gerar scroll horizontal.
+   -------------------------------------------------------------------------- */
+.period-switcher {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.period-switcher button {
+  min-height: var(--ctl-h);
+  padding: 0 14px;
+  border-radius: var(--ctl-radius-pill);
+  background-color: transparent;
+  border-color: var(--border-strong);
+  color: var(--mineral-900);
+  font-weight: 500;
+}
+
+.period-switcher button:hover {
+  background-color: var(--mineral-100);
+  border-color: var(--forest-600);
+  color: var(--forest-950);
+}
+
+.period-switcher button:active {
+  background-color: var(--mineral-200);
+  transform: translateY(1px);
+}
+
+/* ATIVA — verde sólido, texto branco, peso maior.
+   O salto de contraste é intencional: em um grupo de 6, o selecionado tem que
+   ser encontrado sem varredura item a item. */
+.period-switcher button[aria-pressed="true"],
+.period-switcher button[aria-selected="true"],
+.period-switcher button.is-active {
+  background-color: var(--forest-800);
+  border-color: var(--forest-800);
+  color: var(--mineral-0);
+  font-weight: 600;
+}
+
+.period-switcher button[aria-pressed="true"]:hover,
+.period-switcher button[aria-selected="true"]:hover,
+.period-switcher button.is-active:hover {
+  background-color: var(--forest-950);
+  border-color: var(--forest-950);
+  color: var(--mineral-0);
+}
+
+/* Mês corrente: dourado discreto como MARCA TEMPORAL, não como seleção.
+   Fica claro que "é agora" sem se confundir com "está selecionado". */
+.current-month-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 9px;
+  border-radius: var(--ctl-radius-pill);
+  border: 1px solid var(--gold-500);
+  background-color: var(--gold-50);
+  color: var(--gold-700);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+
+/* --------------------------------------------------------------------------
+   6. GRUPO SEGMENTADO (.view-switch)
+   Um trilho, botões colados. A borda é do contêiner — botão com borda própria
+   dobraria a linha entre segmentos e engordaria o grupo.
+   -------------------------------------------------------------------------- */
+.view-switch {
+  display: inline-flex;
+  align-items: stretch;
+  padding: 3px;
+  gap: 3px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--ctl-radius-pill);
+  background-color: var(--mineral-100);
+}
+
+.view-switch button {
+  min-height: var(--ctl-h-sm);
+  padding: 0 14px;
+  border-radius: var(--ctl-radius-pill);
+  border-color: transparent;
+  background-color: transparent;
+  color: var(--mineral-600);
+  font-weight: 500;
+}
+
+.view-switch button:hover {
+  background-color: var(--ctl-veil-dark);
+  color: var(--forest-800);
+}
+
+.view-switch button:active {
+  background-color: var(--ctl-veil-dark-strong);
+}
+
+/* Segmento ativo: pastilha branca sobre o trilho. Sem sombra — elevação é
+   assunto de surfaces.css; aqui a diferença já vem do contraste e do peso. */
+.view-switch button[aria-pressed="true"],
+.view-switch button[aria-selected="true"],
+.view-switch button.is-active {
+  background-color: var(--mineral-0);
+  border-color: var(--border-default);
+  color: var(--forest-950);
+  font-weight: 600;
+}
+
+.view-switch button:focus-visible {
+  outline-offset: 1px;
+}
+
+
+/* --------------------------------------------------------------------------
+   7. BOTÃO DE LÂMPADA (.insight-bulb)
+   Convite permanente na tela, então repouso é DISCRETO — se chamar demais,
+   compete com o número que o executivo veio ver.
+   O halo é de outro arquivo: aqui só garantimos que ele tenha um palco
+   (position + z-index do ícone) e nunca escrevemos regra em .insight-bulb-halo.
+   -------------------------------------------------------------------------- */
+.insight-bulb {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background-color: var(--mineral-0);
+  border-color: var(--border-strong);
+  color: var(--mineral-600);
+}
+
+/* O ícone fica acima do halo para não ser lavado por ele. */
+.insight-bulb-icon {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.insight-bulb:hover {
+  /* Convidativo pelo dourado, sem acender: o "aceso" é reservado ao aberto. */
+  background-color: var(--gold-50);
+  border-color: var(--gold-500);
+  color: var(--gold-700);
+}
+
+.insight-bulb:active {
+  background-color: var(--gold-50);
+  border-color: var(--gold-700);
+  transform: translateY(1px);
+}
+
+/* ABERTO — inversão total (fundo verde escuro, ícone dourado). Diferença de
+   estado por INVERSÃO, não por intensidade: não há como confundir com hover. */
+.insight-bulb[aria-expanded="true"] {
+  background-color: var(--forest-800);
+  border-color: var(--forest-800);
+  color: var(--gold-400);
+}
+
+.insight-bulb[aria-expanded="true"]:hover {
+  background-color: var(--forest-950);
+  border-color: var(--forest-950);
+  color: var(--gold-400);
+}
+
+/* Fechar do popover: alvo pequeno mas com área real de clique. Vermelho da
+   marca só no hover — em repouso é neutro para não parecer alerta. */
+.insight-pop-close {
+  width: var(--ctl-h-xs);
+  height: var(--ctl-h-xs);
+  min-height: var(--ctl-h-xs);
+  padding: 0;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--mineral-400);
+}
+
+.insight-pop-close:hover {
+  background-color: var(--coral-100);
+  color: var(--coral-700);
+}
+
+.insight-pop-close:active {
+  background-color: var(--coral-100);
+  color: var(--coral-700);
+  transform: translateY(1px);
+}
+
+
+/* --------------------------------------------------------------------------
+   8. LINHAS DE TABELA (.snapshot-cell / .snapshot-list-row)
+   Zebra pesada cansa em leitura longa de números e briga com a cor semântica
+   das métricas. Aqui a leitura é guiada por hover + separador de 1px.
+   -------------------------------------------------------------------------- */
+.snapshot-list-row,
+.snapshot-cell {
+  transition:
+    background-color var(--ctl-speed) var(--ctl-ease),
+    border-color var(--ctl-speed) var(--ctl-ease),
+    color var(--ctl-speed) var(--ctl-ease),
+    box-shadow var(--ctl-speed) var(--ctl-ease);
+}
+
+.snapshot-list-row:hover,
+.snapshot-cell:hover {
+  /* 3% é o suficiente para o olho seguir a linha inteira sem que o realce
+     apague a diferença entre texto e fundo. */
+  background-color: rgb(24 32 29 / 3%);
+}
+
+/* Linha clicável: o cursor é o único aviso honesto de que há ação. */
+.snapshot-list-row[role="button"],
+.snapshot-list-row[tabindex],
+.snapshot-list-row.is-clickable,
+.snapshot-cell[role="button"],
+.snapshot-cell[tabindex] {
+  cursor: pointer;
+}
+
+.snapshot-list-row[role="button"]:active,
+.snapshot-list-row[tabindex]:active,
+.snapshot-list-row.is-clickable:active,
+.snapshot-cell[role="button"]:active,
+.snapshot-cell[tabindex]:active {
+  background-color: rgb(24 32 29 / 6%);
+}
+
+/* Linha selecionada: fundo claro + faixa verde à esquerda via box-shadow
+   interno — não muda o box model, então a tabela não desalinha. */
+.snapshot-list-row[aria-selected="true"],
+.snapshot-list-row.is-selected,
+.snapshot-cell[aria-selected="true"],
+.snapshot-cell.is-selected {
+  background-color: var(--forest-50);
+  box-shadow: inset 2px 0 0 0 var(--forest-600);
+}
+
+/* Foco de teclado dentro da tabela precisa vencer o hover: offset negativo
+   mantém o anel visível sem cortar na borda da célula. */
+.snapshot-list-row:focus-visible,
+.snapshot-cell:focus-visible {
+  outline-offset: -2px;
+}
+
+
+/* --------------------------------------------------------------------------
+   9. DROPZONE DE IMPORTAÇÃO (.import-dropzone)
+   Três estados obrigatórios. O tracejado existe porque é a convenção universal
+   de "solte aqui" — trocar por borda sólida faria a área parecer um card inerte.
+   -------------------------------------------------------------------------- */
+.import-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 108px;
+  padding: 20px 16px;
+  text-align: center;
+  cursor: pointer;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--ctl-radius);
+  background-color: var(--mineral-50);
+  color: var(--mineral-600);
+  transition:
+    background-color var(--ctl-speed) var(--ctl-ease),
+    border-color var(--ctl-speed) var(--ctl-ease),
+    color var(--ctl-speed) var(--ctl-ease),
+    box-shadow var(--ctl-speed) var(--ctl-ease);
+}
+
+.import-dropzone:hover {
+  border-color: var(--forest-600);
+  background-color: var(--forest-50);
+  color: var(--forest-800);
+}
+
+/* ARRASTANDO — precisa ser inequívoco: o usuário está com o arquivo na mão e
+   olhando de canto. Borda verde escura + anel interno confirmam o alvo certo.
+   Sem transform: mexer no tamanho durante o arraste desloca o alvo do cursor. */
+.import-dropzone.is-dragging {
+  border-color: var(--forest-700);
+  border-style: solid;
+  background-color: var(--forest-100);
+  color: var(--forest-950);
+  box-shadow: inset 0 0 0 2px var(--forest-600);
+}
+
+.import-dropzone:active {
+  background-color: var(--forest-100);
+}
+
+/* Estado de erro do import usa o coral da marca — e nunca só a cor: espera-se
+   texto de erro dentro da zona. */
+.import-dropzone.is-error {
+  border-color: var(--coral-700);
+  background-color: var(--coral-100);
+  color: var(--coral-700);
+}
+
+
+/* --------------------------------------------------------------------------
+   10. DESKTOP — COMPACTAÇÃO CONTROLADA
+   Mouse tem precisão de pixel; dedo não. Só a partir de ponteiro fino as
+   alturas caem para 34px. Fazer o contrário (crescer no mobile) sempre esquece
+   algum controle e deixa um alvo pequeno demais em produção.
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) and (pointer: fine) {
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-pill,
+  .period-switcher button {
+    min-height: var(--ctl-h-sm);
+    padding-left: var(--ctl-pad-x-sm);
+    padding-right: var(--ctl-pad-x-sm);
+  }
+
+  .btn-primary,
+  .btn-pill,
+  .period-switcher button {
+    /* Pílula precisa de mais respiro lateral que retangular para não parecer
+       apertada nas pontas curvas. */
+    padding-left: var(--ctl-pad-x);
+    padding-right: var(--ctl-pad-x);
+  }
+
+  .dashboard-nav button {
+    min-height: var(--ctl-h-sm);
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   11. MOBILE ≤560px
+   Regra: nada encolhe abaixo de 40px e nada quebra alinhamento. Pílulas viram
+   grade de colunas iguais — seis pílulas de larguras diferentes em duas linhas
+   é o que produz o efeito "desmontado" no celular.
+   -------------------------------------------------------------------------- */
+@media (max-width: 560px) {
+  .period-switcher {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .period-switcher button {
+    width: 100%;
+    min-height: var(--ctl-h);
+    padding: 0 8px;
+    font-size: 0.85rem;
+  }
+
+  /* Botões de largura total: no celular a ação principal ganha a linha inteira
+     em vez de flutuar solta em um canto. */
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+    min-height: var(--ctl-h);
+  }
+
+  .view-switch {
+    display: flex;
+    width: 100%;
+  }
+
+  .view-switch button {
+    flex: 1 1 0;
+    min-height: var(--ctl-h);
+    padding: 0 8px;
+  }
+
+  .dashboard-nav button {
+    min-height: 44px;
+  }
+
+  /* Lâmpada mantém 44px: é o alvo mais usado e não pode encolher. */
+  .insight-bulb {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Fechar cresce no toque — 28px é confortável no mouse, arriscado no dedo. */
+  .insight-pop-close {
+    width: 36px;
+    height: 36px;
+    min-height: 36px;
+  }
+
+  .import-dropzone {
+    min-height: 96px;
+    padding: 18px 12px;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   12. ACESSIBILIDADE E AMBIENTE
+   -------------------------------------------------------------------------- */
+
+/* Sem transform e sem transição para quem pediu menos movimento. A mudança de
+   cor permanece — é informação de estado, não enfeite. */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-pill,
+  .period-switcher button,
+  .view-switch button,
+  .dashboard-nav button,
+  .dashboard-nav button::before,
+  .insight-bulb,
+  .insight-pop-close,
+  .import-dropzone,
+  .snapshot-list-row,
+  .snapshot-cell {
+    transition-duration: 1ms;
+  }
+
+  .btn-primary:active,
+  .btn-secondary:active,
+  .btn-ghost:active,
+  .btn-pill:active,
+  .insight-bulb:active,
+  .insight-pop-close:active {
+    transform: none;
+  }
+}
+
+/* Alto contraste: engrossa borda e anel. Sem isso, o contorno de 1px some em
+   modo de contraste forçado e todo controle secundário vira texto solto. */
+@media (prefers-contrast: more) {
+  .btn-secondary,
+  .btn-pill,
+  .period-switcher button,
+  .insight-bulb,
+  .view-switch {
+    border-width: 2px;
+  }
+
+  .btn:focus-visible,
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible,
+  .btn-ghost:focus-visible,
+  .btn-pill:focus-visible,
+  .period-switcher button:focus-visible,
+  .view-switch button:focus-visible,
+  .dashboard-nav button:focus-visible,
+  .insight-bulb:focus-visible,
+  .insight-pop-close:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* Em dispositivo sem hover real (touch), o estado hover fica "grudado" após o
+   toque e confunde com seleção. Aqui ele é neutralizado; o :active continua
+   dando o retorno do toque. */
+@media (hover: none) {
+  .btn-ghost:hover,
+  .btn-pill:hover,
+  .period-switcher button:hover,
+  .view-switch button:hover,
+  .snapshot-list-row:hover,
+  .snapshot-cell:hover {
+    background-color: transparent;
+  }
+
+  .dashboard-nav button:hover {
+    background-color: transparent;
+  }
+
+  /* Exceção: o que já está ativo mantém seu fundo — a regra acima não pode
+     apagar a marcação de estado. */
+  .period-switcher button[aria-pressed="true"]:hover,
+  .period-switcher button[aria-selected="true"]:hover,
+  .period-switcher button.is-active:hover {
+    background-color: var(--forest-800);
+  }
+
+  .view-switch button[aria-pressed="true"]:hover,
+  .view-switch button[aria-selected="true"]:hover,
+  .view-switch button.is-active:hover {
+    background-color: var(--mineral-0);
+  }
+
+  .dashboard-nav button[aria-current="page"]:hover,
+  .dashboard-nav button[aria-selected="true"]:hover,
+  .dashboard-nav button.is-active:hover {
+    background-color: rgb(255 255 255 / 10%);
+  }
+}

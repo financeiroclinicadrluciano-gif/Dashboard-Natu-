@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "importId": "2026-07-29-c3ffdca9-d845-4fe5-b96e-b43b79690828",
-  "generatedAt": "2026-07-29T18:24:20.242Z",
+  "importId": "2026-08-08-81c66469-5f9c-46e0-a92b-bf50a84a18f4",
+  "generatedAt": "2026-08-08T03:17:39.040Z",
   "skill": "natua-data-analyst",
   "sections": [
     {
@@ -11,8 +11,8 @@
       "signals": [
         {
           "type": "POSITIVE",
-          "evidence": "R$ 24.497,75 de investimento geraram 1.441 leads.",
-          "interpretation": "O investimento variou -25,61% e os leads 2,86% frente ao período anterior.",
+          "evidence": "R$ 24.815,22 de investimento geraram 1.708 leads.",
+          "interpretation": "O investimento variou -24,65% e os leads 21,91% frente ao período anterior.",
           "metricIds": [
             "marketing.investment.total.current",
             "marketing.investment.total.previous",
@@ -71,7 +71,7 @@
         "Comparecimento e no-show permanecem sem base."
       ],
       "sourceRefs": [
-        "marketing:MARKETING JULHO:2026-07",
+        "marketing:Meta Ads API (maduro 2026-08-07):2026-07",
         "closer:abas por profissional:2026-07"
       ]
     },
@@ -138,7 +138,7 @@
       "signals": [
         {
           "type": "POSITIVE",
-          "evidence": "CPL total atual de R$ 17,00 contra R$ 23,51.",
+          "evidence": "CPL total atual de R$ 14,53 contra R$ 23,51.",
           "interpretation": "O custo de aquisição de volume melhorou no comparativo publicado.",
           "metricIds": [
             "marketing.cpl.total.current",
@@ -399,6 +399,8 @@
         "A Closer possui atendimentos sem status decisorio.",
         "A base nao possui regra auditavel de confirmacao/pagamento; confirmados permanecem SEM_BASE.",
         "Existem agendamentos do periodo sem responsavel.",
+        "A aba cobre dias fora de 2026-07; a serie diaria mostra tudo, os totais do painel nao.",
+        "Ha categorias sem coluna de receita na planilha; o faturamento delas fica SEM_BASE.",
         "Financeiro em 2026-05, defasado do painel principal 2026-07."
       ],
       "sourceRefs": [
@@ -406,7 +408,8 @@
         "closer:2026-07",
         "appointments:2026-07",
         "form:2026-07",
-        "finance:2026-05"
+        "finance:2026-05",
+        "weekly:2026-07"
       ]
     }
   ]

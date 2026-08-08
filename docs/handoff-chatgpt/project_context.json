@@ -1,0 +1,101 @@
+{
+  "project": "Dashboard Marketing — Natuá MedSpa / Dr. Luciano",
+  "handoff_date": "2026-08-07",
+  "latest_operational_period": {
+    "start": "2026-07-01",
+    "end": "2026-07-28",
+    "timezone": "BRT"
+  },
+  "authority": [
+    "manual_confirmed_by_Gustavo",
+    "instagram_app_consolidated",
+    "meta_ads_manager",
+    "meta_business_suite",
+    "forms_crm",
+    "commercial_closer_support"
+  ],
+  "july_2026_28": {
+    "paid_media": {
+      "investment_total": 24497.75,
+      "meta_total": 24497.75,
+      "google": 0.0,
+      "google_status": "manual confirmado",
+      "meta_leadgen": 20550.33,
+      "meta_leads": 1441,
+      "clicks_leadgen": 7879,
+      "cpl_meta_leadgen": 14.2611589174,
+      "total_cost_per_meta_lead": 17.0005204719
+    },
+    "forms_mql": {
+      "valid_submissions": 1390,
+      "unique_people": 1383,
+      "repeat_people": 7,
+      "excess_submissions": 7,
+      "mql_confirmed": 175,
+      "mql_rate": 0.1258992806,
+      "cost_per_mql": 117.4304571429,
+      "coverage": 0.9646079112,
+      "click_to_valid_form": 0.1764183272
+    },
+    "appointments": {
+      "total": 19,
+      "marketing": 14,
+      "referral": 5,
+      "cac_marketing": 1749.8392857143
+    },
+    "commercial": {
+      "attended": 33,
+      "closed": 26,
+      "negotiation": 5,
+      "not_closed_or_missing": 2,
+      "conversion": 0.7878787879,
+      "closed_revenue": 244512.1,
+      "open_pipeline": 31400.63,
+      "ticket_per_attended": 7409.46,
+      "ticket_per_closed": 9404.3115384615,
+      "first_consultations": 18,
+      "first_consult_closed": 12,
+      "first_consult_conversion": 0.6666666667,
+      "first_consult_revenue": 12300.0,
+      "first_consult_treatments": 80246.45,
+      "roi_consultation": 0.5020869264,
+      "roi_treatments": 3.2756661326
+    },
+    "support": {
+      "movements": 293136.89,
+      "role": "cash/movements; do not replace Closer revenue"
+    },
+    "organic": {
+      "period_apparent": "2026-06-30 to 2026-07-28",
+      "dr_luciano": {
+        "views": 836931,
+        "reach": 215239,
+        "interactions": 4679,
+        "profile_visits": 10640,
+        "bio_clicks": 840
+      },
+      "natua": {
+        "views": 290049,
+        "reach": 70115,
+        "interactions": 1018,
+        "profile_visits": 612,
+        "bio_clicks": 53
+      }
+    }
+  },
+  "pending": [
+    "Meta instant-form opens for click→open and open→submit funnel",
+    "link 14 marketing appointments to actual Closer attendances",
+    "individual origin of 18 first consultations for pure marketing-origin ROI",
+    "organic exact July-only period; user chose to keep current 30/06–28/07 capture"
+  ],
+  "do_not_track_currently": [
+    "number of posts/feeds/stories in July organic panel"
+  ],
+  "known_conflicts": [
+    "Old June markdown baseline has 1378 forms/197 MQL; latest workbook uses 1428/204. Latest workbook has operational precedence until manual confirmation.",
+    "Support and Closer are different concepts; never substitute one for the other.",
+    "MQL ranking percentage uses CRM attributable submissions, not Meta Results denominator.",
+    "Ad 'Fase mais perigosa': 3 CRM MQL and 0 Meta results; CPL N/D."
+  ]
+}

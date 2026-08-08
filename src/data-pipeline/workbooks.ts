@@ -161,6 +161,18 @@ export function detectWorkbookRole(input: WorkbookInput): SourceRole | null {
     return "finance";
   }
 
+  // Planilha semanal do time: aba unica com o detalhe de pacientes e, mais
+  // abaixo, o bloco de totais por profissional. A assinatura exige tambem uma
+  // coluna de categoria, para nao capturar qualquer lista com NOME/VALOR.
+  if (
+    allHeaders.includes("NOME") &&
+    allHeaders.includes("PROFISSIONAL") &&
+    allHeaders.includes("VALOR") &&
+    (allHeaders.includes("PACOTE MED") || allHeaders.includes("PACOTE INJET"))
+  ) {
+    return "weekly";
+  }
+
   return null;
 }
 

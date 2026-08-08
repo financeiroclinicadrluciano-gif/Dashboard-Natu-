@@ -342,18 +342,74 @@ export function adaptMarketing(input: WorkbookInput): AdapterResult {
       ],
     }),
   );
+  // As abas de marketing usam DOIS vocabularios. Os meses fechados mais antigos
+  // (marco a maio) escrevem "Leads gerados", "MQL", "Agendamentos"; os recentes
+  // escrevem "LEADS META", "MQL CONFIRMADOS", "AGENDAMENTOS MKT". Ate 2026-08-07
+  // o extrator so conhecia o vocabulario recente, entao marco, abril e maio
+  // chegavam ao painel com investimento e todo o resto nulo — o dado estava na
+  // planilha e nao aparecia. Cada metrica aceita as duas grafias.
   const marketingHistory = periods.map(({ name, period }) => {
     const rows = labelRows(sheetRows(input.workbook, name));
-    const valueFor = (pattern: RegExp): number | null =>
-      rowNumber(rows, pattern, 1);
+    const valueFor = (...patterns: RegExp[]): number | null => {
+      for (const pattern of patterns) {
+        const value = rowNumber(rows, pattern, 1);
+        if (value !== null) {
+          return value;
+        }
+      }
+      return null;
+    };
+
+    const investment = valueFor(/^INVESTIMENTO TOTAL$/);
+    const leads = valueFor(/^LEADS META/, /^LEADS GERADOS$/, /^LEADS MENSURADOS$/);
+    const mql = valueFor(/^MQL CONFIRMADOS/, /^MQL$/);
+    const appointments = valueFor(/^AGENDAMENTOS MKT$/, /^AGENDAMENTOS$/);
+    // Marco a maio trazem "Receita de pacientes novos (consulta + tratamentos)"
+    // em uma linha so. Junho e julho quebram a mesma conta em duas linhas
+    // rotuladas. Somar as duas nao inventa definicao: e literalmente
+    // "consulta + tratamentos" das primeiras consultas.
+    const firstConsultRevenue = valueFor(/^FATURAMENTO TOTAL DE 1A CONSULTA$/);
+    const firstConsultTreatments = valueFor(
+      /^TRATAMENTOS FECHADOS EM TODAS AS 1A CONSULTAS$/,
+    );
+    const newPatientRevenue =
+      valueFor(/^RECEITA DE PACIENTES NOVOS/) ??
+      (firstConsultRevenue !== null && firstConsultTreatments !== null
+        ? firstConsultRevenue + firstConsultTreatments
+        : null);
+
     return {
       period,
-      investment: valueFor(/^INVESTIMENTO TOTAL$/),
-      leads: valueFor(/^LEADS META/),
-      cpl: valueFor(/^CUSTO TOTAL PAGO/),
-      mql: valueFor(/^MQL CONFIRMADOS/),
-      mqlRate: valueFor(/^TAXA MQL/),
-      appointments: valueFor(/^AGENDAMENTOS MKT$/),
+      investment,
+      investmentMeta: valueFor(/^INVESTIMENTO META$/),
+      investmentGoogle: valueFor(/^INVESTIMENTO GOOGLE$/),
+      leads,
+      // CPL derivado quando o rotulo nao existe: a conta e a mesma e o numero
+      // fica auditavel pela dependencia, nunca estimado.
+      cpl:
+        valueFor(/^CUSTO TOTAL PAGO/, /^CPL$/, /^CPL CONSOLIDADO$/) ??
+        (investment !== null && leads ? investment / leads : null),
+      mql,
+      mqlRate:
+        valueFor(/^TAXA MQL/, /^TAXA DE MQL$/) ??
+        (mql !== null && leads ? mql / leads : null),
+      costPerMql:
+        valueFor(/^CUSTO POR MQL$/) ??
+        (investment !== null && mql ? investment / mql : null),
+      appointments,
+      leadsPerAppointment:
+        valueFor(/^LEADS POR AGENDAMENTO$/) ??
+        (leads !== null && appointments ? leads / appointments : null),
+      // Junho e julho nao rotulam "fechamentos novos". "Pacientes fechados"
+      // dessas abas conta TODAS as jornadas, nao so a primeira consulta —
+      // usa-lo aqui trocaria a definicao no meio da serie. Fica nulo.
+      newClosures: valueFor(/^FECHAMENTOS \(NOVOS\)$/, /^FECHAMENTOS NOVOS$/),
+      newPatientRevenue,
+      roasNewPatients:
+        valueFor(/^ROAS DE PACIENTES NOVOS$/) ??
+        (newPatientRevenue !== null && investment
+          ? newPatientRevenue / investment
+          : null),
     };
   });
 
@@ -482,6 +538,9 @@ export function adaptMarketing(input: WorkbookInput): AdapterResult {
         profileKey: prefix,
         period: currentPeriod,
         posts: null,
+        stories: null,
+        storyAvgViews: null,
+        followersNet: null,
         views: finiteNumber(row[1]),
         reach,
         interactions,
@@ -539,6 +598,24 @@ export function adaptMarketing(input: WorkbookInput): AdapterResult {
           period: historyPeriod.period,
           posts: metricValue(
             /^POSTS PUBLICADOS$/,
+            profile.labelColumn,
+            profile.valueColumn,
+          ),
+          // Stories e posts sao VOLUME DE PRODUCAO, nao resultado de alcance.
+          // Sao os unicos indicadores do setor Filmmaker com fonte auditavel
+          // hoje; ate 2026-08-07 estavam na planilha e nao eram extraidos.
+          stories: metricValue(
+            /^STORIES POSTADOS$/,
+            profile.labelColumn,
+            profile.valueColumn,
+          ),
+          storyAvgViews: metricValue(
+            /^VISUALIZACAO MEDIA DOS STORIES$/,
+            profile.labelColumn,
+            profile.valueColumn,
+          ),
+          followersNet: metricValue(
+            /^CRESCIMENTO LIQUIDO DE SEGUIDORES$/,
             profile.labelColumn,
             profile.valueColumn,
           ),

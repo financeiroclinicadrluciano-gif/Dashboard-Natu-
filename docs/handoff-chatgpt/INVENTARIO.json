@@ -1,0 +1,250 @@
+[
+  {
+    "path": "INVENTARIO.json",
+    "bytes": 4003
+  },
+  {
+    "path": "docs/00_LEIA_PRIMEIRO.md",
+    "bytes": 1988
+  },
+  {
+    "path": "docs/01_PROMPT_PROJETO_PARA_CLAUDE.md",
+    "bytes": 3957
+  },
+  {
+    "path": "docs/02_MANUAL_MESTRE_CONSOLIDADO.md",
+    "bytes": 4034
+  },
+  {
+    "path": "docs/03_METODO_DE_RACIOCINIO_OPERACIONAL.md",
+    "bytes": 3302
+  },
+  {
+    "path": "docs/04_DICIONARIO_METRICAS_E_FORMULAS.md",
+    "bytes": 2293
+  },
+  {
+    "path": "docs/05_FECHAMENTO_ATUAL_JULHO_ATE_28.md",
+    "bytes": 5317
+  },
+  {
+    "path": "docs/06_HISTORICO_CRONOLOGICO.md",
+    "bytes": 3451
+  },
+  {
+    "path": "docs/07_DIVERGENCIAS_E_DADOS_SUPERADOS.md",
+    "bytes": 2858
+  },
+  {
+    "path": "docs/08_LAYOUT_E_PREFERENCIAS_DO_GUSTAVO.md",
+    "bytes": 1412
+  },
+  {
+    "path": "docs/09_MAPA_DE_FONTES_E_ARQUIVOS.md",
+    "bytes": 1618
+  },
+  {
+    "path": "docs/10_CHECKLIST_DE_ATUALIZACAO.md",
+    "bytes": 1880
+  },
+  {
+    "path": "docs/11_CASOS_DE_TESTE_E_VALIDACAO.md",
+    "bytes": 1575
+  },
+  {
+    "path": "docs/12_ANALISES_HISTORICAS_NAO_OFICIAIS.md",
+    "bytes": 1185
+  },
+  {
+    "path": "docs/project_context.json",
+    "bytes": 3180
+  },
+  {
+    "path": "docs_originais/00_MANUAL_MESTRE_DASHBOARD_MARKETING.md",
+    "bytes": 6470
+  },
+  {
+    "path": "docs_originais/01_BASELINE_JUNHO_2026.md",
+    "bytes": 2772
+  },
+  {
+    "path": "docs_originais/02_LOG_DECISOES_DASHBOARD_MARKETING (1).md",
+    "bytes": 15301
+  },
+  {
+    "path": "docs_originais/02_LOG_DECISOES_DASHBOARD_MARKETING_ATUALIZADO_2026-07-14.md",
+    "bytes": 2427
+  },
+  {
+    "path": "docs_originais/02_LOG_DECISOES_DASHBOARD_MARKETING_ATUALIZADO_2026-07-14_CAC_SUPPORT_ORGANICO.md",
+    "bytes": 1890
+  },
+  {
+    "path": "docs_originais/02_LOG_DECISOES_DASHBOARD_MARKETING_AUDITORIA_FINAL_2026-07-07.md",
+    "bytes": 17971
+  },
+  {
+    "path": "docs_originais/03_BASELINE_JULHO_2026_PARCIAL_ATUALIZADO.md",
+    "bytes": 1508
+  },
+  {
+    "path": "docs_originais/03_BASELINE_JULHO_2026_PARCIAL_ATUALIZADO_14-07.md",
+    "bytes": 1371
+  },
+  {
+    "path": "docs_originais/03_BASELINE_JULHO_2026_PARCIAL_ATUALIZADO_14-07_CAC_SUPPORT_ORGANICO.md",
+    "bytes": 1590
+  },
+  {
+    "path": "docs_originais/INSTRUCOES_PROJETO_DASHBOARD_MARKETING.txt",
+    "bytes": 7439
+  },
+  {
+    "path": "fontes_atuais/AGENDAMENTOS NATUA - Página1.csv",
+    "bytes": 1593
+  },
+  {
+    "path": "fontes_atuais/CLOSER_JULHO_VALIDADA.xlsx - DASHBOARD.csv",
+    "bytes": 809
+  },
+  {
+    "path": "fontes_atuais/CLOSER_JULHO_VALIDADA.xlsx - DR Luca.csv",
+    "bytes": 421
+  },
+  {
+    "path": "fontes_atuais/CLOSER_JULHO_VALIDADA.xlsx - Dr Luciano.csv",
+    "bytes": 2516
+  },
+  {
+    "path": "fontes_atuais/CLOSER_JULHO_VALIDADA.xlsx - Dra Vivian.csv",
+    "bytes": 685
+  },
+  {
+    "path": "fontes_atuais/CLOSER_JULHO_VALIDADA.xlsx - Gislaine.csv",
+    "bytes": 677
+  },
+  {
+    "path": "fontes_atuais/FORMULÁRIO DR. LUCIANO 2026 - FORM JULHO (2).csv",
+    "bytes": 555802
+  },
+  {
+    "path": "fontes_atuais/Movimentações por período 01-28 de julho.pdf",
+    "bytes": 709735
+  },
+  {
+    "path": "fontes_atuais/Natuá-MedSpa-Backup-1-Anúncios-1-de-jul-de-2026-28-de-jul-de-2026.csv",
+    "bytes": 87172
+  },
+  {
+    "path": "fontes_atuais/Natuá-MedSpa-Backup-1-Campanhas-1-de-jul-de-2026-28-de-jul-de-2026 (1).csv",
+    "bytes": 13593
+  },
+  {
+    "path": "fontes_atuais/Natuá-MedSpa-Backup-1-Conjuntos-de-anúncios-1-de-jul-de-2026-28-de-jul-de-2026.csv",
+    "bytes": 82747
+  },
+  {
+    "path": "fontes_atuais/Texto colado(2).txt",
+    "bytes": 13355
+  },
+  {
+    "path": "fontes_atuais/Texto colado(3).txt",
+    "bytes": 13294
+  },
+  {
+    "path": "fontes_junho/CLOSER JUNHO FINALIZADA.xlsx",
+    "bytes": 23356
+  },
+  {
+    "path": "fontes_junho/FORMULÁRIO DR. LUCIANO 2026 (6).xlsx",
+    "bytes": 992779
+  },
+  {
+    "path": "fontes_junho/Movimentações por período Junho completo.pdf",
+    "bytes": 827895
+  },
+  {
+    "path": "fontes_junho/Natuá-MedSpa-Backup-1-Anúncios-1-de-jun-de-2026-30-de-jun-de-2026.csv",
+    "bytes": 126280
+  },
+  {
+    "path": "fontes_junho/Natuá-MedSpa-Backup-1-Campanhas-1-de-jun-de-2026-30-de-jun-de-2026.csv",
+    "bytes": 14383
+  },
+  {
+    "path": "fontes_junho/Natuá-MedSpa-Backup-1-Conjuntos-de-anúncios-1-de-jun-de-2026-30-de-jun-de-2026.csv",
+    "bytes": 69205
+  },
+  {
+    "path": "fontes_junho/Relatório Marketing 2026.xlsx",
+    "bytes": 122908
+  },
+  {
+    "path": "fontes_junho/Relatório Marketing 2026.xlsx",
+    "bytes": 118186
+  },
+  {
+    "path": "historico_planilhas/Relatório Marketing 2026 - Atualizado 14-07 - CAC Support Orgânico.xlsx",
+    "bytes": 161402
+  },
+  {
+    "path": "historico_planilhas/Relatório Marketing 2026 - Atualizado 28-07 - Final com Leads e Comercial.xlsx",
+    "bytes": 335976
+  },
+  {
+    "path": "historico_planilhas/Relatório Marketing 2026 - Final 21-07.xlsx",
+    "bytes": 196614
+  },
+  {
+    "path": "historico_planilhas/Relatório Marketing 2026.xlsx",
+    "bytes": 118186
+  },
+  {
+    "path": "sistema_ia_existente_docs/AGENTS.md",
+    "bytes": 1769
+  },
+  {
+    "path": "sistema_ia_existente_docs/README.md",
+    "bytes": 1248
+  },
+  {
+    "path": "sistema_ia_existente_docs/docs/AI-OPERATING-SYSTEM.md",
+    "bytes": 2138
+  },
+  {
+    "path": "sistema_ia_existente_docs/docs/ARCHITECTURE.md",
+    "bytes": 2656
+  },
+  {
+    "path": "sistema_ia_existente_docs/docs/DATA-CONTRACT.md",
+    "bytes": 3538
+  },
+  {
+    "path": "sistema_ia_existente_docs/docs/UPDATE-RUNBOOK.md",
+    "bytes": 3036
+  },
+  {
+    "path": "sistema_ia_existente_docs/metadata.json",
+    "bytes": 280
+  },
+  {
+    "path": "sistema_ia_existente_docs/skills/natua-data-analyst/SKILL.md",
+    "bytes": 2676
+  },
+  {
+    "path": "sistema_ia_existente_docs/skills/natua-data-analyst/agents/openai.yaml",
+    "bytes": 331
+  },
+  {
+    "path": "sistema_ia_existente_docs/skills/natua-data-analyst/references/analysis-contract.schema.json",
+    "bytes": 3140
+  },
+  {
+    "path": "sistema_ia_existente_docs/skills/natua-data-analyst/references/decision-rules.md",
+    "bytes": 1429
+  },
+  {
+    "path": "sistema_ia_existente_docs/skills/natua-data-analyst/references/metric-dictionary.md",
+    "bytes": 1503
+  }
+]

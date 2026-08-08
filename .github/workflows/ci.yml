@@ -1,0 +1,78 @@
+name: CI
+
+# O repositorio e publico e o produto trata dado de paciente. O CI existe para
+# que "auditor que nao roda" nunca vire "regra que nao existe": typecheck,
+# testes, build e o gate de arquivos proibidos rodam em todo push e PR.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verificar:
+    name: Typecheck, testes, build e gate de dados
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Instalacao limpa
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      # Roda antes de tudo: se dado real entrou no commit, nao interessa se o
+      # build passa. O problema ja aconteceu e precisa parar aqui.
+      - name: Gate de arquivos proibidos, segredos e PII
+        run: npm run check:secrets
+
+      # Tres agentes escrevem CSS em arquivos separados. Um referenciar um token
+      # que outro nao declarou nao quebra o CSS — o navegador usa o fallback em
+      # silencio e o sistema visual deixa de ser um sistema.
+      - name: Gate de tokens CSS orfaos
+        run: npm run check:tokens
+
+      - name: Typecheck
+        run: npm run lint
+
+      # Cobre os parsers (adaptadores), a reconciliacao da planilha semanal e a
+      # regressao dos 30 numeros do fechamento aprovado. O teste end-to-end se
+      # pula sozinho: ele depende das planilhas-fonte, que tem PII e nunca
+      # entram no repositorio.
+      - name: Testes
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # Mesmos padroes do gate de commit: telefone exige separador ou aspas
+      # delimitando digitos puros, senao a casa decimal de uma taxa vira
+      # "celular" e o gate cria ruido em vez de sinal.
+      - name: Conferir que o build nao vazou dado pessoal
+        run: |
+          set -euo pipefail
+          if grep -rIlE \
+            -e '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' \
+            -e '(^|[^0-9.])\(?[0-9]{2}\)?[[:space:].-]+9?[0-9]{4}[[:space:].-]+[0-9]{4}([^0-9]|$)' \
+            -e '"(\+?55)?[0-9]{10,13}"' \
+            -e '[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}' \
+            dist/ ; then
+            echo "BLOQUEIO: padrao de e-mail, telefone ou CPF no bundle publicado." >&2
+            exit 1
+          fi
+          echo "Bundle limpo."
