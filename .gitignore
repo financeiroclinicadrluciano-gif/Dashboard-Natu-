@@ -21,3 +21,4 @@ data/private/
 # Planilhas-fonte para o teste end-to-end local. Contem dados de paciente e
 # lead: ficam na maquina de quem opera, nunca no repositorio publico.
 .data/
+public/data/meta-live-coletado-revisao.js

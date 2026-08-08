@@ -9,6 +9,14 @@
 
 set -euo pipefail
 
+# Fora de um repo git (ex.: a copia do vault, sem .git) as checagens que olham o
+# indice do git nao se aplicam — nada foi commitado ainda. Sai limpo com aviso,
+# em vez de quebrar o comando de atualizar. No CI e no clone, roda completo.
+if ! git rev-parse --show-toplevel >/dev/null 2>&1; then
+  echo "check-forbidden-files: fora de um repo git; checagem de indice pulada."
+  exit 0
+fi
+
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 cd "${REPO_ROOT}"
 
