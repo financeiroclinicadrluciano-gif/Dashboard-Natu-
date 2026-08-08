@@ -430,6 +430,29 @@
                 </div>
               </sc-if>
 
+              <sc-if value="{{ hasCurrentMonthMql }}">
+                <div class="current-month-meta">
+                  <p class="current-month-meta-head"><span class="current-month-meta-dot"></span>MQL automático por cargo · régua do guardrail</p>
+                  <div class="current-month-grid">
+                    <div class="current-month-stat">
+                      <p class="current-month-label">MQL no mês</p>
+                      <p class="current-month-value current-month-value-sm">{{ currentMonthMql }}</p>
+                      <p class="current-month-note">de {{ currentMonthLeads }} leads classificados</p>
+                    </div>
+                    <div class="current-month-stat">
+                      <p class="current-month-label">Taxa de MQL</p>
+                      <p class="current-month-value current-month-value-sm">{{ currentMonthMqlRate }}</p>
+                      <p class="current-month-note">julho auditado: 12,6%</p>
+                    </div>
+                    <div class="current-month-stat">
+                      <p class="current-month-label">Custo por MQL</p>
+                      <p class="current-month-value current-month-value-sm">{{ currentMonthCostMql }}</p>
+                      <p class="current-month-note">investimento Meta ÷ MQL</p>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
               <p class="current-month-warning">{{ currentMonthLimitation }}</p>
             </section>
           </sc-if>
@@ -1890,6 +1913,15 @@ class Component extends DCLogic {
       currency: 'BRL'
     });
     const hasMetaAugust = Boolean(metaAug && cmPeriod && metaAug.period && metaAug.period.startsWith(cmPeriod));
+
+    // MQL automatico do mes corrente + custo por MQL cruzando com o investimento
+    // Meta do mes. Fecha o unico furo entre a Meta (que da lead) e o negocio.
+    const cmMql = metricValue('form.current_month.mql_auto.current');
+    const cmMqlRate = metricValue('form.current_month.mql_auto.rate.current');
+    const cmCostMql = cmMql && metaAug && metaAug.investmentLeadgen
+      ? metaAug.investmentLeadgen / cmMql
+      : null;
+    const hasCurrentMonthMql = cmMql !== null;
     const metaMatch = metaAug && metaAug.leadsLeadgen && metaAug.crmFormLeads
       ? 1 - Math.abs(metaAug.leadsLeadgen - metaAug.crmFormLeads) / metaAug.crmFormLeads
       : null;
@@ -1941,6 +1973,10 @@ class Component extends DCLogic {
       currentMonthPaceNote: cmPace === null
         ? 'sem recorte comparável'
         : cmPace >= 0 ? 'acima do mesmo recorte' : 'abaixo do mesmo recorte',
+      hasCurrentMonthMql,
+      currentMonthMql: cmMql === null ? '—' : integers.format(cmMql),
+      currentMonthMqlRate: cmMqlRate === null ? '—' : `${oneDecimal.format(cmMqlRate * 100)}%`,
+      currentMonthCostMql: cmCostMql === null ? '—' : brl.format(cmCostMql),
       hasMetaAugust,
       metaAugustPeriod: metaAug ? `01–${String(metaAug.period.match(/\d+\)/)?.[0] || '').replace(')', '') || '07'}/08 · parcial` : '',
       metaAugustInvestment: metaAug ? brl.format(metaAug.investmentTotal) : '—',

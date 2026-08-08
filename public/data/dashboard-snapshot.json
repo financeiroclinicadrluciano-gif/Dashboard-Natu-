@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "importId": "2026-08-08-f64dd6e0-a141-4cdf-843c-4a3101c9bc2c",
-  "generatedAt": "2026-08-08T00:40:39.431Z",
+  "importId": "2026-08-08-982935ef-83b1-4cd3-bdc2-756d5635a4a4",
+  "generatedAt": "2026-08-08T02:50:25.176Z",
   "primaryPeriod": "2026-07",
   "validation": {
     "status": "APPROVED",
@@ -1634,6 +1634,62 @@
       "dependencies": [],
       "note": null
     },
+    "form.mql_auto.current": {
+      "id": "form.mql_auto.current",
+      "label": "MQL automatico por cargo",
+      "value": 184,
+      "unit": "COUNT",
+      "status": "VALIDATED",
+      "period": "2026-07",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": null,
+      "dependencies": [],
+      "note": "Classificacao automatica pela regua de cargo do guardrail; cruzar com o MQL auditado da CRM."
+    },
+    "form.mql_auto.rate.current": {
+      "id": "form.mql_auto.rate.current",
+      "label": "Taxa de MQL automatico",
+      "value": 0.12689655172413794,
+      "unit": "PERCENT",
+      "status": "VALIDATED",
+      "period": "2026-07",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": "form.mql_auto.current / leads classificados",
+      "dependencies": [
+        "form.mql_auto.current"
+      ],
+      "note": null
+    },
+    "form.current_month.mql_auto.current": {
+      "id": "form.current_month.mql_auto.current",
+      "label": "MQL automatico do mes corrente (2026-08)",
+      "value": 29,
+      "unit": "COUNT",
+      "status": "VALIDATED",
+      "period": "2026-08",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": null,
+      "dependencies": [],
+      "note": "Classificacao automatica por cargo; o mes corrente ainda nao tem MQL auditado da CRM."
+    },
+    "form.current_month.mql_auto.rate.current": {
+      "id": "form.current_month.mql_auto.rate.current",
+      "label": "Taxa de MQL automatico do mes corrente",
+      "value": 0.14009661835748793,
+      "unit": "PERCENT",
+      "status": "VALIDATED",
+      "period": "2026-08",
+      "source": "form",
+      "sheet": "FORM JULHO",
+      "formula": "form.current_month.mql_auto.current / leads do mes",
+      "dependencies": [
+        "form.current_month.mql_auto.current"
+      ],
+      "note": null
+    },
     "form.current_month.leads.current": {
       "id": "form.current_month.leads.current",
       "label": "Leads do mes corrente (2026-08, parcial)",
@@ -2981,6 +3037,56 @@
         "platform": "Facebook",
         "leads": 370,
         "share": 0.22329511164755583
+      }
+    ],
+    "form.mql_by_role": [
+      {
+        "role": "proprietari",
+        "leads": 43
+      },
+      {
+        "role": "gerente",
+        "leads": 37
+      },
+      {
+        "role": "empresari",
+        "leads": 32
+      },
+      {
+        "role": "advogad",
+        "leads": 18
+      },
+      {
+        "role": "diretor",
+        "leads": 16
+      },
+      {
+        "role": "ceo",
+        "leads": 6
+      },
+      {
+        "role": "empreendedor",
+        "leads": 4
+      },
+      {
+        "role": "dono",
+        "leads": 4
+      },
+      {
+        "role": "engenheir",
+        "leads": 4
+      },
+      {
+        "role": "socia",
+        "leads": 4
+      },
+      {
+        "role": "dentista",
+        "leads": 3
+      },
+      {
+        "role": "executiv",
+        "leads": 3
       }
     ],
     "form.campaigns": [

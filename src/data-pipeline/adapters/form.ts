@@ -9,6 +9,7 @@ import {
   type SheetRows,
   type WorkbookInput,
 } from "../workbooks";
+import { classifyMql, tallyMql } from "../mql-classifier";
 import { metric, sourceSummary, type AdapterResult } from "./common";
 
 /**
@@ -167,6 +168,7 @@ export function adaptForm(
   const adsetColumn = findColumn(headers, "adset_name", "CONJUNTO");
   const adColumn = findColumn(headers, "ad_name", "ANUNCIO");
   const phoneColumn = findColumn(headers, "phone_number", "TELEFONE");
+  const jobColumn = findColumn(headers, "job_title", "CARGO", "cargo");
   const objectiveColumn =
     findColumnStartingWith(headers, "qual e o seu principal objetivo") ??
     findColumnStartingWith(headers, "qual resultado voce mais quer");
@@ -282,6 +284,33 @@ export function adaptForm(
     (sum, day) => sum + (byDay.get(day) ?? 0),
     0,
   );
+
+  // -------------------------------------------------------------------------
+  // MQL automatico por cargo.
+  //
+  // A Meta conta lead; a classificacao de MQL era manual (abas BASE MQL). O
+  // classificador aplica a regua do guardrail (cargo/profissao/autonomia) a cada
+  // lead, entao o MQL sai sozinho toda semana. Validado contra a auditoria CRM
+  // de julho: 184 automatico vs 175 auditado (dentro de 5%). Cada lead e
+  // classificado dentro do SEU mes, para julho e o mes corrente saírem separados.
+  // -------------------------------------------------------------------------
+  const jobsByMonth = new Map<string, unknown[]>();
+  if (jobColumn) {
+    for (const row of records) {
+      const date = toDate(cell(row, createdColumn));
+      if (!date) {
+        continue;
+      }
+      const month = date.toISOString().slice(0, 7);
+      const bucket = jobsByMonth.get(month) ?? [];
+      bucket.push(cell(row, jobColumn));
+      jobsByMonth.set(month, bucket);
+    }
+  }
+  const periodMql = tallyMql(jobsByMonth.get(periodHint) ?? []);
+  const currentMonthMql =
+    currentMonth !== null ? tallyMql(jobsByMonth.get(currentMonth) ?? []) : null;
+
   const statuses = tally(
     records.map((row) =>
       statusColumn ? normalizeText(row[statusColumn.index]) || "VAZIO" : "SEM CAMPO",
@@ -410,6 +439,62 @@ export function adaptForm(
     }),
   ];
 
+  // MQL automatico da competencia do painel (julho). Fica separado do MQL
+  // auditado da CRM: e um segundo metodo, para cruzar, nao para substituir.
+  if (jobColumn && periodMql.total > 0) {
+    metrics.push(
+      metric({
+        id: "form.mql_auto.current",
+        label: "MQL automatico por cargo",
+        value: periodMql.mql,
+        unit: "COUNT",
+        period: periodHint,
+        source: "form",
+        sheet: sheetName,
+        note: "Classificacao automatica pela regua de cargo do guardrail; cruzar com o MQL auditado da CRM.",
+      }),
+      metric({
+        id: "form.mql_auto.rate.current",
+        label: "Taxa de MQL automatico",
+        value: periodMql.total ? periodMql.mql / periodMql.total : null,
+        unit: "PERCENT",
+        period: periodHint,
+        source: "form",
+        sheet: sheetName,
+        formula: "form.mql_auto.current / leads classificados",
+        dependencies: ["form.mql_auto.current"],
+      }),
+    );
+  }
+
+  if (currentMonth && currentMonthMql && jobColumn) {
+    metrics.push(
+      metric({
+        id: "form.current_month.mql_auto.current",
+        label: `MQL automatico do mes corrente (${currentMonth})`,
+        value: currentMonthMql.mql,
+        unit: "COUNT",
+        period: currentMonth,
+        source: "form",
+        sheet: sheetName,
+        note: "Classificacao automatica por cargo; o mes corrente ainda nao tem MQL auditado da CRM.",
+      }),
+      metric({
+        id: "form.current_month.mql_auto.rate.current",
+        label: "Taxa de MQL automatico do mes corrente",
+        value: currentMonthMql.total
+          ? currentMonthMql.mql / currentMonthMql.total
+          : null,
+        unit: "PERCENT",
+        period: currentMonth,
+        source: "form",
+        sheet: sheetName,
+        formula: "form.current_month.mql_auto.current / leads do mes",
+        dependencies: ["form.current_month.mql_auto.current"],
+      }),
+    );
+  }
+
   if (currentMonth) {
     metrics.push(
       metric({
@@ -516,6 +601,11 @@ export function adaptForm(
         leads: count,
         share: total ? count / total : null,
       })),
+      // Quais cargos viraram MQL, para a classificacao ser auditavel na tela.
+      "form.mql_by_role": Object.entries(periodMql.byMatch)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 12)
+        .map(([role, count]) => ({ role, leads: count })),
       "form.campaigns": rank(campaigns, "campaign", 10, total),
       "form.adsets": rank(adsets, "adset", 10, total),
       "form.ads": rank(ads, "ad", 12, total),
