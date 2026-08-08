@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "importId": "2026-08-07-0a5fc774-c6fd-4c80-bedd-e56f8b65ba0f",
-  "generatedAt": "2026-08-07T20:37:54.670Z",
+  "importId": "2026-08-08-f64dd6e0-a141-4cdf-843c-4a3101c9bc2c",
+  "generatedAt": "2026-08-08T00:40:39.431Z",
   "primaryPeriod": "2026-07",
   "validation": {
     "status": "APPROVED",
@@ -62,26 +62,6 @@
         "code": "FINANCE_PERIOD_STALE",
         "message": "Financeiro em 2026-05, defasado do painel principal 2026-07.",
         "source": "finance"
-      },
-      {
-        "severity": "WARNING",
-        "code": "LOGIC_FRACTIONAL_COUNT",
-        "message": "Contagem fracionaria em form.daily_average.current; confira se a celula e uma media.",
-        "source": "form",
-        "details": {
-          "metric": "form.daily_average.current",
-          "value": 44.78378378378378
-        }
-      },
-      {
-        "severity": "WARNING",
-        "code": "LOGIC_FRACTIONAL_COUNT",
-        "message": "Contagem fracionaria em form.current_month.daily_average.current; confira se a celula e uma media.",
-        "source": "form",
-        "details": {
-          "metric": "form.current_month.daily_average.current",
-          "value": 29.571428571428573
-        }
       }
     ]
   },
@@ -186,15 +166,15 @@
     "marketing.investment.total.current": {
       "id": "marketing.investment.total.current",
       "label": "Investimento total",
-      "value": 24497.75,
+      "value": 24815.22,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
       "formula": null,
       "dependencies": [],
-      "note": null
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.investment.total.previous": {
       "id": "marketing.investment.total.previous",
@@ -212,15 +192,15 @@
     "marketing.investment.meta.current": {
       "id": "marketing.investment.meta.current",
       "label": "Investimento Meta",
-      "value": 24497.75,
+      "value": 24815.22,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
       "formula": null,
       "dependencies": [],
-      "note": null
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.investment.meta.previous": {
       "id": "marketing.investment.meta.previous",
@@ -243,10 +223,10 @@
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
       "formula": null,
       "dependencies": [],
-      "note": null
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.investment.google.previous": {
       "id": "marketing.investment.google.previous",
@@ -264,15 +244,15 @@
     "marketing.leads.meta.current": {
       "id": "marketing.leads.meta.current",
       "label": "Leads Meta",
-      "value": 1441,
+      "value": 1708,
       "unit": "COUNT",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
       "formula": null,
       "dependencies": [],
-      "note": null
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.leads.meta.previous": {
       "id": "marketing.leads.meta.previous",
@@ -290,15 +270,18 @@
     "marketing.cpl.total.current": {
       "id": "marketing.cpl.total.current",
       "label": "Custo total por lead",
-      "value": 17.000520471894518,
+      "value": 14.528817330210774,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
-      "formula": null,
-      "dependencies": [],
-      "note": null
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
+      "formula": "investimento total / leads Meta",
+      "dependencies": [
+        "marketing.investment.total.current",
+        "marketing.leads.meta.current"
+      ],
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.cpl.total.previous": {
       "id": "marketing.cpl.total.previous",
@@ -342,15 +325,18 @@
     "marketing.cost.mql.current": {
       "id": "marketing.cost.mql.current",
       "label": "Custo por MQL",
-      "value": 117.43045714285715,
+      "value": 119.00165714285714,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
-      "formula": null,
-      "dependencies": [],
-      "note": null
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
+      "formula": "investimento leadgen / MQL",
+      "dependencies": [
+        "marketing.investment.leadgen.current",
+        "marketing.mql.current"
+      ],
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.cost.mql.previous": {
       "id": "marketing.cost.mql.previous",
@@ -524,15 +510,18 @@
     "marketing.roi.consultation.current": {
       "id": "marketing.roi.consultation.current",
       "label": "ROI de consultas",
-      "value": 0.5020869263503791,
+      "value": 0.49566354841907506,
       "unit": "RATIO",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
-      "formula": null,
-      "dependencies": [],
-      "note": null
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
+      "formula": "receita de 1a consulta / investimento total",
+      "dependencies": [
+        "marketing.first_consultation.revenue.current",
+        "marketing.investment.total.current"
+      ],
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.roi.consultation.previous": {
       "id": "marketing.roi.consultation.previous",
@@ -550,15 +539,18 @@
     "marketing.roi.treatments.current": {
       "id": "marketing.roi.treatments.current",
       "label": "ROI de tratamentos de primeiros pacientes",
-      "value": 3.2756661326040146,
+      "value": 3.2337593621978766,
       "unit": "RATIO",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
-      "formula": null,
-      "dependencies": [],
-      "note": null
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
+      "formula": "tratamentos de 1a consulta / investimento total",
+      "dependencies": [
+        "marketing.first_patient.treatments.current",
+        "marketing.investment.total.current"
+      ],
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.roi.treatments.previous": {
       "id": "marketing.roi.treatments.previous",
@@ -576,15 +568,18 @@
     "marketing.cac.appointment.current": {
       "id": "marketing.cac.appointment.current",
       "label": "CAC por agendamento de marketing",
-      "value": 1749.8392857142858,
+      "value": 1772.5157142857145,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
-      "formula": null,
-      "dependencies": [],
-      "note": null
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
+      "formula": "investimento total / agendamentos de marketing",
+      "dependencies": [
+        "marketing.investment.total.current",
+        "marketing.appointments.marketing.current"
+      ],
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.cac.appointment.previous": {
       "id": "marketing.cac.appointment.previous",
@@ -615,18 +610,18 @@
     "marketing.cpc.current": {
       "id": "marketing.cpc.current",
       "label": "Custo por clique",
-      "value": 3.1092460972204594,
+      "value": 3.149539281634725,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "MARKETING JULHO",
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
       "formula": "investimento total / cliques no link",
       "dependencies": [
         "marketing.investment.total.current",
         "marketing.clicks.link.current"
       ],
-      "note": null
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.click_to_form_rate.current": {
       "id": "marketing.click_to_form_rate.current",
@@ -1193,30 +1188,31 @@
     "marketing.investment.leadgen.current": {
       "id": "marketing.investment.leadgen.current",
       "label": "Investimento Meta em campanhas de leadgen",
-      "value": 20550.33,
+      "value": 20825.29,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "TRÁFEGO JULHO",
-      "formula": "soma do investimento das campanhas de leadgen",
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
+      "formula": null,
       "dependencies": [],
-      "note": null
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "marketing.cpl.leadgen.current": {
       "id": "marketing.cpl.leadgen.current",
       "label": "CPL Meta leadgen",
-      "value": 14.261158917418461,
+      "value": 12.192792740046839,
       "unit": "BRL",
       "status": "VALIDATED",
       "period": "2026-07",
       "source": "marketing",
-      "sheet": "TRÁFEGO JULHO",
-      "formula": "investimento leadgen / resultados leadgen",
+      "sheet": "Meta Ads API (maduro 2026-08-07)",
+      "formula": "investimento leadgen / leads Meta",
       "dependencies": [
-        "marketing.investment.leadgen.current"
+        "marketing.investment.leadgen.current",
+        "marketing.leads.meta.current"
       ],
-      "note": null
+      "note": "Fechamento maduro da Meta; supera o preliminar de 28/07 por maturacao de atribuicao (7 dias de clique, ~28 dias de janela)."
     },
     "commercial.attended.current": {
       "id": "commercial.attended.current",
@@ -2389,11 +2385,11 @@
       },
       {
         "period": "2026-07",
-        "investment": 24497.75,
+        "investment": 24815.22,
         "investmentMeta": 24497.75,
         "investmentGoogle": 0,
-        "leads": 1441,
-        "cpl": 17.000520471894518,
+        "leads": 1708,
+        "cpl": 14.528817330210774,
         "mql": 175,
         "mqlRate": 0.12589928057553956,
         "costPerMql": 117.43045714285715,

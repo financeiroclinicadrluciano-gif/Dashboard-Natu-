@@ -63,22 +63,35 @@ menos. Sinal para a próxima reunião.
 
 ---
 
-## A decisão que é do Gustavo, não minha
+## Re-fecho executado — aprovado pelo Gustavo em 2026-08-07
 
-O baseline de regressão (`tests/baselines/fechamento-2026-07.json`) trava julho em
-**1.441 leads** — o fechamento preliminar aprovado. Os números maduros da Meta
-mostram **1.708**. Trocar o baseline é **re-fechar julho** e muda a referência que
-o gate de regressão protege.
+Julho foi **re-fechado com os números maduros da Meta**. As métricas pagas agora
+vêm da API (proveniência `Meta Ads API (maduro 2026-08-07)`); MQL, comercial e
+orgânico permanecem das planilhas.
 
-**Recomendação:** re-fechar julho com os números maduros da Meta (1.708 leads,
-CPL R$ 12,19), porque é o número final e verdadeiro do mês. Mas isso é uma decisão
-de fechamento, não um ajuste silencioso — o baseline só muda com aprovação
-explícita, e é isso que a regra do baseline exige.
+| Métrica de julho | Antes (preliminar) | Agora (maduro) |
+|---|---:|---:|
+| Leads Meta | 1.441 | **1.708** |
+| Investimento total | R$ 24.497,75 | **R$ 24.815,22** |
+| Investimento leadgen | R$ 20.550,33 | **R$ 20.825,29** |
+| CPL total | R$ 17,00 | **R$ 14,53** |
+| CPL leadgen | R$ 14,26 | **R$ 12,19** |
+| Custo por MQL | R$ 117,43 | **R$ 119,00** |
+| CAC por agendamento | R$ 1.749,84 | **R$ 1.772,52** |
+| ROI tratamentos | 3,28x | **3,23x** |
 
-Enquanto não houver decisão, o painel mostra:
-- **julho** = fechamento preliminar aprovado (1.441), como estava;
-- **reconciliação** = esta comparação, para a decisão ser informada;
-- **agosto** = Meta + CRM ao vivo, claramente marcado como parcial.
+Como o re-fecho foi feito sem quebrar nada:
+- as derivadas (CPL, custo/MQL, CAC, ROI) são **recalculadas** a partir dos
+  brutos maduros, então as identidades do validador lógico continuam fechando —
+  o próprio gate prova a aritmética;
+- o `baseline de regressão` foi atualizado para os números maduros e marcado
+  como `closeType: maduro`;
+- os cartões, a tabela comparativa e a leitura executiva foram atualizados junto;
+  nenhum número velho ficou na tela.
+
+Cliques **não** foram sobrescritos: o "clicks" da conta na Meta conta todos os
+cliques, e o painel usa cliques de link leadgen (7.879). São definições
+diferentes; o denominador leadgen continua certo para a taxa clique→formulário.
 
 ---
 

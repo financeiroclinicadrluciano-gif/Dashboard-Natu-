@@ -2,8 +2,9 @@
   "period": "2026-07",
   "coverage": "01-28/07/2026",
   "approvedAt": "2026-08-07",
-  "source": "docs/handoff-chatgpt/05_FECHAMENTO_ATUAL_JULHO_ATE_28.md",
-  "note": "Fechamento operacional aprovado. Estes 30 numeros foram conferidos contra o snapshot publicado em 2026-07-29 com 30/30 de acerto. Alterar qualquer linha aqui exige um novo fechamento aprovado, nunca um ajuste para o teste passar.",
+  "closeType": "maduro",
+  "source": "Meta Ads API (conta Natua MedSpa Backup 1), consultada em 2026-08-07 · docs/reconciliacao-meta-2026-08-07.md",
+  "note": "RE-FECHO MADURO aprovado pelo Gustavo em 2026-08-07. As metricas PAGAS vem da Meta Ads API madura (1.708 leads), que supera o preliminar de 28/07 (1.441) por maturacao de atribuicao. As metricas de CRM/comercial/organico permanecem das planilhas. Alterar qualquer linha aqui exige um novo fechamento aprovado, nunca um ajuste para o teste passar.",
   "tolerance": {
     "BRL": 0.01,
     "COUNT": 0,
@@ -11,35 +12,125 @@
     "RATIO": 0.005
   },
   "metrics": {
-    "marketing.investment.total.current": { "value": 24497.75, "unit": "BRL" },
-    "marketing.investment.meta.current": { "value": 24497.75, "unit": "BRL" },
-    "marketing.investment.google.current": { "value": 0, "unit": "BRL" },
-    "marketing.investment.leadgen.current": { "value": 20550.33, "unit": "BRL" },
-    "marketing.leads.meta.current": { "value": 1441, "unit": "COUNT" },
-    "marketing.clicks.link.current": { "value": 7879, "unit": "COUNT" },
-    "marketing.cpl.leadgen.current": { "value": 14.26, "unit": "BRL" },
-    "marketing.cpl.total.current": { "value": 17.0, "unit": "BRL" },
-    "marketing.forms.valid.current": { "value": 1390, "unit": "COUNT" },
-    "marketing.mql.current": { "value": 175, "unit": "COUNT" },
-    "marketing.rate.mql.current": { "value": 0.1259, "unit": "PERCENT" },
-    "marketing.cost.mql.current": { "value": 117.43, "unit": "BRL" },
-    "marketing.appointments.marketing.current": { "value": 14, "unit": "COUNT" },
-    "marketing.cac.appointment.current": { "value": 1749.84, "unit": "BRL" },
-    "marketing.first_consultation.revenue.current": { "value": 12300, "unit": "BRL" },
-    "marketing.first_patient.treatments.current": { "value": 80246.45, "unit": "BRL" },
-    "marketing.roi.consultation.current": { "value": 0.5, "unit": "RATIO" },
-    "marketing.roi.treatments.current": { "value": 3.28, "unit": "RATIO" },
-    "commercial.attended.current": { "value": 33, "unit": "COUNT" },
-    "commercial.closed.current": { "value": 26, "unit": "COUNT" },
-    "commercial.negotiating.current": { "value": 5, "unit": "COUNT" },
-    "commercial.close_rate.current": { "value": 0.7879, "unit": "PERCENT" },
-    "commercial.revenue.current": { "value": 244512.1, "unit": "BRL" },
-    "commercial.pipeline.current": { "value": 31400.63, "unit": "BRL" },
-    "commercial.ticket_attended.current": { "value": 7409.46, "unit": "BRL" },
-    "commercial.ticket_closed.current": { "value": 9404.31, "unit": "BRL" },
-    "organic.doctor.views.current": { "value": 836931, "unit": "COUNT" },
-    "organic.doctor.reach.current": { "value": 215239, "unit": "COUNT" },
-    "organic.natua.views.current": { "value": 290049, "unit": "COUNT" },
-    "organic.natua.reach.current": { "value": 70115, "unit": "COUNT" }
+    "marketing.investment.total.current": {
+      "value": 24815.22,
+      "unit": "BRL"
+    },
+    "marketing.investment.meta.current": {
+      "value": 24815.22,
+      "unit": "BRL"
+    },
+    "marketing.investment.google.current": {
+      "value": 0,
+      "unit": "BRL"
+    },
+    "marketing.investment.leadgen.current": {
+      "value": 20825.29,
+      "unit": "BRL"
+    },
+    "marketing.leads.meta.current": {
+      "value": 1708,
+      "unit": "COUNT"
+    },
+    "marketing.clicks.link.current": {
+      "value": 7879,
+      "unit": "COUNT"
+    },
+    "marketing.cpl.leadgen.current": {
+      "value": 12.1928,
+      "unit": "BRL"
+    },
+    "marketing.cpl.total.current": {
+      "value": 14.5288,
+      "unit": "BRL"
+    },
+    "marketing.forms.valid.current": {
+      "value": 1390,
+      "unit": "COUNT"
+    },
+    "marketing.mql.current": {
+      "value": 175,
+      "unit": "COUNT"
+    },
+    "marketing.rate.mql.current": {
+      "value": 0.1259,
+      "unit": "PERCENT"
+    },
+    "marketing.cost.mql.current": {
+      "value": 119.0017,
+      "unit": "BRL"
+    },
+    "marketing.appointments.marketing.current": {
+      "value": 14,
+      "unit": "COUNT"
+    },
+    "marketing.cac.appointment.current": {
+      "value": 1772.5157,
+      "unit": "BRL"
+    },
+    "marketing.first_consultation.revenue.current": {
+      "value": 12300,
+      "unit": "BRL"
+    },
+    "marketing.first_patient.treatments.current": {
+      "value": 80246.45,
+      "unit": "BRL"
+    },
+    "marketing.roi.consultation.current": {
+      "value": 0.4957,
+      "unit": "RATIO"
+    },
+    "marketing.roi.treatments.current": {
+      "value": 3.2338,
+      "unit": "RATIO"
+    },
+    "commercial.attended.current": {
+      "value": 33,
+      "unit": "COUNT"
+    },
+    "commercial.closed.current": {
+      "value": 26,
+      "unit": "COUNT"
+    },
+    "commercial.negotiating.current": {
+      "value": 5,
+      "unit": "COUNT"
+    },
+    "commercial.close_rate.current": {
+      "value": 0.7879,
+      "unit": "PERCENT"
+    },
+    "commercial.revenue.current": {
+      "value": 244512.1,
+      "unit": "BRL"
+    },
+    "commercial.pipeline.current": {
+      "value": 31400.63,
+      "unit": "BRL"
+    },
+    "commercial.ticket_attended.current": {
+      "value": 7409.46,
+      "unit": "BRL"
+    },
+    "commercial.ticket_closed.current": {
+      "value": 9404.31,
+      "unit": "BRL"
+    },
+    "organic.doctor.views.current": {
+      "value": 836931,
+      "unit": "COUNT"
+    },
+    "organic.doctor.reach.current": {
+      "value": 215239,
+      "unit": "COUNT"
+    },
+    "organic.natua.views.current": {
+      "value": 290049,
+      "unit": "COUNT"
+    },
+    "organic.natua.reach.current": {
+      "value": 70115,
+      "unit": "COUNT"
+    }
   }
 }

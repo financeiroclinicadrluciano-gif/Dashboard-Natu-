@@ -326,6 +326,10 @@ function checkDomains(
       }
     }
 
+    // Uma media de contagens (leads por dia) e legitimamente fracionaria; so a
+    // contagem inteira precisa ser inteira.
+    const isAverage = /(average|media|_avg|daily_average)/.test(item.id);
+
     if (item.unit === "COUNT") {
       if (item.value < 0) {
         issues.push({
@@ -335,7 +339,7 @@ function checkDomains(
           source: item.source,
           details: { metric: item.id, value: item.value },
         });
-      } else if (!Number.isInteger(item.value)) {
+      } else if (!isAverage && !Number.isInteger(item.value)) {
         issues.push({
           severity: "WARNING",
           code: "LOGIC_FRACTIONAL_COUNT",

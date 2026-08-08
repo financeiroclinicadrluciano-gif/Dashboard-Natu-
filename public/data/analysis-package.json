@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "importId": "2026-08-07-0a5fc774-c6fd-4c80-bedd-e56f8b65ba0f",
-  "generatedAt": "2026-08-07T20:37:54.670Z",
+  "importId": "2026-08-08-f64dd6e0-a141-4cdf-843c-4a3101c9bc2c",
+  "generatedAt": "2026-08-08T00:40:39.431Z",
   "skill": "natua-data-analyst",
   "sections": [
     {
@@ -11,8 +11,8 @@
       "signals": [
         {
           "type": "POSITIVE",
-          "evidence": "R$ 24.497,75 de investimento geraram 1.441 leads.",
-          "interpretation": "O investimento variou -25,61% e os leads 2,86% frente ao período anterior.",
+          "evidence": "R$ 24.815,22 de investimento geraram 1.708 leads.",
+          "interpretation": "O investimento variou -24,65% e os leads 21,91% frente ao período anterior.",
           "metricIds": [
             "marketing.investment.total.current",
             "marketing.investment.total.previous",
@@ -71,7 +71,7 @@
         "Comparecimento e no-show permanecem sem base."
       ],
       "sourceRefs": [
-        "marketing:MARKETING JULHO:2026-07",
+        "marketing:Meta Ads API (maduro 2026-08-07):2026-07",
         "closer:abas por profissional:2026-07"
       ]
     },
@@ -138,7 +138,7 @@
       "signals": [
         {
           "type": "POSITIVE",
-          "evidence": "CPL total atual de R$ 17,00 contra R$ 23,51.",
+          "evidence": "CPL total atual de R$ 14,53 contra R$ 23,51.",
           "interpretation": "O custo de aquisição de volume melhorou no comparativo publicado.",
           "metricIds": [
             "marketing.cpl.total.current",
@@ -401,9 +401,7 @@
         "Existem agendamentos do periodo sem responsavel.",
         "A aba cobre dias fora de 2026-07; a serie diaria mostra tudo, os totais do painel nao.",
         "Ha categorias sem coluna de receita na planilha; o faturamento delas fica SEM_BASE.",
-        "Financeiro em 2026-05, defasado do painel principal 2026-07.",
-        "Contagem fracionaria em form.daily_average.current; confira se a celula e uma media.",
-        "Contagem fracionaria em form.current_month.daily_average.current; confira se a celula e uma media."
+        "Financeiro em 2026-05, defasado do painel principal 2026-07."
       ],
       "sourceRefs": [
         "marketing:2026-07",

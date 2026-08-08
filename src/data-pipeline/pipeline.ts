@@ -20,6 +20,7 @@ import {
   type SourceRole,
   type ValidationIssue,
 } from "./model";
+import { applyMetaClose, applyMetaCloseToBreakdowns, JULY_2026_META_CLOSE } from "./meta-override";
 import { validateLogic } from "./validators";
 import {
   classifyWorkbooks,
@@ -205,10 +206,20 @@ export function processWorkbooks(
   }
 
   const generatedAt = new Date().toISOString();
-  const metrics = metricMap(results);
-  const breakdowns = Object.assign(
-    {},
-    ...results.map((result) => result.breakdowns),
+  // Fechamento maduro da Meta sobrescreve as metricas pagas preliminares da
+  // planilha e stampa a proveniencia como "Meta Ads API". So age quando a
+  // competencia principal bate; as derivadas sao recalculadas para as
+  // identidades do validador continuarem fechando.
+  const metrics = applyMetaClose(
+    metricMap(results),
+    primaryPeriod,
+    JULY_2026_META_CLOSE,
+  );
+  const breakdowns = applyMetaCloseToBreakdowns(
+    Object.assign({}, ...results.map((result) => result.breakdowns)),
+    primaryPeriod,
+    JULY_2026_META_CLOSE,
+    metrics["marketing.mql.current"]?.value ?? null,
   );
   const baseSnapshot: SnapshotBase = {
     version: "1.0.0",
